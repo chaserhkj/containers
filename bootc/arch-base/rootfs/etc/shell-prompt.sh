@@ -65,7 +65,14 @@ _get_prompt() {
     [[ -n $BASH ]] && _shell=bash
     [[ -n $ZSH_NAME ]] && _shell=zsh
     [[ -z $_shell ]] && _shell='?sh'
-    _prompt_+="$_user_color$_bold"'['"$_shell"'] '"$_reset"
+    local _shell_prefix
+    if [[ -f /run/.containerenv ]]; then
+        _shell_prefix="ctr/"
+        [[ -n $container ]] && _shell_prefix+="$container/"
+        [[ -f /run/.toolboxenv ]] && _shell_prefix+="toolbox/"
+        [[ -n $CONTAINER_ID ]] && _shell_prefix+="$CONTAINER_ID/"
+    fi
+    _prompt_+="$_user_color$_bold"'['"$_white$_shell_prefix$_user_color$_shell"'] '"$_reset"
     # Load
     _prompt_+="$_blue$_bold$(_prompt_load)$_reset"
     # Mem

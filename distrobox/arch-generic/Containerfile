@@ -3,4 +3,4 @@ FROM distrobox-arch-common-gui
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    podman amdgpu_top
+    pacman -Sy --needed --noconfirm podman amdgpu_top

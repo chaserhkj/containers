@@ -8,14 +8,14 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    steam
+    pacman -Sy --needed --noconfirm steam
     
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    gamescope vulkan-radeon lib32-vulkan-radeon \
+    pacman -Sy --needed --noconfirm gamescope vulkan-radeon lib32-vulkan-radeon \
     vulkan-tools vulkan-mesa-layers lib32-vulkan-mesa-layers mesa-utils \
     mangohud lib32-mangohud gamemode lib32-gamemode
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    kmonad python-evdev obs-studio
+    pacman -Sy --needed --noconfirm kmonad python-evdev obs-studio

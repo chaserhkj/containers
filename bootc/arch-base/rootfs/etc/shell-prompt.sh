@@ -37,10 +37,11 @@ _get_prompt() {
     _cyan="\[$(tput setaf 6)\]"
     _white="\[$(tput setaf 7)\]"
     # Separator
-    _prompt_="$_dim""$(_prompt_sep _)"'\n'"$_reset"
+    _prompt_="$_dim""$(_prompt_sep _)$_reset"
+    _prompt_+="$PROMPT_STATUS_PREFIX"
     # Status line
     # Time
-    _prompt_+="$_set_cur$_blue$(_prompt_time)$_reset$_reset_cur"
+    _prompt_+='\n'"$_set_cur$_blue$(_prompt_time)$_reset$_reset_cur"
     # Root indicator
     local _user_color _sym _host_color _ssh_color
     if [[ $UID == 0 ]]; then
@@ -54,8 +55,8 @@ _get_prompt() {
         _user_color="$_green"
     _sym='$'
     fi
-    if [[ -n $HOST_COLOR_CODE ]]; then
-        _host_color="\[$(tput setaf $HOST_COLOR_CODE)\]"
+    if [[ -n $PROMPT_HOST_COLOR_CODE ]]; then
+        _host_color="\[$(tput setaf $PROMPT_HOST_COLOR_CODE)\]"
         _ssh_color=$_host_color
     else
         _host_color=$_user_color
@@ -65,24 +66,20 @@ _get_prompt() {
     [[ -n $BASH ]] && _shell=bash
     [[ -n $ZSH_NAME ]] && _shell=zsh
     [[ -z $_shell ]] && _shell='?sh'
-    local _shell_prefix
-    if [[ -f /run/.containerenv ]]; then
-        _shell_prefix="ctr/"
-        [[ -n $container ]] && _shell_prefix+="$container/"
-        [[ -f /run/.toolboxenv ]] && _shell_prefix+="toolbox/"
-        [[ -n $CONTAINER_ID ]] && _shell_prefix+="$CONTAINER_ID/"
-    fi
-    _prompt_+="$_user_color$_bold"'['"$_white$_shell_prefix$_user_color$_shell"'] '"$_reset"
+    _prompt_+="$_user_color$_bold"'['"$_reset"
+    [[ -n $PROMPT_SH_PREFIX ]] && _prompt_+="$PROMPT_SH_PREFIX"
+    _prompt_+="$_user_color$_bold$_shell"'] '"$_reset"
     # Load
     _prompt_+="$_blue$_bold$(_prompt_load)$_reset"
     # Mem
     _prompt_+="$_blue$_bold$(_prompt_mem) $_reset"
     [[ -n $SSH_CLIENT ]] && _prompt_+="$_ssh_color$_bold"'['"$(echo $SSH_CLIENT|cut -d' ' -f1)"' ->]'" $_reset"
     # Extra contexts
-    _prompt_+="$_bold$PROMPT_CONTEXT$_reset"'\n'
+    _prompt_+="$_bold$PROMPT_CONTEXT$_reset"
+    _prompt_+="$PROMPT_STATUS_POSTFIX"
     # Context line
     # User@Host
-    _prompt_+="$_bold$_user_color"'[${USER}@'"$_host_color"'\h'"$_user_color"'] '"$_reset"
+    _prompt_+='\n'"$_bold$_user_color"'[${USER}@'"$_host_color"'\h'"$_user_color"'] '"$_reset"
     # PWD
     _prompt_+="$_user_color"'\w'"$_reset"'\n'
     # Prompt line

@@ -48,7 +48,12 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 # Customized packages
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm bubblewrap fzf
+    pacman -S --needed --noconfirm bubblewrap fzf busybox catatonit
+
+# symlink busybox's runit implementation, for any process supervising that needs to be done
+# inside the distrobox
+RUN for cmd in sv runsvdir runsv svlogd chpst; do \
+    ln -sfT /usr/bin/busybox /usr/bin/$cmd; done;
 
 # locale-gen
 RUN sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen

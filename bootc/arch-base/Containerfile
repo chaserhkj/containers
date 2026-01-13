@@ -102,7 +102,7 @@ COPY --from=cfsctl /cfsctl /usr/bin
 
 # Install bootc-cfsctl-cleanup
 ADD --chmod=0755 \
-    https://gist.githubusercontent.com/chaserhkj/ad666a558800abeae9bc51202ad0da78/raw/c30f1ad29f616bb660a163570a6766e3df866078/bootc-cfsctl-cleanup \
+    https://gist.githubusercontent.com/chaserhkj/ad666a558800abeae9bc51202ad0da78/raw/51a0f9012e8d936231631619f0ca21935864aabb/bootc-cfsctl-cleanup \
     /usr/bin/bootc-cfsctl-cleanup
 
 # Copy rootfs that has all file-based configurations

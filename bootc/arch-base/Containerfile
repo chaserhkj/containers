@@ -72,7 +72,7 @@ RUN cp -f /etc/pacman.conf /etc/pacman-local-repo.conf && \
 # Common tools, including tools that might be needed to work with bootc
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm sudo vim bash-completion man less jq bubblewrap fsverity-utils
+    pacman -Sy --needed --noconfirm sudo vim bash-completion man less jq bubblewrap fsverity-utils ripgrep fd sd lsd bat bottom
 
 # Container tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

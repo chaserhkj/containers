@@ -1,0 +1,6 @@
+# From ../arch-k0s
+ARG BASE=bootc-arch-k0s
+
+FROM ${BASE}
+
+COPY rootfs /

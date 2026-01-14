@@ -1,0 +1,14 @@
+ARG BASE
+
+FROM ${BASE}
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update && apt-get install -y vim bash-completion tini
+
+ADD --chmod=755 https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 /usr/bin/ttyd
+
+WORKDIR /work
+
+EXPOSE 7681
+
+CMD ["tini", "--", "/usr/bin/ttyd", "-w", "/work", "-W"]

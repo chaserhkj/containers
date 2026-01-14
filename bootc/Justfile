@@ -5,10 +5,13 @@ arch_bootc_base := env("ARCH_BOOTC_BASE", "")
 
 default:
     just build-image arch-k0s
+    just build-image arch-k0s-config
     just build-image arch-common-config
     just build-image arch-common-home-config
     just build-variant-image arch-common-config arch-k0s
     just build-variant-image arch-common-home-config arch-k0s
+    just build-variant-image arch-common-config arch-k0s-config
+    just build-variant-image arch-common-home-config arch-k0s-config
 
 build-all:
     just build-base-images
@@ -30,7 +33,7 @@ build-image subdir bootc_base="":
 build-variant-image subdir base:
     #!/usr/bin/env bash
     set -e
-    postfix=$(echo "{{base}}" | sed "s/.*-//g")
+    postfix=$(echo "{{base}}" | sed "s/[^-]*-//")
     manifest={{subdir}}/Containerfile
     # Resolve base image
     base_arg=$(grep "ARG BASE=.*$" $manifest| head -n1)

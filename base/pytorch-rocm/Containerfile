@@ -1,6 +1,0 @@
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm
-
-RUN --mount=type=cache,target=/root/.cache/uv,id=uv \
-    uv pip install --system torch torchvision torchaudio --index-url=https://download.pytorch.org/whl/rocm6.4
-
-ENTRYPOINT ["/usr/local/bin/python3"]

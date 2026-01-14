@@ -7,9 +7,6 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y vim bash-completion
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
-    apt-get update && apt-get install -y ssh && \
-    echo 'PermitRootLogin yes' > /etc/ssh/sshd_config.d/10_root_login
-
-RUN --mount=type=secret,id=password passwd --stdin < /run/secrets/password
+    apt-get update && apt-get install -y ssh
 
 CMD "sshd"

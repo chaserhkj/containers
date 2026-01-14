@@ -11,4 +11,6 @@ WORKDIR /work
 
 EXPOSE 7681
 
-CMD ["tini", "--", "/usr/bin/ttyd", "-w", "/work", "-W"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+CMD ["/usr/bin/ttyd", "-w", "/work", "-W", "--", "bash", "-i"]

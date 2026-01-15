@@ -1,9 +1,18 @@
 ARG PYTHON_VERSION=3.12
 FROM ghcr.io/astral-sh/uv:python${PYTHON_VERSION}-trixie
 ARG TORCH_PLATFORM=nightly/rocm7.1
-ARG TORCH_VERSION=2.9.1
+ARG TORCH_VERSION=2.9.2
+# Use for unofficial torch builds, e.g. ROCm torch builds from therock
+ARG TORCH_INDEX_URL=https://download.pytorch.org/whl/${TORCH_PLATFORM}
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update && apt-get install -y tini
+
+RUN uv venv /venv
+
+ENV VIRTUAL_ENV=/venv
 
 RUN --mount=type=cache,target=/root/.cache/uv,id=uv \
-    uv pip install --system torch==${TORCH_VERSION} torchvision torchaudio --index-url=https://download.pytorch.org/whl/${TORCH_PLATFORM}
+    uv pip install torch==${TORCH_VERSION} torchvision torchaudio --index-url=${TORCH_INDEX_URL}
 
-ENTRYPOINT ["/usr/local/bin/python3"]
+ENTRYPOINT ["tini", "--", "/usr/local/bin/python3"]

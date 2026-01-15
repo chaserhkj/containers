@@ -7,7 +7,9 @@ After=ufw.service provision-ufw.service
 [Service]
 StateDirectory=provisions
 Type=oneshot
-ExecStart=/usr/bin/ufw allow in on zt3uq46eqh from 192.168.192.0/23 # Accept traffic from client IP blocks
-ExecStart=/usr/bin/ufw allow in on zt3uq46eqh from 192.168.194.0/23 # Accept intra-cluster traffic
+# Accept traffic from client IP block
+ExecStart=/usr/bin/ufw allow in on zt3uq46eqh from 192.168.192.0/23
+# Accept intra-cluster traffic
+ExecStart=/usr/bin/ufw allow in on zt3uq46eqh from 192.168.194.0/23
 ExecStart=/usr/bin/touch ${STATE_DIRECTORY}/ufw-primary-cluster
 RemainAfterExit=yes

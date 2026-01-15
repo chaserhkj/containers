@@ -1,0 +1,20 @@
+FROM docker.io/archlinux/archlinux as extractor
+ARG THE_ROCK_VERSION=7.11.0a20260114
+ARG THE_ROCK_VARIANT=gfx1151
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy wget --needed --noconfirm
+
+RUN wget https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-${THE_ROCK_VARIANT}-${THE_ROCK_VERSION}.tar.gz -O /dist.tar.gz
+
+RUN mkdir -p /opt/rocm && tar -C /opt/rocm -xf /dist.tar.gz
+
+# Use ubuntu 24.04 as base image
+# Since this is what used by llama.cpp
+ARG BASE=docker.io/library/ubuntu:24.04
+FROM ${BASE}
+
+COPY --from=extractor /opt/rocm/ /opt/rocm/
+
+ENV PATH="${PATH}:/opt/rocm/bin"

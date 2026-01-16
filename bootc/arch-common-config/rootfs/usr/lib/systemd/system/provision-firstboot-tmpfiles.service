@@ -1,7 +1,7 @@
 [Unit]
 Description=Provision filesystem at first boot
 ConditionPathExists=!/var/lib/provisions/firstboot-tmpfiles
-After=local-fs.target
+After=provision-pre.target
 
 [Service]
 StateDirectory=provisions

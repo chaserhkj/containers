@@ -2,6 +2,7 @@
 Description=Provision zerotier to join the main VPN
 ConditionPathExists=!/var/lib/zerotier-one/networks.d/8632645b13ab4914.conf
 Requires=zerotier-one.service
+After=provision-pre.target
 After=zerotier-one.service
 
 # Ordering dependency on paths.target creates loop

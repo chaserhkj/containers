@@ -95,6 +95,9 @@ RUN --mount=type=bind,from=bashrc.d,target=/tmp \
     cat /tmp/bashrc.d.sh >> /etc/bash.bashrc && \
     mkdir -p /etc/bashrc.d
 
+# Bootc completion
+RUN bootc completion bash > /etc/bashrc.d/10-bootc-completion.sh
+
 # Install ssh-key-dir
 COPY --from=ssh-key-dir /target /
 

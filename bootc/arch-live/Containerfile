@@ -58,6 +58,9 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Sy --needed --noconfirm efibootmgr gptfdisk parted ddrescue
 
+# Bootc completion
+RUN bootc completion bash >> /etc/bash.bashrc
+
 # Install cfsctl
 COPY --from=cfsctl /cfsctl /usr/bin
 

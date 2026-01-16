@@ -5,7 +5,7 @@ FROM bootc-arch-base as builder
 
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy git kexec-tools --needed --noconfirm
+    pacman -Sy git kexec-tools erofs-utils --needed --noconfirm
 
 FROM builder as initramfs-build
 

@@ -8,10 +8,9 @@ default:
     just build-image arch-k0s-config
     just build-image arch-common-config
     just build-image arch-common-home-config
-    just build-variant-image arch-common-config arch-k0s
-    just build-variant-image arch-common-home-config arch-k0s
     just build-variant-image arch-common-config arch-k0s-config
     just build-variant-image arch-common-home-config arch-k0s-config
+    just build-variant-image arch-amd arch-common-home-config-k0s-config
 
 build-all:
     just build-base-images

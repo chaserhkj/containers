@@ -1,0 +1,8 @@
+[Unit]
+Description=Provision AMD ctk cdi
+ConditionPathExists=!/etc/cdi/amd.json
+After=provision-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/amd-ctk cdi generate

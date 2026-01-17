@@ -1,0 +1,28 @@
+ARG BASE=bootc-arch-base
+
+FROM arch-aur-builder as amd-container-toolkit
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    sudo pacman -Sy --noconfirm --needed git go
+
+RUN git clone https://github.com/ROCm/container-toolkit /var/build/work
+
+WORKDIR /var/build/work
+
+RUN make container-toolkit container-toolkit-ctk
+
+FROM ${BASE}
+
+# ROCm needs to use /opt as image directory
+RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;}
+
+# Only install core and management tools, since payload may want their own version of ROCm
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --noconfirm --needed amdsmi rocm-smi-lib rocminfo
+
+COPY --chmod=0755 --from=amd-container-toolkit /var/build/work/bin/deb/amd-container-runtime /usr/bin/
+COPY --chmod=0755 --from=amd-container-toolkit /var/build/work/bin/deb/amd-ctk /usr/bin/
+
+COPY rootfs /

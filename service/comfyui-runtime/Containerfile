@@ -7,25 +7,26 @@ ADD https://raw.githubusercontent.com/Comfy-Org/ComfyUI-Manager/refs/heads/main/
 COPY torch.txt /torch.txt
 
 FROM ghcr.io/astral-sh/uv:python3.12-trixie
+
 ARG TORCH_BACKEND=nightly/rocm7.1
+ARG TORCH_INDEX=https://download.pytorch.org/whl/${TORCH_BACKEND}
 
 RUN uv venv /venv
 
 ENV VIRTUAL_ENV=/venv
 
-ENV TORCH_BACKEND=${TORCH_BACKEND}
-
 RUN --mount=type=cache,target=/root/.cache/uv,id=uv \
     --mount=from=dep-files,target=/mnt/dep-files \
     uv pip install -r /mnt/dep-files/torch.txt \
-        -i https://download.pytorch.org/whl/${TORCH_BACKEND} && \
+        -i ${TORCH_INDEX} && \
     uv pip install -r /mnt/dep-files/comfyui-deps.txt \
         --excludes /mnt/dep-files/torch.txt && \
     uv pip install -r /mnt/dep-files/comfyui-manager-deps.txt \
         --excludes /mnt/dep-files/torch.txt
 
 # If on cuda, install cuda SDK, mainly for compiling dependencies for custom nodes
-RUN --mount=type=bind,dst=/mnt bash /mnt/install-cuda.sh
+RUN --mount=type=bind,dst=/mnt \
+    bash -c '[[ "${TORCH_BACKEND}" == cu* ]] && exec bash /mnt/install-cuda.sh'
 
 # For ComfyUI-Manager to manage custom nodes dependencies
 RUN --mount=type=cache,target=/root/.cache/uv,id=uv \

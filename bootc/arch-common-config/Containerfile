@@ -49,4 +49,9 @@ RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-
 # Post installation steps for sesh
 RUN echo "$(sesh completion bash)" > /etc/bash_completion.d/sesh.bash
 
+# For mounting storage over network
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --needed --noconfirm nfs-utils nvme-cli
+
 COPY rootfs /

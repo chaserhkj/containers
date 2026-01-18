@@ -5,7 +5,9 @@ CLI_ARGS="$@"
 CLI_ARGS+=" --listen 127.8.8.1 --port 8000"
 CLI_ARGS+=" --log-stdout"
 CLI_ARGS+=" --use-pytorch-cross-attention"
-CLI_ARGS+=" --fast"
+# This enables bf16 to fp16 conversion
+# On some platforms this is faster, but might create precision problems with vae
+#CLI_ARGS+=" --fast"
 # Disable mmap and model unload for UMA platforms
 #CLI_ARGS+=" --disable-mmap"
 #CLI_ARGS+=" --highvram"

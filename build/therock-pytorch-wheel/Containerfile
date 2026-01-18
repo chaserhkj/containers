@@ -1,0 +1,33 @@
+# Build custom-versioned pytorch wheels using ROCm from TheRock
+# Converted from https://github.com/ROCm/TheRock/blob/main/.github/workflows/build_portable_linux_pytorch_wheels.yml
+
+ARG BASE=ghcr.io/rocm/therock_build_manylinux_x86_64@sha256:6e8242d347af7e0c43c82d5031a3ac67b669f24898ea8dc2f1d5b7e4798b66bd
+
+FROM ${BASE} as build
+ARG PYTHON_VERSION=3.10
+
+RUN --mount=type=cache,target=/var/cache/dnf,id=dnf \
+    dnf install jq -y
+
+RUN git clone https://github.com/ROCm/TheRock /work
+
+WORKDIR /work
+
+ENV GITHUB_ENV=/github.env
+
+ENV GITHUB_PATH=/github.path
+
+RUN echo $PATH | tr ':' '\n' > $GITHUB_PATH
+
+RUN git config --global user.name "therockbot" && git config --global user.email "therockbot@amd.com"
+
+RUN python build_tools/github_actions/python_to_cp_version.py --python-version ${PYTHON_VERSION}
+
+RUN python_dir="/opt/python/$(. $GITHUB_ENV && echo $cp_version)" && \
+    [ -x "$python_dir/bin/python" ] || exit 1 && \
+    echo "$python_dir/bin:$PATH" >> $GITHUB_PATH
+
+RUN tr '\n' ':' < $GITHUB_PATH | read -r PATH  && which python
+
+FROM build
+

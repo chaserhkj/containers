@@ -25,7 +25,7 @@ RUN python build_tools/github_actions/python_to_cp_version.py --python-version $
 
 RUN python_dir="/opt/python/$(. $GITHUB_ENV && echo $cp_version)" && \
     [ -x "$python_dir/bin/python" ] || exit 1 && \
-    echo "$python_dir/bin:$PATH" >> $GITHUB_PATH
+    echo "$python_dir/bin" >> $GITHUB_PATH
 
 RUN tr '\n' ':' < $GITHUB_PATH | read -r PATH  && which python
 

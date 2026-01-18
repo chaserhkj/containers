@@ -11,6 +11,8 @@ CLI_ARGS+=" --use-pytorch-cross-attention"
 # Disable mmap and model unload for UMA platforms
 #CLI_ARGS+=" --disable-mmap"
 #CLI_ARGS+=" --highvram"
+# Force non blocking loading of weights
+# This makes sense on most platforms, but not much on UMA
 CLI_ARGS+=" --force-non-blocking"
 
 # ROCM-specific optimizations

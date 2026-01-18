@@ -19,3 +19,5 @@ FROM ${BASE}
 COPY --from=extractor /opt/rocm/ /opt/rocm/
 
 ENV PATH="${PATH}:/opt/rocm/bin" HIP_PLATFORM=amd
+
+RUN --mount=type=bind,target=/run/mnt bash /run/mnt/deps.sh

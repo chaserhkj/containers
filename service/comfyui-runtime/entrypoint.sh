@@ -5,6 +5,11 @@ CLI_ARGS="$@"
 CLI_ARGS+=" --listen 127.8.8.1 --port 8000"
 CLI_ARGS+=" --log-stdout"
 CLI_ARGS+=" --use-pytorch-cross-attention"
+CLI_ARGS+=" --fast"
+# Disable mmap and model unload for UMA platforms
+#CLI_ARGS+=" --disable-mmap"
+#CLI_ARGS+=" --highvram"
+CLI_ARGS+=" --force-non-blocking"
 
 # ROCM-specific optimizations
 # These are architecture and device dependent
@@ -15,13 +20,18 @@ export PYTORCH_HIP_ALLOC_CONF=expandable_segments:True
 
 export FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE"
 export FLASH_ATTENTION_TRITON_AMD_AUTOTUNE="TRUE"
+export PYTORCH_TUNABLEOP_ENABLED=1
 
+# ComfyUI disables MIOpen on AMD for default
+# Set to enable
+export COMFYUI_ENABLE_MIOPEN=1
 # Force use HIPBLASLT, since rocblas is giving a segfault
 export MIOPEN_GEMM_ENFORCE_BACKEND=5
 # Same thing for MIGraphX, this is related to ONNX
 export MIGRAPHX_SET_GEMM_PROVIDER=hipblaslt
 export MIOPEN_FIND_MODE=5
 
+#export AMD_LOG_LEVEL=3
 #export MIOPEN_LOG_LEVEL=5
 #export MIOPEN_ENABLE_LOGGING=1
 #export MIOPEN_ENABLE_LOGGING_CMD=1

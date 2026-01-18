@@ -4,9 +4,6 @@ ARG BASE=ghcr.io/rocm/therock_build_manylinux_x86_64@sha256:6e8242d347af7e0c43c8
 FROM ${BASE} as src
 ARG PYTORCH_GIT_REF=release/2.9
 
-RUN --mount=type=cache,target=/var/cache/dnf,id=dnf \
-    dnf install jq -y
-
 RUN git clone https://github.com/ROCm/TheRock /work
 
 WORKDIR /work

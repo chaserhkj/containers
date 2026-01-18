@@ -15,28 +15,41 @@ CLI_ARGS+=" --force-non-blocking"
 
 # ROCM-specific optimizations
 # These are architecture and device dependent
-# Comment out unneeded settings
-export MIGRAPHX_MLIR_USE_SPECIFIC_OPS="attention"
-export TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
-export PYTORCH_HIP_ALLOC_CONF=expandable_segments:True
+# Enable by need
+# Some cards (gfx1151) heavily relies on AOTRITON to work
+# export TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
+# export FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE"
+# export FLASH_ATTENTION_TRITON_AMD_AUTOTUNE="TRUE"
 
-export FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE"
-export FLASH_ATTENTION_TRITON_AMD_AUTOTUNE="TRUE"
-export PYTORCH_TUNABLEOP_ENABLED=1
+# Memory allocation, mainly for stability of some cards
+# export PYTORCH_HIP_ALLOC_CONF=expandable_segments:True
 
+# Auto Tuning in pytorch, sometimes helpful
+# export PYTORCH_TUNABLEOP_ENABLED=1
+
+# MIOpen is auto tuning dispatcher library for ROCm (cudnn)
 # ComfyUI disables MIOpen on AMD for default
 # Set to enable
-export COMFYUI_ENABLE_MIOPEN=1
-# Force use HIPBLASLT, since rocblas is giving a segfault
-export MIOPEN_GEMM_ENFORCE_BACKEND=5
-# Same thing for MIGraphX, this is related to ONNX
-export MIGRAPHX_SET_GEMM_PROVIDER=hipblaslt
-export MIOPEN_FIND_MODE=5
+# export COMFYUI_ENABLE_MIOPEN=1
+# Force a backend for GEMM, some cards need this to avoid crash
+# export MIOPEN_GEMM_ENFORCE_BACKEND=5
+# MIOpen find mode
+# export MIOPEN_FIND_MODE=5
+# MIOpen logging
+# export MIOPEN_LOG_LEVEL=5
+# export MIOPEN_ENABLE_LOGGING=1
+# export MIOPEN_ENABLE_LOGGING_CMD=1
 
-#export AMD_LOG_LEVEL=3
-#export MIOPEN_LOG_LEVEL=5
-#export MIOPEN_ENABLE_LOGGING=1
-#export MIOPEN_ENABLE_LOGGING_CMD=1
+# MIGraphX is graph optimization library (TensorRT)
+# MIGraphX on ROCm is used by ONNX as backend
+# Force MIGraphX to do listed optimizations regardless of hardware
+# export MIGRAPHX_MLIR_USE_SPECIFIC_OPS="attention"
+# Force a backend for GEMM, some cards need this to avoid crash
+# export MIGRAPHX_SET_GEMM_PROVIDER=hipblaslt
+
+
+# General logging for AMD platforms
+# export AMD_LOG_LEVEL=3
 
 source /venv/bin/activate
 echo "[INFO] Prestart ENV exported"

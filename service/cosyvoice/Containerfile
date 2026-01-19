@@ -1,0 +1,25 @@
+ARG BASE=ghcr.io/astral-sh/uv:python3.10-trixie
+FROM ${BASE}
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update && apt-get install git sox libsox-dev tini
+
+RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git /work
+
+WORKDIR /work
+
+RUN uv venv /venv
+
+ENV VIRTUAL_ENV=/venv
+
+RUN uv pip install -r requirements.txt
+
+RUN uvx --from=huggingface_hub hf download \
+    --local-dir pretrained_models/Fun-CosyVoice3-0.5B \
+    FunAudioLLM/Fun-CosyVoice3-0.5B-2512
+
+ENTRYPOINT ["tini", "--"]
+
+CMD ["uv", "run", "python3", "--port", "50000", "--model_dir", "pretrained_models/Fun-CosyVoice3-0.5B"]
+
+EXPOSE 50000

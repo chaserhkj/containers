@@ -25,12 +25,15 @@ RUN uv pip install --upgrade PyYAML hyperpyyaml
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y ffmpeg
 
-RUN uv pip install jupyter 
+RUN uv pip install jupyter jupyter-collaboration
 
 VOLUME /work/persistent
 
 ENTRYPOINT ["tini", "--"]
 
-CMD ["uv", "run", "jupyter", "notebook", "--no-browser", "-y", "--allow-root", "--ServerApp.port=50000", "--ServerApp.ip=0.0.0.0"]
+CMD ["uv", "run", "jupyter", "lab", \
+    "--no-browser", "-y", "--allow-root", \
+    "--port=50000", "--ip=0.0.0.0", \
+    "--LabApp.token=", "--LabApp.password="]
 
 EXPOSE 50000

@@ -18,6 +18,11 @@ RUN uvx --from=huggingface_hub hf download \
     --local-dir pretrained_models/Fun-CosyVoice3-0.5B \
     FunAudioLLM/Fun-CosyVoice3-0.5B-2512
 
+# For deepspeed
+RUN uv pip install 'cuda-toolkit[all]==12.1.1'
+
+ENV CUDA_HOME=/venv/lib/python3.10/site-packages/nvidia
+
 ENTRYPOINT ["tini", "--"]
 
 CMD ["uv", "run", "python3", "webui.py", "--port", "50000", "--model_dir", "pretrained_models/Fun-CosyVoice3-0.5B"]

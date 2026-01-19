@@ -40,10 +40,10 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y ffmpeg
 
 RUN VIRTUAL_ENV=/venv/lab uv pip install jupyter jupyter-collaboration && \
-    VIRTUAL_ENV=/venv/cosyvoice uv pip install ipykernel && \
+    VIRTUAL_ENV=/venv/cosyvoice uv pip install ipykernel jupyter && \
     VIRTUAL_ENV=/venv/cosyvoice uv run python3 -m ipykernel install \
         --name "cosyvoice" --display-name "Python (Cosyvoice)" && \
-    VIRTUAL_ENV=/venv/indextts uv pip install ipykernel && \
+    VIRTUAL_ENV=/venv/indextts uv pip install ipykernel jupyter && \
     VIRTUAL_ENV=/venv/indextts uv run python3 -m ipykernel install \
         --name "indextts" --display-name "Python (IndexTTS)"
 

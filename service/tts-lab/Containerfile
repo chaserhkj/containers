@@ -2,36 +2,50 @@ ARG BASE=nvidia/cuda:13.1.0-devel-ubuntu24.04
 FROM ${BASE}
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
-    apt-get update && apt-get install -y git sox libsox-dev tini curl
+    apt-get update && apt-get install -y git sox libsox-dev tini curl git-lfs
 
 COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/
 
-RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git /work
+RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git /work/cosyvoice
 
 WORKDIR /work
 
-RUN uv venv --python 3.10 /venv
+RUN uv venv --python 3.10 /venv/cosyvoice && \
+    uv venv --python 3.10 /venv/indextts && \
+    uv venv --python 3.10 /venv/lab
 
-ENV VIRTUAL_ENV=/venv
+RUN cd /work/cosyvoice && VIRTUAL_ENV=/venv/cosyvoice \
+    uv pip install -r requirements.txt --index-strategy unsafe-best-match
 
-RUN uv pip install -r requirements.txt --index-strategy unsafe-best-match
-
-RUN uvx --from=huggingface_hub hf download \
+RUN cd /work/cosyvoice && uvx --from=huggingface_hub hf download \
     --local-dir pretrained_models/Fun-CosyVoice3-0.5B \
     FunAudioLLM/Fun-CosyVoice3-0.5B-2512
 
-RUN uv pip install --upgrade PyYAML hyperpyyaml
+RUN VIRTUAL_ENV=/venv/cosyvoice \
+    uv pip install --upgrade PyYAML hyperpyyaml
+
+RUN git lfs install && git clone https://github.com/index-tts/index-tts /work/index-tts && \
+    cd /work/index-tts && git lfs pull
+
+RUN cd /work/index-tts && VIRTUAL_ENV=/venv/indextts \
+    uv sync --all-extras
+
+RUN cd /work/index-tts && uvx --from=huggingface_hub hf download \
+    --local-dir checkpoints IndexTeam/IndexTTS-2
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y ffmpeg
 
-RUN uv pip install jupyter jupyter-collaboration
+RUN VIRTUAL_ENV=/venv/lab uv pip install jupyter jupyter-collaboration && \
+    VIRTUAL_ENV=/venv/cosyvoice uv pip install ipykernel &&
+    VIRTUAL_ENV=/venv/cosyvoice uv run python -m ipykernel install \
+        --name "cosyvoice" --display-name "Python (Cosyvoice)"
 
 VOLUME /work/persistent
 
 ENTRYPOINT ["tini", "--"]
 
-CMD ["uv", "run", "jupyter", "lab", \
+CMD ["env", "VIRTUAL_ENV=/venv/lab", "uv", "run", "jupyter", "lab", \
     "--no-browser", "-y", "--allow-root", \
     "--port=50000", "--ip=0.0.0.0", \
     "--LabApp.token=", "--LabApp.password="]

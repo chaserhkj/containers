@@ -2,7 +2,7 @@ ARG BASE=nvidia/cuda:13.1.0-devel-ubuntu24.04
 FROM ${BASE}
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
-    apt-get update && apt-get install -y git sox libsox-dev tini
+    apt-get update && apt-get install -y git sox libsox-dev tini curl
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 

@@ -12,7 +12,7 @@ RUN uv venv /venv
 
 ENV VIRTUAL_ENV=/venv
 
-RUN uv pip install -r requirements.txt
+RUN uv pip install -r requirements.txt --index-strategy unsafe-best-match
 
 RUN uvx --from=huggingface_hub hf download \
     --local-dir pretrained_models/Fun-CosyVoice3-0.5B \

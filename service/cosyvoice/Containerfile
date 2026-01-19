@@ -20,6 +20,6 @@ RUN uvx --from=huggingface_hub hf download \
 
 ENTRYPOINT ["tini", "--"]
 
-CMD ["uv", "run", "python3", "--port", "50000", "--model_dir", "pretrained_models/Fun-CosyVoice3-0.5B"]
+CMD ["uv", "run", "python3", "webui.py", "--port", "50000", "--model_dir", "pretrained_models/Fun-CosyVoice3-0.5B"]
 
 EXPOSE 50000

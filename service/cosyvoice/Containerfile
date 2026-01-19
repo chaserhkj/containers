@@ -1,8 +1,8 @@
-ARG BASE=ghcr.io/astral-sh/uv:python3.10-trixie
+ARG BASE=nvidia/cuda:13.1.0-devel-ubuntu24.04
 FROM ${BASE}
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
-    apt-get update && apt-get install -y git sox libsox-dev tini
+    apt-get update && apt-get install -y git sox libsox-dev tini uv
 
 RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git /work
 

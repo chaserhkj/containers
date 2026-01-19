@@ -4,7 +4,7 @@ FROM ${BASE}
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y git sox libsox-dev tini curl
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | env UNMANAGED_INSTALL=1 sh
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/bin/
 
 RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git /work
 

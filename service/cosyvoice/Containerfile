@@ -31,8 +31,6 @@ VOLUME /work/persistent
 
 ENTRYPOINT ["tini", "--"]
 
-CMD ["uv", "run", "jupyter", "notebook",
-    "--no-browser", "-y", "--allow-root",
-    "--ServerApp.port=50000", "--ServerApp.ip=0.0.0.0"]
+CMD ["uv", "run", "jupyter", "notebook", "--no-browser", "-y", "--allow-root", "--ServerApp.port=50000", "--ServerApp.ip=0.0.0.0"]
 
 EXPOSE 50000

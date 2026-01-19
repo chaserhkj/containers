@@ -31,7 +31,7 @@ RUN cd /work && curl -Lo main.zip https://github.com/index-tts/index-tts/archive
     unzip main.zip && mv index-tts-main index-tts && rm main.zip
 
 RUN cd /work/index-tts && VIRTUAL_ENV=/venv/indextts \
-    uv sync --all-extras
+    uv sync --all-extras --active
 
 RUN cd /work/index-tts && uvx --from=huggingface_hub hf download \
     --local-dir checkpoints IndexTeam/IndexTTS-2

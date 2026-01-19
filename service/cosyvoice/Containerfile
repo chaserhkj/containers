@@ -25,8 +25,16 @@ RUN uv pip install --upgrade PyYAML hyperpyyaml
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y ffmpeg
 
+RUN uv pip install jupyter 
+
+RUN uv pip install -e .
+
+VOLUME /work/persistent
+
 ENTRYPOINT ["tini", "--"]
 
-CMD ["uv", "run", "python3", "webui.py", "--port", "50000", "--model_dir", "pretrained_models/Fun-CosyVoice3-0.5B"]
+CMD ["uv", "run", "jupyter", "notebook",
+    "--no-browser", "-y", "--allow-root",
+    "--ServerApp.port=50000", "--ServerApp.ip=0.0.0.0"]
 
 EXPOSE 50000

@@ -24,8 +24,11 @@ RUN cd /work/cosyvoice && uvx --from=huggingface_hub hf download \
 RUN VIRTUAL_ENV=/venv/cosyvoice \
     uv pip install --upgrade PyYAML hyperpyyaml
 
-RUN git lfs install && git clone https://github.com/index-tts/index-tts /work/index-tts && \
-    cd /work/index-tts && git lfs pull
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get install -y unzip
+    
+RUN cd /work && curl -o main.zip https://github.com/index-tts/index-tts/archive/refs/heads/main.zip && \
+    unzip main.zip && mv index-tts-main index-tts && rm main.zip
 
 RUN cd /work/index-tts && VIRTUAL_ENV=/venv/indextts \
     uv sync --all-extras
@@ -37,9 +40,11 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y ffmpeg
 
 RUN VIRTUAL_ENV=/venv/lab uv pip install jupyter jupyter-collaboration && \
-    VIRTUAL_ENV=/venv/cosyvoice uv pip install ipykernel &&
+    VIRTUAL_ENV=/venv/cosyvoice uv pip install ipykernel && \
     VIRTUAL_ENV=/venv/cosyvoice uv run python -m ipykernel install \
-        --name "cosyvoice" --display-name "Python (Cosyvoice)"
+        --name "cosyvoice" --display-name "Python (Cosyvoice)" && \
+    VIRTUAL_ENV=/venv/indextts uv run python -m ipykernel install \
+        --name "indextts" --display-name "Python (IndexTTS)"
 
 VOLUME /work/persistent
 

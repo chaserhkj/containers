@@ -10,7 +10,7 @@ RUN git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git /work
 
 WORKDIR /work
 
-RUN uv venv --python3.12 /venv
+RUN uv venv --python 3.12 /venv
 
 ENV VIRTUAL_ENV=/venv
 

@@ -27,8 +27,6 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt \
 
 RUN uv pip install jupyter 
 
-RUN uv pip install -e .
-
 VOLUME /work/persistent
 
 ENTRYPOINT ["tini", "--"]

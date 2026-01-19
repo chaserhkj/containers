@@ -27,7 +27,7 @@ RUN VIRTUAL_ENV=/venv/cosyvoice \
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y unzip
     
-RUN cd /work && curl -o main.zip https://github.com/index-tts/index-tts/archive/refs/heads/main.zip && \
+RUN cd /work && curl -Lo main.zip https://github.com/index-tts/index-tts/archive/refs/heads/main.zip && \
     unzip main.zip && mv index-tts-main index-tts && rm main.zip
 
 RUN cd /work/index-tts && VIRTUAL_ENV=/venv/indextts \

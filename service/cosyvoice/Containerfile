@@ -21,7 +21,7 @@ RUN uvx --from=huggingface_hub hf download \
 # For deepspeed
 RUN uv pip install 'cuda-toolkit[all]==12.1.1'
 
-ENV CUDA_HOME=/venv/lib/python3.10/site-packages/nvidia
+ENV CUDA_HOME=/venv/lib/python3.10/site-packages/nvidia/cuda_nvcc
 
 ENTRYPOINT ["tini", "--"]
 

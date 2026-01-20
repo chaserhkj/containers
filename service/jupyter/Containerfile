@@ -23,6 +23,9 @@ RUN uv venv --python ${JUPYTER_PY_VERSION} /jupyter && \
 # Ensure uv cache is in the same fs, this makes them hard linked instead of copied
 ENV UV_CACHE_DIR=/work/uv-cache
 
+# For use within notebooks
+ENV DATA_ROOT=/work
+
 ENTRYPOINT ["tini", "--"]
 
 CMD ["env", "VIRTUAL_ENV=/jupyter", "uv", "run", "jupyter", "lab", \

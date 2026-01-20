@@ -13,7 +13,7 @@ VOLUME /work
 # Persistent jupyter kernel definitions
 VOLUME /usr/local/share/jupyter/kernels
 
-RUN VIRTUAL_ENV=/jupyter uv venv --python ${JUPYTER_PY_VERSION} && \
+RUN uv venv --python ${JUPYTER_PY_VERSION} /jupyter && \
     VIRTUAL_ENV=/jupyter uv pip install jupyter jupyterlab-katex \
     jupyter-server-proxy jupyterlab-git jupyterlab-lsp \
     lckr_jupyterlab_variableinspector sidecar jupyterlab_iframe \

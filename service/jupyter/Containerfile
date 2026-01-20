@@ -1,0 +1,33 @@
+# Use base image with SDKs specific to accelerator hardware
+ARG BASE=localhost/therock-rocm
+FROM ${BASE}
+ARG JUPYTER_PY_VERSION=3.14
+
+COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/
+COPY --from=docker.io/stagex/tini /usr/sbin/tini-static /usr/bin/tini
+
+# Working directory for storing persistent work data including venvs
+WORKDIR /work
+VOLUME /work
+
+# Persistent jupyter kernel definitions
+VOLUME /usr/local/share/jupyter/kernels
+
+RUN export VIRTUAL_ENV=/jupyter && uv venv --python ${JUPYTER_PY_VERSION} && \
+    uv pip install jupyter jupyter-katex \
+    jupyter-server-proxy jupyterlab-git jupyterlab-lsp \
+    lckr_jupyterlab_variableinspector sidecar jupyterlab_iframe \
+    jupyterlab-code-formatter black isort jupyter-collaboration 
+
+# For workload virtual environments
+# Ensure uv cache is in the same fs, this makes them hard linked instead of copied
+ENV UV_CACHE_DIR=/work/uv-cache
+
+ENTRYPOINT ["tini", "--"]
+
+CMD ["env", "VIRTUAL_ENV=/jupyter", "uv", "run", "jupyter", "lab", \
+    "--no-browser", "-y", "--allow-root", \
+    "--port=5050", "--ip=0.0.0.0", \
+    "--ServerApp.token=", "--ServerApp.password=", "--ServerApp.allow_origin=*" ]
+
+EXPOSE 5050

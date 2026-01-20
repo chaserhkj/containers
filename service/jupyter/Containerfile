@@ -2,6 +2,7 @@
 ARG BASE=localhost/therock-rocm
 FROM ${BASE}
 ARG JUPYTER_PY_VERSION=3.14
+ARG RUNTIME_TYPE=rocm
 
 COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/
 COPY --from=docker.io/stagex/tini /usr/sbin/tini-static /usr/bin/tini
@@ -24,7 +25,7 @@ RUN uv venv --python ${JUPYTER_PY_VERSION} /jupyter && \
 ENV UV_CACHE_DIR=/work/uv-cache
 
 # For use within notebooks
-ENV DATA_ROOT=/work
+ENV DATA_ROOT=/work RUNTIME_TYPE=${RUNTIME_TYPE}
 
 ENTRYPOINT ["tini", "--"]
 

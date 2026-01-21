@@ -3,7 +3,7 @@ ARG BASE=localhost/therock-rocm
 # Install extra tools by nix
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as nix-provider
 
-RUN mkdir -p /nix-profile && nix profile add --profile /nix-profile/default nixpkgs#git
+RUN mkdir -p /nix-profile && nix profile add --profile /nix-profile/default nixpkgs#git nixpkgs#cacert
 
 FROM ${BASE}
 ARG JUPYTER_PY_VERSION=3.14
@@ -14,7 +14,7 @@ COPY --from=docker.io/stagex/tini /usr/sbin/tini-static /usr/bin/tini
 COPY --from=nix-provider /nix /nix
 COPY --from=nix-provider /nix-profile /usr/nix-profile
 
-ENV PATH=/usr/nix-profile/default/bin:$PATH
+ENV PATH=/usr/nix-profile/default/bin:$PATH SSL_CERT_FILE=/usr/nix-profile/default/etc/ssl/certs/ca-bundle.crt
 
 # Working directory for storing persistent work data including venvs
 WORKDIR /work

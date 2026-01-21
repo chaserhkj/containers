@@ -1,3 +1,8 @@
+# Install extra tools by nix
+FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as nix-provider
+
+RUN mkdir -p /nix-profile && nix profile add --profile /nix-profile/default nixpkgs#git
+
 # Use base image with SDKs specific to accelerator hardware
 ARG BASE=localhost/therock-rocm
 FROM ${BASE}
@@ -6,6 +11,10 @@ ARG RUNTIME_TYPE=rocm
 
 COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/
 COPY --from=docker.io/stagex/tini /usr/sbin/tini-static /usr/bin/tini
+COPY --from=nix-provider /nix /nix
+COPY --from=nix-provider /nix-profile /usr/nix-profile
+
+ENV PATH=/usr/nix-profile/default/bin:$PATH
 
 # Working directory for storing persistent work data including venvs
 WORKDIR /work

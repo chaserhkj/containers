@@ -1,10 +1,10 @@
+# Use base image with SDKs specific to accelerator hardware
+ARG BASE=localhost/therock-rocm
 # Install extra tools by nix
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as nix-provider
 
 RUN mkdir -p /nix-profile && nix profile add --profile /nix-profile/default nixpkgs#git
 
-# Use base image with SDKs specific to accelerator hardware
-ARG BASE=localhost/therock-rocm
 FROM ${BASE}
 ARG JUPYTER_PY_VERSION=3.14
 ARG RUNTIME_TYPE=rocm

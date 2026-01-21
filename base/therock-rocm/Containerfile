@@ -18,6 +18,6 @@ FROM ${BASE}
 
 COPY --from=extractor /opt/rocm/ /opt/rocm/
 
-ENV PATH="${PATH}:/opt/rocm/bin" LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/rocm/lib" HIP_PLATFORM=amd
+ENV PATH="${PATH}:/opt/rocm/bin" LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/rocm/lib:/opt/rocm/lib/llvm/lib" HIP_PLATFORM=amd
 
 RUN --mount=type=bind,target=/run/mnt bash /run/mnt/deps.sh

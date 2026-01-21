@@ -31,7 +31,7 @@ RUN uv venv --python ${JUPYTER_PY_VERSION} /jupyter && \
 
 # For workload virtual environments
 # Ensure uv cache is in the same fs, this makes them hard linked instead of copied
-ENV UV_CACHE_DIR=/work/uv-cache
+ENV UV_CACHE_DIR=/work/uv-cache HF_HOME=/work/hf-home
 
 # For use within notebooks
 ENV DATA_ROOT=/work RUNTIME_TYPE=${RUNTIME_TYPE}

@@ -17,7 +17,9 @@ COPY --from=docker.io/stagex/tini /usr/sbin/tini-static /usr/bin/tini
 COPY --from=nix-provider /nix /nix
 COPY --from=nix-provider /nix-profile /usr/nix-profile
 
-ENV PATH=/usr/nix-profile/default/bin:$PATH SSL_CERT_FILE=/usr/nix-profile/default/etc/ssl/certs/ca-bundle.crt
+ENV PATH=/usr/nix-profile/default/bin:$PATH \
+    LD_LIBRARY_PATH=/usr/nix-profile/default/lib:$LD_LIBRARY_PATH \
+    SSL_CERT_FILE=/usr/nix-profile/default/etc/ssl/certs/ca-bundle.crt
 
 # Working directory for storing persistent work data including venvs
 WORKDIR /work

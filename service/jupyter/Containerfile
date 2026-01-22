@@ -29,10 +29,11 @@ VOLUME /work
 VOLUME /usr/local/share/jupyter/kernels
 
 RUN uv venv --python ${JUPYTER_PY_VERSION} /jupyter && \
-    VIRTUAL_ENV=/jupyter uv pip install jupyter jupyterlab-katex \
+    VIRTUAL_ENV=/jupyter uv pip install jupyter jupyterlab-vim jupyterlab-katex \
     jupyter-server-proxy jupyterlab-git jupyterlab-lsp \
     lckr_jupyterlab_variableinspector sidecar jupyterlab_iframe \
-    jupyterlab-code-formatter black isort jupyter-collaboration 
+    jupyterlab-code-formatter black isort jupyter-collaboration \
+    ipywidgets ipyevents ipycanvas ipyannotations
 
 # For workload virtual environments
 # Ensure uv cache is in the same fs, this makes them hard linked instead of copied

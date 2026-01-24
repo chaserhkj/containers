@@ -1,7 +1,7 @@
 ARG BASE=nvidia/cuda:13.1.0-devel-ubuntu24.04
 FROM ${BASE}
 ARG DEFAULT_TORCH_PLATFORM=cu131
-ARG DEFAULT_TORCH_VERSION=2.9.2
+ARG DEFAULT_TORCH_VERSION=2.9.1
 # Set for unofficial builds
 ARG DEFAULT_TORCH_INDEX_URL=https://download.pytorch.org/whl/${DEFAULT_TORCH_PLATFORM}
 

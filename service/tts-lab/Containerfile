@@ -39,6 +39,7 @@ RUN cd /work/index-tts && uvx --from=huggingface_hub hf download \
 
 RUN VIRTUAL_ENV=/venv/qwen-tts \
     uv pip install qwen-tts && \
+    VIRTUAL_ENV=/venv/qwen-tts \
     uv pip install flash-attn --no-build-isolation
 
 RUN uvx --from=huggingface_hub hf download \

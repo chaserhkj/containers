@@ -49,7 +49,7 @@ RUN VIRTUAL_ENV=/venv/qwen-tts \
     uv pip install torch==${DEFAULT_TORCH_VERSION} \
         --default-index ${DEFAULT_TORCH_INDEX_URL} && \
     VIRTUAL_ENV=/venv/qwen-tts \
-    uv pip intall qwen-tts && \
+    uv pip install qwen-tts && \
     MAX_JOBS=$(nproc) VIRTUAL_ENV=/venv/qwen-tts \
     uv pip install \
         flash-attn \

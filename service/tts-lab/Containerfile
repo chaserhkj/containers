@@ -12,6 +12,7 @@ WORKDIR /work
 
 RUN uv venv --python 3.10 /venv/cosyvoice && \
     uv venv --python 3.10 /venv/indextts && \
+    uv venv --python 3.13 /venv/qwen-tts && \
     uv venv --python 3.10 /venv/lab
 
 RUN cd /work/cosyvoice && VIRTUAL_ENV=/venv/cosyvoice \
@@ -35,6 +36,17 @@ RUN cd /work/index-tts && VIRTUAL_ENV=/venv/indextts \
 
 RUN cd /work/index-tts && uvx --from=huggingface_hub hf download \
     --local-dir checkpoints IndexTeam/IndexTTS-2
+
+RUN VIRTUAL_ENV=/venv/qwen-tts \
+    uv pip install qwen-tts && \
+    uv pip install flash-attn --no-build-isolation
+
+RUN uvx --from=huggingface_hub hf download \
+    Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice
+RUN uvx --from=huggingface_hub hf download \
+    Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign
+RUN uvx --from=huggingface_hub hf download \
+    Qwen/Qwen3-TTS-12Hz-1.7B-Base
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get install -y ffmpeg

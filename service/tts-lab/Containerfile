@@ -46,9 +46,12 @@ RUN cd /work/index-tts && uvx --from=huggingface_hub hf download \
 # Qwen-TTS does not pull in a default torch version, install the default one
 # Also needs to pull in the one that matches system CUDA version to compile flash-attn
 RUN VIRTUAL_ENV=/venv/qwen-tts \
-    uv pip install qwen-tts torch==${DEFAULT_TORCH_VERSION} --index ${DEFAULT_TORCH_INDEX_URL} && \
-    VIRTUAL_ENV=/venv/qwen-tts \
-    MAX_JOBS=$(nproc) uv pip install flash-attn --no-build-isolation
+    uv pip install \
+        qwen-tts \
+        torch==${DEFAULT_TORCH_VERSION}  \
+        flash-attn \
+        --index ${DEFAULT_TORCH_INDEX_URL} \
+        --no-build-isolation-package flash-attn
 
 RUN uvx --from=huggingface_hub hf download \
     Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice

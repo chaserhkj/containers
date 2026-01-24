@@ -33,7 +33,7 @@ RUN uv venv --python ${JUPYTER_PY_VERSION} /jupyter && \
     jupyter-server-proxy jupyterlab-git jupyterlab-lsp \
     lckr_jupyterlab_variableinspector sidecar jupyterlab_iframe \
     jupyterlab-code-formatter black isort jupyter-collaboration \
-    ipywidgets ipyevents ipycanvas jupyter_paint_segment
+    ipywidgets ipyevents ipycanvas python-dotenv
 
 # For workload virtual environments
 # Ensure uv cache is in the same fs, this makes them hard linked instead of copied

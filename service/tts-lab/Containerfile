@@ -68,7 +68,10 @@ RUN VIRTUAL_ENV=/venv/lab uv pip install jupyter jupyter-collaboration && \
         --name "cosyvoice" --display-name "Python (Cosyvoice)" && \
     VIRTUAL_ENV=/venv/indextts uv pip install ipykernel jupyter && \
     VIRTUAL_ENV=/venv/indextts uv run python3 -m ipykernel install \
-        --name "indextts" --display-name "Python (IndexTTS)"
+        --name "indextts" --display-name "Python (IndexTTS)" && \
+    VIRTUAL_ENV=/venv/qwen-tts uv pip install ipykernel jupyter && \
+    VIRTUAL_ENV=/venv/qwen-tts uv run python3 -m ipykernel install \
+        --name "qwentts" --display-name "Python (Qwen TTS)"
 
 VOLUME /work/persistent
 

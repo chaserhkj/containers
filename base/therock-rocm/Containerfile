@@ -25,7 +25,7 @@ RUN --mount=type=bind,target=/run/mnt bash /run/mnt/deps.sh
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as migraphx-nix-provider
 
 RUN mkdir -p /nix-profile && nix profile add --profile /nix-profile/default \
-    nixpkgs#git nixpkgs#cacert nixpkgs#cmake
+    nixpkgs#git nixpkgs#cacert nixpkgs#cmake nixpkgs#make
 
 FROM therock-base as migraphx
 

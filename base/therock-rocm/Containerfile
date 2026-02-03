@@ -37,6 +37,11 @@ ENV PATH=/usr/nix-profile/default/bin:$PATH \
     LD_LIBRARY_PATH=/usr/nix-profile/default/lib:$LD_LIBRARY_PATH \
     SSL_CERT_FILE=/usr/nix-profile/default/etc/ssl/certs/ca-bundle.crt
 
-RUN uv pip --system install cget git+https://github.com/ROCm/rbuild
+RUN uv venv --python 3.12 /usr/python-env
+
+ENV PATH=/usr/python-env/bin:$PATH VIRTUAL_ENV=/usr/python-env
+
+RUN uv pip install cget git+https://github.com/ROCm/rbuild
+
 
 FROM therock-base

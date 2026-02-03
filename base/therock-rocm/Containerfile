@@ -43,7 +43,7 @@ ENV PATH=/usr/python-env/bin:$PATH VIRTUAL_ENV=/usr/python-env
 
 RUN uv pip install cget git+https://github.com/ROCm/rbuild
 
-RUN git clone github.com/ROCm/AMDMIGraphX /work
+RUN git clone https://github.com/ROCm/AMDMIGraphX /work
 
 WORKDIR /work
 

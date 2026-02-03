@@ -66,7 +66,7 @@ COPY --from=cfsctl /cfsctl /usr/bin
 
 # Install bootc-cfsctl-cleanup
 ADD --chmod=0755 \
-    https://gist.githubusercontent.com/chaserhkj/ad666a558800abeae9bc51202ad0da78/raw/fd4e62e08b9a7f0d1c5b7ded2e8bc9656a504c21/bootc-cfsctl-cleanup \
+    https://gist.githubusercontent.com/chaserhkj/ad666a558800abeae9bc51202ad0da78/raw/4239ca70f0047e1ef5b3a03595c1c5ef371a528b/bootc-cfsctl-cleanup \
     /usr/bin/bootc-cfsctl-cleanup
 
 # Layering other live-system-specific configurations

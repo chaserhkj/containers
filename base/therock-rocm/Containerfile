@@ -1,10 +1,11 @@
 # Use ubuntu 24.04 as base image
 # Since this is what used by llama.cpp
 ARG BASE=docker.io/library/ubuntu:24.04
+ARG TARGET_GPU_ARCH=gfx1151
 
 FROM docker.io/archlinux/archlinux as extractor
 ARG THE_ROCK_VERSION=7.12.0a20260202
-ARG THE_ROCK_VARIANT=gfx1151
+ARG THE_ROCK_VARIANT=${TARGET_GPU_ARCH}
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -23,7 +24,7 @@ ENV PATH="${PATH}:/opt/rocm/bin" LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/rocm/l
 RUN --mount=type=bind,target=/run/mnt bash /run/mnt/deps.sh
 
 FROM therock-base as migraphx
-ARG THE_ROCK_VARIANT
+ARG TARGET_GPU_ARCH
 
 COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/
 
@@ -39,7 +40,7 @@ RUN git clone https://github.com/ROCm/AMDMIGraphX /work
 
 WORKDIR /work
 
-RUN rbuild package -d depend -B build -DGPU_TARGETS=${THE_ROCK_VARIANT}
+RUN rbuild package -d depend -B build -DGPU_TARGETS=${TARGET_GPU_ARCH}
 
 RUN mkdir -p /target && \
     tar -C /target -xf /work/build/migraphx-*-Linux-devel.tar.gz && \

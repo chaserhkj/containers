@@ -3,7 +3,7 @@
 ARG BASE=docker.io/library/ubuntu:24.04
 
 FROM docker.io/archlinux/archlinux as extractor
-ARG THE_ROCK_VERSION=7.11.0a20260114
+ARG THE_ROCK_VERSION=7.12.0a20260202
 ARG THE_ROCK_VARIANT=gfx1151
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \

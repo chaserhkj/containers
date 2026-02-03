@@ -14,10 +14,29 @@ RUN wget https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-${T
 
 RUN mkdir -p /opt/rocm && tar -C /opt/rocm -xf /dist.tar.gz
 
-FROM ${BASE}
+FROM ${BASE} as therock-base
 
 COPY --from=extractor /opt/rocm/ /opt/rocm/
 
 ENV PATH="${PATH}:/opt/rocm/bin" LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/rocm/lib:/opt/rocm/lib/llvm/lib" HIP_PLATFORM=amd
 
 RUN --mount=type=bind,target=/run/mnt bash /run/mnt/deps.sh
+
+FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as migraphx-nix-provider
+
+RUN mkdir -p /nix-profile && nix profile add --profile /nix-profile/default \
+    nixpkgs#git nixpkgs#cacert
+
+FROM therock-base as migraphx
+
+COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/
+COPY --from=migraphx-nix-provider /nix /nix
+COPY --from=migraphx-nix-provider /nix-profile /usr/nix-profile
+
+ENV PATH=/usr/nix-profile/default/bin:$PATH \
+    LD_LIBRARY_PATH=/usr/nix-profile/default/lib:$LD_LIBRARY_PATH \
+    SSL_CERT_FILE=/usr/nix-profile/default/etc/ssl/certs/ca-bundle.crt
+
+RUN uv pip --system install cget git+https://github.com/ROCm/rbuild
+
+FROM therock-base

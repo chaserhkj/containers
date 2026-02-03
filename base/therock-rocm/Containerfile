@@ -38,4 +38,12 @@ RUN git clone https://github.com/ROCm/AMDMIGraphX /work
 
 WORKDIR /work
 
+RUN rbuild package -d depend -B build -DGPU_TARGETS=${THE_ROCK_VARIANT}
+
+RUN mkdir -p /target && \
+    tar -C /target -xf /work/build/migraphx-*-Linux-devel.tar.gz && \
+    tar -C /target -xf /work/build/migraphx-*-Linux-runtime.tar.gz
+
 FROM therock-base
+
+COPY --from=migraphx /target /

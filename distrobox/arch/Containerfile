@@ -62,5 +62,5 @@ RUN sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-g
 RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
 
 # Workaround for https://github.com/systemd/systemd/issues/40466
-RUN printf 'Defaults preserve_groups\n' | sudo tee /etc/sudoers.d/preserve_groups.conf
+RUN printf 'Defaults preserve_groups\n' | sudo tee /etc/sudoers.d/setgroups_workaround
 

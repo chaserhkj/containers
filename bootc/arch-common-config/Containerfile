@@ -24,7 +24,8 @@ FROM ${BASE}
 RUN --mount=type=bind,from=nix-static,target=/var/mnt \
     install -m0755 /var/mnt/nixStatic /usr/bin
 
-RUN useradd -M -G wheel hkj
+# wheel for sudo, kvm for krun
+RUN useradd -M -G wheel,kvm hkj
 
 # zram generator, to use zram as swap and save memory
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

@@ -3,7 +3,7 @@ ARG BOOTC_BASE=ghcr.io/bootcrew/arch-bootc:latest
 # From ../../base/arch-aur-builder
 FROM arch-aur-builder as aur-builder
 
-RUN aur sync -n --noview podlet
+# RUN aur sync -n --noview <aur_pkg>
 
 # Build ssh-key-dir to support $HOME/.ssh/authorized_keys.d
 FROM docker.io/archlinux/archlinux as ssh-key-dir
@@ -78,12 +78,13 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 # Container tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm podman buildah skopeo umoci docker-compose podman-docker distrobox fuse-overlayfs krun
+    pacman -Sy --needed --noconfirm podman buildah skopeo umoci docker-compose podman-docker distrobox fuse-overlayfs krun podlet
 
-RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-repo \
-    --mount=type=tmpfs,target=/usr/lib/sysimage/lib/pacman/sync \
-    --mount=type=tmpfs,target=/usr/lib/sysimage/cache/pacman/pkg \
-    pacman -Sy --config /etc/pacman-local-repo.conf --needed --noconfirm podlet
+# AUR packages
+# RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-repo \
+#     --mount=type=tmpfs,target=/usr/lib/sysimage/lib/pacman/sync \
+#     --mount=type=tmpfs,target=/usr/lib/sysimage/cache/pacman/pkg \
+#     pacman -Sy --config /etc/pacman-local-repo.conf --needed --noconfirm <aur_pkg>
 
 # Base firewall and networking setup
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

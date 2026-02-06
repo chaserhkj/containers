@@ -9,7 +9,7 @@ ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERS
 # Alternative runtime
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --noconfirm --needed crun krun cri-o
+    pacman -S --noconfirm --needed crun krun
 
 # Other host tools required by k0s
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

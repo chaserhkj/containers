@@ -19,7 +19,3 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
     pacman -Sy --needed --noconfirm kmonad python-evdev obs-studio
-
-RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm wireguard-tools passt

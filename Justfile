@@ -8,7 +8,8 @@ build context:
     tag=$(basename {{context}}) && \
     podman build {{context}} -t $tag {{build_flags}}
 
-build-all-bootc:
+upgrade-all-bootc-images:
+    podman pull archlinux/archlinux:latest ghcr.io/bootcrew/arch-bootc:latest
     just build base/arch-aur-builder
     just bootc build-all
     just bootc arch-config prepare-all-images

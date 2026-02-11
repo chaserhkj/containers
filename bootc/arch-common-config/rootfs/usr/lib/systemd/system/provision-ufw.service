@@ -8,8 +8,9 @@ After=ufw.service
 [Service]
 StateDirectory=provisions
 Type=oneshot
-ExecStart=/usr/bin/flock /run/provision-ufw.lock /usr/bin/ufw allow ZeroTier
-ExecStart=/usr/bin/flock /run/provision-ufw.lock /usr/bin/ufw allow in on zt3uq46eqh from 192.168.233.0/25
-ExecStart=/usr/bin/flock /run/provision-ufw.lock /usr/bin/ufw enable
+ExecStart=/usr/bin/flock /run/provision-ufw.lock /bin/bash -c ' \
+            /usr/bin/ufw allow ZeroTier && \
+            /usr/bin/ufw allow in on zt3uq46eqh from 192.168.233.0/25 && \
+            /usr/bin/ufw enable'
 ExecStart=/usr/bin/touch ${STATE_DIRECTORY}/ufw
 RemainAfterExit=yes

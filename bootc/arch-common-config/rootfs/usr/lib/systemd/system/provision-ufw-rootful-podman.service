@@ -8,7 +8,7 @@ After=ufw.service provision-ufw.service
 [Service]
 StateDirectory=provisions
 Type=oneshot
-ExecStart=/usr/bin/ufw route allow in on podman+ 
-ExecStart=/usr/bin/ufw route allow out on podman+ 
+ExecStart=/usr/bin/flock /run/provision-ufw.lock /usr/bin/ufw route allow in on podman+ 
+ExecStart=/usr/bin/flock /run/provision-ufw.lock /usr/bin/ufw route allow out on podman+ 
 ExecStart=/usr/bin/touch ${STATE_DIRECTORY}/ufw-rootful-podman
 RemainAfterExit=yes

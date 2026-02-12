@@ -15,7 +15,7 @@ RUN make container-toolkit container-toolkit-ctk
 FROM ${BASE}
 
 # ROCm needs to use /opt as image directory
-RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;}
+RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;} || exit 0
 
 # Only install core and management tools, since payload may want their own version of ROCm
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

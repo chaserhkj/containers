@@ -6,10 +6,13 @@ ARG K0S_VERSION="v1.34.3+k0s.0"
 
 ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERSION}/k0s-${K0S_VERSION}-amd64" /usr/bin/k0s
 
+# cri-o and cni need to use /opt as image directory
+RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;}
+
 # Alternative runtime
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --noconfirm --needed crun krun
+    pacman -S --noconfirm --needed crun krun cri-o
 
 # Other host tools required by k0s
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

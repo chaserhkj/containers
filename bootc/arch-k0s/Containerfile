@@ -7,19 +7,25 @@ ARG K0S_VERSION="v1.34.3+k0s.0"
 ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERSION}/k0s-${K0S_VERSION}-amd64" /usr/bin/k0s
 
 # cri-o and cni need to use /opt as image directory
-RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;}
-
-# /opt/cni needs to be writable, link to /var/lib/cni
-RUN ln -sfT /var/lib/cni /opt/cni
+RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;} || exit 0
 
 # Alternative runtime
+# cri-o uses iptables-nft, that replaces iptables, need to perform that replacement first
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    yes | pacman -Sy --needed iptables-nft && \
     pacman -S --noconfirm --needed crun krun cri-o
+
+# /opt/cni needs to be writable, copy factory version to /var/lib/cni/opt and link to it
+# The copy is also done by tmpfiles.d as well
+RUN mkdir -p /var/lib/cni/opt /usr/share/factory/var/lib/cni && \
+    cp -a /opt/cni/. /var/lib/cni/opt/ && \
+    mv /opt/cni /usr/share/factory/var/lib/cni/opt && \
+    rm -rf /opt/cni && ln -sfT /var/lib/cni/opt /opt/cni
 
 # Other host tools required by k0s
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --noconfirm --needed inetutils
+    pacman -S --noconfirm --needed inetutils
 
 COPY rootfs /

@@ -16,12 +16,12 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     yes | pacman -Sy --needed iptables-nft && \
     pacman -S --noconfirm --needed crun krun cri-o
 
-# /opt/cni needs to be writable, copy factory version to /var/lib/cni/opt and link to it
-# The copy is also done by tmpfiles.d as well
-RUN mkdir -p /var/lib/cni/opt /usr/share/factory/var/lib/cni && \
-    cp -a /opt/cni/. /var/lib/cni/opt/ && \
-    mv /opt/cni /usr/share/factory/var/lib/cni/opt && \
-    rm -rf /opt/cni && ln -sfT /var/lib/cni/opt /opt/cni
+# /opt/cni needs to be writable, copy stock version from /usr/lib/cni to /var/lib/cni/bin and link it from /opt/cni
+# The copy is also done by tmpfiles.d as well, for updates
+RUN mkdir -p /var/lib/cni/bin && \
+    cp -a /usr/lib/cni/. /var/lib/cni/bin/ && \
+    rm -rf /opt/cni/bin && \
+    ln -sfT /var/lib/cni/bin /opt/cni/bin
 
 # Other host tools required by k0s
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

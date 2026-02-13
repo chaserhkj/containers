@@ -11,7 +11,6 @@ Type=oneshot
 # Accept traffic from client IP block (192.168.192.0/23)
 # Accept intra-cluster traffic (192.168.194.0/23)
 # Accept access to kube api from kube-bridge network pods
-# Accept forwards within kube-bridge network
 ExecStart=/usr/bin/flock /run/provision-ufw.lock /bin/bash -c ' \
             /usr/bin/ufw allow in on zt3uq46eqh from 192.168.192.0/23 && \
             /usr/bin/ufw allow in on zt3uq46eqh from 192.168.194.0/23 && \

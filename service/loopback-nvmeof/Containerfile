@@ -1,0 +1,18 @@
+# This privileged container manages the lifetime of a file-backed loopback nvme-of over TCP volume export
+# Host MUST have kmod: loop nvmet nvmet_tcp
+# Must run with --privileged --pid=host
+# Expected volume /dev:/dev
+# Expected volume /sys:/sys
+# Expected volume /fs.img - image file to use
+# See entrypoint.sh for more ENV settings
+
+# $ sudo podman run --privileged --pid=host -v /dev:/dev -v /sys:/sys -v ./disk.img:/fs.img loopback-nvmeof
+
+FROM docker.io/archlinux/archlinux:latest
+
+COPY entrypoint.sh /
+
+ENV IMG_FILE=/fs.img
+
+ENTRYPOINT ["bash", "entrypoint.sh"]
+

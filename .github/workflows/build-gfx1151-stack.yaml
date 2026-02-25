@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/build-gfx1151-stack.yaml'
+      - 'base/therock-rocm/**'
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * 2,5'

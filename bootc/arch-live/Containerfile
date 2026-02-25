@@ -32,12 +32,28 @@ RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 
 FROM ${BOOTC_BASE}
 
+# archzfs repo configurations
+RUN printf '[archzfs]\nSigLevel = Required\nServer = https://github.com/archzfs/archzfs/releases/download/experimental\n' | tee -a /etc/pacman.conf && \
+    pacman-key --init && pacman-key --recv-keys 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9 && pacman-key --lsign-key 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9
+
+# archlinuxcn repo configurations
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    printf '[archlinuxcn]\nServer = https://repo.archlinuxcn.org/$arch\n' | tee -a /etc/pacman.conf && \
+    pacman -Sy --noconfirm --needed archlinuxcn-keyring
+
+
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Syyu --noconfirm
 
 RUN --mount=type=bind,from=initramfs-build,target=/tmp \
     cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/*/initramfs.img
+
+# ZFS
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --noconfirm --needed zfs-utils zfs-linux
 
 # Common tools, including tools that might be needed to work with bootc
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

@@ -1,10 +1,31 @@
 # From ../arch-base
 ARG BASE=bootc-arch-base
 
+FROM docker.io/archlinux/archlinux:latest as drbd-build
+ARG DRBD_VER=9.3.0
+
+WORKDIR /work
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --needed --noconfirm base-devel xmlto kmod inetutils bc libelf git cpio perl tar xz linux-headers
+
+RUN curl -Lo drbd.tar.gz https://pkg.linbit.com/downloads/drbd/9/drbd-${DRBD_VER}.tar.gz && \
+    tar xvf drbd.tar.gz && cd drbd-${DRBD_VER} && \
+    make -j$(nproc) KDIR=/lib/modules/*/build
+
+RUN cd drbd-${DRBD_VER} && make install DESTDIR=/target
+
 FROM ${BASE}
 ARG K0S_VERSION="v1.35.1+k0s.0"
 
 ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERSION}/k0s-${K0S_VERSION}-amd64" /usr/bin/k0s
+
+# Install drbd
+RUN --mount=type=bind,target=/mnt,from=drbd-build \
+    KVER=$(ls /lib/modules) && KDIR=lib/modules/$KVER && \
+    cp -vr /mnt/target/$KDIR/updates/. /$KDIR/updates/ && \
+    depmod -a $KVER
 
 # cri-o and cni need to use /opt as image directory
 RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;} || exit 0

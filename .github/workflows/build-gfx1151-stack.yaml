@@ -1,0 +1,64 @@
+name: Build and push container images for gfx1151 stack
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 2,5'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          apt-get update
+          apt-get install -y jq
+      
+      - name: Determine latest therock version
+        id: check_therock_version
+        run: |
+          version=$( curl https://therock-nightly-tarball.s3.amazonaws.com/index.html |
+            grep 'const files = ' |
+            sed -E 's/.*= (\[.+\]);/\1/g' |
+            jq '[.[] | select(.name | contains("linux-gfx1151"))] | sort_by(.mtime) | .[-1].name ' -r |
+            sed -E 's/therock-dist-linux-gfx1151-(.*).tar.gz/\1/' )
+          echo therock_version=$version >> "$GITHUB_OUTPUT"
+      
+      - name: Build and push therock rocm base image
+        uses: Frozen-Tapestry/container-action@v1
+        with:
+          login_registry: ghcr.io
+          login_username: ${{ github.actor }}
+          login_password: ${{ secrets.GITHUB_TOKEN }}
+          tags: ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:latest ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:${{ steps.vars.outputs.therock_version }}
+          dockerfile: base/therock-rocm/Containerfile
+          build_args: "THE_ROCK_VERSION=${{ steps.vars.outputs.therock_version }}"
+          security: |
+            --security-opt=seccomp=unconfined
+            --security-opt=apparmor=unconfined
+          push: true
+
+      - uses: actions/checkout@v6
+        with:
+          repository: ggml-org/llama.cpp
+      
+      - name: Build and push llama.cpp image
+        uses: Frozen-Tapestry/container-action@v1
+        with:
+          login_registry: ghcr.io
+          login_username: ${{ github.actor }}
+          login_password: ${{ secrets.GITHUB_TOKEN }}
+          tags: ghcr.io/chaserhkj/containers/llama-server-gfx1151:latest ghcr.io/chaserhkj/containers/llama-server-gfx1151:${{ steps.vars.outputs.therock_version }}
+          dockerfile: .devops/rocm.Dockerfile
+          build_args: "BASE_ROCM_DEV_CONTAINER=ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:${{ steps.vars.outputs.therock_version }} ROCM_DOCKER_ARCH=gfx1151"
+          security: |
+            --security-opt=seccomp=unconfined
+            --security-opt=apparmor=unconfined
+          push: true

@@ -14,8 +14,11 @@ Type=oneshot
 ExecStart=/usr/bin/flock /run/provision-ufw.lock /bin/bash -c ' \
             /usr/bin/ufw allow in on zt3uq46eqh from 192.168.192.0/23 && \
             /usr/bin/ufw allow in on zt3uq46eqh from 192.168.194.0/23 && \
+            /usr/bin/ufw allow in on zt3uq46eqh from 10.244.0.0/16 && \
             /usr/bin/ufw allow in on kube-bridge && \
             /usr/bin/ufw allow in on veth+ && \
+            /usr/bin/ufw route allow in on kube-bridge out on zt3uq46eqh && \
+            /usr/bin/ufw route allow in on zt3uq46eqh out on kube-bridge && \
             /usr/bin/ufw route allow in on kube-bridge out on kube-bridge'
 ExecStart=/usr/bin/touch ${STATE_DIRECTORY}/ufw-primary-cluster
 RemainAfterExit=yes

@@ -1,0 +1,38 @@
+# This privileged container manages the lifetime of a file-backed loopback volume that contains a zfs
+# This is designed to provide volume storage to democratic-csi's zfs-generic-nvmeof driver
+# Host MUST have kmod: loop nvmet nvmet_tcp zfs
+# Must run with --privileged --pid=host
+# Expected volume /dev:/dev
+# Expected volume /sys:/sys
+# Expected volume /zfs.img - image file to use
+# Bind mount to /root/.ssh/authorized_keys to provide publickey
+# Bind mount to /opt/ssh-host-key and set ENV SSH_HOST_KEY_DIR=/opt/ssh-host-key to set host keys
+# Set USE_EXISTING_POOL to non-empty string to skip loopback image creation and maybe use existing zpool
+# See entrypoint.sh for more ENV settings
+
+# $ sudo podman run --privileged --pid=host -v /dev:/dev -v /sys:/sys -v ./disk.img:/zfs.img zfs-loopback-nvmeof [init]
+
+FROM docker.io/archlinux/archlinux:latest
+
+# archlinuxcn repo configurations
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    printf '[archlinuxcn]\nServer = https://repo.archlinuxcn.org/$arch\n' | tee -a /etc/pacman.conf && \
+    pacman-key --init && pacman -Sy --noconfirm --needed archlinuxcn-keyring
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -S --noconfirm --needed zfs-utils nvmetcli openssh python-configshell-fb
+
+RUN mkdir -p ~/.nvmetcli && ln -sfT /dev/null ~/.nvmetcli/log.txt && ln -sfT /dev/null ~/.nvmetcli/history.txt && \
+    mkdir -p ~/.ssh && chmod 700 ~/.ssh
+
+# This is still a privileged shell, disable password login for good measure
+RUN echo "PasswordAuthentication no" > /etc/ssh/sshd_config.d/10-no-passwd.conf
+
+COPY entrypoint.sh /
+
+ENV IMG_FILE=/zfs.img
+
+ENTRYPOINT ["bash", "entrypoint.sh"]
+

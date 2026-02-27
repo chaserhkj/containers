@@ -73,6 +73,7 @@ cleanup_nvmet() {
 
 
 cleanup() {
+    cleanup_nvmet
     [[ -z $USE_EXISTING_POOL ]] && zpool export $pool_name || :
     [[ -n $lodev ]] && losetup -d $lodev
 }

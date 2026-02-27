@@ -93,7 +93,7 @@ setup_nvmet
 
 # Setup host keys according to env
 if [[ -n $SSH_HOST_KEY_DIR ]]; then
-    cp  $SSH_HOST_KEY_DIR/. /etc/ssh/
+    cp -rvf $SSH_HOST_KEY_DIR/. /etc/ssh/
     chmod 600 /etc/ssh/ssh_host_*_key
     chmod 644 /etc/ssh/ssh_host_*_key.pub
 else

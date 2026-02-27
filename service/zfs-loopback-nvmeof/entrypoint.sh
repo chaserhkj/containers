@@ -34,7 +34,7 @@ init() {
     pool_name=$IMG_NEW_POOL_NAME
     zpool create $pool_name $lodev
     echo "Created zpool with name $pool_name"
-    zfs create -o mountpoint=legacy $pool_name/root
+    zfs create $pool_name/root
 }
 
 import() {

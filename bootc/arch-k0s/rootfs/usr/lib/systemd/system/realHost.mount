@@ -1,0 +1,10 @@
+[Unit]
+Description=Bind mount root to /realHost for K8s consistency
+DefaultDependencies=no
+Before=local-fs.target
+
+[Mount]
+What=/
+Where=/realHost
+Type=none
+Options=rbind,rshared

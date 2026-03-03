@@ -1,0 +1,3 @@
+FROM docker.io/rockstorm/git-server:latest
+
+RUN apk add --no-cache curl

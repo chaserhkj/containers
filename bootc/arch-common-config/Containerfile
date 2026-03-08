@@ -56,3 +56,6 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     pacman -Sy --needed --noconfirm nfs-utils nvme-cli
 
 COPY rootfs /
+
+# Post-fs update hooks go here
+RUN update-ca-trust

@@ -1,6 +1,7 @@
 mod bootc 'bootc/'
 mod distro 'distrobox/'
 
+set dotenv-load := true
 
 build_flags := env("PODMAN_BUILD_FLAGS", "")
 

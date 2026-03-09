@@ -1,7 +1,8 @@
 # From ../arch-base
 ARG BASE=bootc-arch-base
+ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 
-FROM docker.io/archlinux/archlinux:latest as drbd-build
+FROM ${ARCH_LOCK} as drbd-build
 ARG DRBD_VER=9.3.0
 
 WORKDIR /work

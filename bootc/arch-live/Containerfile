@@ -1,5 +1,6 @@
 # Overwrite-able bootc base, in case ghcr CI version is stale
-ARG BOOTC_BASE=ghcr.io/bootcrew/arch-bootc:latest
+ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
+ARG ARCH_BOOTC_LOCK=ghcr.io/bootcrew/arch-bootc:latest
 # From ../arch-base
 FROM bootc-arch-base as builder
 
@@ -16,7 +17,7 @@ RUN for mod in /work/modules.d/* ; do ln -s $mod /usr/lib/dracut/modules.d; done
 RUN /bin/sh for-container.sh build-initrd-all-mods
 
 # Build forked cfsctl
-FROM docker.io/archlinux/archlinux as cfsctl
+FROM ${ARCH_LOCK} as cfsctl
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -30,7 +31,7 @@ WORKDIR /work
 RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 
 
-FROM ${BOOTC_BASE}
+FROM ${ARCH_BOOTC_LOCK}
 
 # archzfs repo configurations
 RUN printf '[archzfs]\nSigLevel = Required\nServer = https://github.com/archzfs/archzfs/releases/download/experimental\n' | tee -a /etc/pacman.conf && \

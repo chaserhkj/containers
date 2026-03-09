@@ -12,7 +12,8 @@
 
 # $ sudo podman run --privileged --pid=host -v /dev:/dev -v /sys:/sys -v ./disk.img:/zfs.img zfs-loopback-nvmeof [init]
 
-FROM docker.io/archlinux/archlinux:latest
+ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
+FROM ${ARCH_LOCK}
 
 # archlinuxcn repo configurations
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \

@@ -2,8 +2,9 @@
 # Since this is what used by llama.cpp
 ARG BASE=docker.io/library/ubuntu:24.04
 ARG TARGET_GPU_ARCH=gfx1151
+ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 
-FROM docker.io/archlinux/archlinux as extractor
+FROM ${ARCH_LOCK} as extractor
 ARG TARGET_GPU_ARCH
 ARG THE_ROCK_VERSION=7.12.0a20260202
 ARG THE_ROCK_VARIANT=${TARGET_GPU_ARCH}

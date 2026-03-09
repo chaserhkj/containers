@@ -1,5 +1,6 @@
 ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 ARG ARCH_BOOTC_LOCK=ghcr.io/bootcrew/arch-bootc:latest
+ARG ZFS_VER_STRATEGY=latest
 # From ../../base/arch-aur-builder
 FROM arch-aur-builder as aur-builder
 
@@ -38,7 +39,7 @@ FROM scratch as bashrc.d
 COPY bashrc.d.sh /
 
 # Base arch image with extended package setups, to be used as base for site-specific images
-FROM ${ARCH_BOOTC_LOCK}
+FROM ${ARCH_BOOTC_LOCK} as stage-pre-zfs
 
 # Remove all thinning options in pacman.conf, these are designed for service containers but we are not
 # Note that /etc/machine-id needs to be added if this is done
@@ -65,6 +66,8 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 # locale-gen
 RUN sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 
+FROM stage-pre-zfs as stage-zfs-use-latest
+
 # archzfs repo configurations
 RUN printf '[archzfs]\nSigLevel = Required\nServer = https://github.com/archzfs/archzfs/releases/download/experimental\n' | tee -a /etc/pacman.conf && \
     pacman-key --init && pacman-key --recv-keys 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9 && pacman-key --lsign-key 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9
@@ -74,6 +77,18 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     printf '[archlinuxcn]\nServer = https://repo.archlinuxcn.org/$arch\n' | tee -a /etc/pacman.conf && \
     pacman -Sy --noconfirm --needed archlinuxcn-keyring
+
+FROM stage-pre-zfs as stage-zfs-use-pinned
+ARG ZFS_PINNED_PKG_URL
+ARG ZFS_PINNED_PKG_FILENAME
+
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    curl -Lo /tmp/${ZFS_PINNED_PKG_FILENAME} ${ZFS_PINNED_PKG_URL} && \
+    pacman --noconfirm -U /tmp/${ZFS_PINNED_PKG_FILENAME} && \
+    rm /tmp/${ZFS_PINNED_PKG_FILENAME}
+
+FROM stage-zfs-use-${ZFS_VER_STRATEGY}
 
 # Local repo configurations
 RUN cp -f /etc/pacman.conf /etc/pacman-local-repo.conf && \ 

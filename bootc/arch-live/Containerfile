@@ -1,6 +1,7 @@
 # Overwrite-able bootc base, in case ghcr CI version is stale
 ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 ARG ARCH_BOOTC_LOCK=ghcr.io/bootcrew/arch-bootc:latest
+ARG ZFS_VER_STRATEGY=latest
 # From ../arch-base
 FROM bootc-arch-base as builder
 
@@ -31,7 +32,9 @@ WORKDIR /work
 RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 
 
-FROM ${ARCH_BOOTC_LOCK}
+FROM ${ARCH_BOOTC_LOCK} as stage-pre-zfs
+
+FROM stage-pre-zfs as stage-zfs-use-latest
 
 # archzfs repo configurations
 RUN printf '[archzfs]\nSigLevel = Required\nServer = https://github.com/archzfs/archzfs/releases/download/experimental\n' | tee -a /etc/pacman.conf && \
@@ -43,6 +46,17 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     printf '[archlinuxcn]\nServer = https://repo.archlinuxcn.org/$arch\n' | tee -a /etc/pacman.conf && \
     pacman -Sy --noconfirm --needed archlinuxcn-keyring
 
+FROM stage-pre-zfs as stage-zfs-use-pinned
+ARG ZFS_PINNED_PKG_URL
+ARG ZFS_PINNED_PKG_FILENAME
+
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    curl -Lo /tmp/${ZFS_PINNED_PKG_FILENAME} ${ZFS_PINNED_PKG_URL} && \
+    pacman --noconfirm -U /tmp/${ZFS_PINNED_PKG_FILENAME} && \
+    rm /tmp/${ZFS_PINNED_PKG_FILENAME}
+
+FROM stage-zfs-use-${ZFS_VER_STRATEGY}
 
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \

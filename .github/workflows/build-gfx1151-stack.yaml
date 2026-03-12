@@ -77,8 +77,8 @@ jobs:
       always() && 
       (needs.build-therock-gfx1151.result == 'success' || needs.build-therock-gfx1151.result == 'skipped')
     env:
-      BASE_TAG: ${{ needs.build-therock-gfx1151.result == 'skipped' && needs.build-therock-gfx1151.outputs.therock_version || 'latest' }}
-      ADDITIONAL_TAG: ${{ needs.build-therock-gfx1151.result == 'skipped' && needs.build-therock-gfx1151.outputs.therock_version || format('base-skipped-{0}', needs.timestamp.outputs.timestamp) }}
+      BASE_TAG: ${{ needs.build-therock-gfx1151.result != 'skipped' && needs.build-therock-gfx1151.outputs.therock_version || 'latest' }}
+      ADDITIONAL_TAG: ${{ needs.build-therock-gfx1151.result != 'skipped' && needs.build-therock-gfx1151.outputs.therock_version || format('base-skipped-{0}', needs.timestamp.outputs.timestamp) }}
     steps:
       - name: Login to GHCR
         uses: docker/login-action@v3

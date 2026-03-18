@@ -48,3 +48,19 @@ hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
 EOS
 EOF
 
+COPY --chmod=755 <<EOF /entrypoint.sh
+#!/nix/env/bash/bin/bash
+source /nix/env/env.sh
+source /work/.venv/bin/activate
+exec tini -- python tools/api_server.py "$@"
+EOF
+
+EXPOSE 8000
+
+ENTRYPOINT ["/entrypoint.sh", \
+    "--llama-checkpoint-path", "checkpoints/s2-pro", \
+    "--decoder-checkpoint-path", "checkpoints/s2-pro/codec.pth", \
+    "--listen", "0.0.0.0:8000", \
+    ]
+
+CMD ["--half", "--compile"]

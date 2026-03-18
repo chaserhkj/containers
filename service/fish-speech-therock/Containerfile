@@ -1,7 +1,8 @@
 ARG BASE=ghcr.io/chaserhkj/containers/therock-rocm-gfx1151
 
 FROM scratch as nix-install
-ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/2.34.1/nix-installer-x86_64-linux /nix-installer
+ARG NIX_INSTALLER_VER=2.34.1
+ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/${NIX_INSTALLER_VER}/nix-installer-x86_64-linux /nix-installer
 
 FROM ${BASE}
 ARG THE_ROCK_VARIANT=gfx1151
@@ -9,16 +10,41 @@ ARG THE_ROCK_VARIANT=gfx1151
 RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
     install linux --no-confirm --init none --extra-conf "sandbox = false"
 
-RUN export USER=root HOME=/root && . /nix/var/nix/profiles/default/etc/profile.d/nix.sh && \
-    nix profile add nixpkgs#git nixpkgs#uv nixpkgs#tini && nix store gc
+COPY flake.lock flake.nix /nix/env/
 
-RUN export USER=root HOME=/root && . /nix/var/nix/profiles/default/etc/profile.d/nix.sh && \
-    git clone https://github.com/fishaudio/fish-speech /work
+ENV USER=root HOME=/root
+
+RUN . /nix/var/nix/profiles/default/etc/profile.d/nix.sh && \
+    nix print-dev-env --profile /nix/env/shell path:/nix/env/ > /nix/env/shell.sh && \
+    cat /nix/var/nix/profiles/default/etc/profile.d/nix.sh /nix/env/shell.sh > /nix/env/env.sh && \
+    nix build nixpkgs#bash -o /nix/env/bash && nix store gc
+
+RUN <<EOF
+exec /nix/env/bash/bin/bash <<EOS
+source /nix/env/env.sh
+git clone https://github.com/fishaudio/fish-speech /work
+EOS
+EOF
 
 WORKDIR /work
 
-RUN export USER=root HOME=/root && . /nix/var/nix/profiles/default/etc/profile.d/nix.sh && \
-    uv venv -p 3.12 && . .venv/bin/activate && \
-    uv sync --no-install-package torch --no-install-package torchaudio && \
-    uv pip install -i https://rocm.nightlies.amd.com/v2/${THE_ROCK_VARIANT} && \
-        torch ~=2.8.0
+RUN <<EOF
+exec /nix/env/bash/bin/bash <<EOS
+set -e
+source /nix/env/env.sh
+uv venv -p 3.12 && . .venv/bin/activate
+uv sync --no-install-package torch --no-install-package torchaudio
+uv pip install -i https://rocm.nightlies.amd.com/v2/${THE_ROCK_VARIANT} \
+    --prerelease=allow "torch~=2.8.0" "torchaudio<2.9.0"
+EOS
+EOF
+
+RUN <<EOF
+exec /nix/env/bash/bin/bash <<EOS
+set -e
+source /nix/env/env.sh
+source /work/.venv/bin/activate
+hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
+EOS
+EOF
+

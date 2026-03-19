@@ -1,23 +1,37 @@
-FROM docker.nix-community.org/nixpkgs/nix-flakes:latest-x86_64-linux
+ARG BASE=docker.io/nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04
+
+FROM scratch as nix-install
+ARG NIX_INSTALLER_VER=2.34.1
+ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/${NIX_INSTALLER_VER}/nix-installer-x86_64-linux /nix-installer
+
+FROM ${BASE}
+
+RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
+    install linux --no-confirm --init none --extra-conf "sandbox = false"
+
+ENV USER=root HOME=/root
 
 RUN <<EOF
 set -e
+. /nix/var/nix/profiles/default/etc/profile.d/nix.sh
 mkdir -p /nix/env
 nix print-dev-env --profile /nix/env/shell -f - > /nix/env/shell.sh <<'EON'
 with builtins;
 with (getFlake "flake:nixpkgs").legacyPackages.${currentSystem};
 mkShell {
     buildInputs = [
-        git portaudio uv python312
+        git tini gcc portaudio uv python312
     ];
 }
 EON
+cat /nix/var/nix/profiles/default/etc/profile.d/nix.sh /nix/env/shell.sh > /nix/env/env.sh
+nix build nixpkgs#bash -o /nix/env/bash
 nix store gc
 EOF
 
 RUN <<EOF
-exec /bin/bash -e <<'EOS'
-source /nix/env/shell.sh
+exec /nix/env/bash/bin/bash -e <<'EOS'
+source /nix/env/env.sh
 git clone https://github.com/fishaudio/fish-speech /work
 cd /work
 uv venv --system
@@ -28,8 +42,26 @@ EOF
 WORKDIR /work
 
 RUN <<EOF
-exec /bin/bash -e <<'EOS'
+exec /nix/env/bash/bin/bash -e <<'EOS'
+source /nix/env/env.sh
 source .venv/bin/activate
 hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
 EOS
 EOF
+
+COPY --chmod=755 <<'EOF' /entrypoint.sh
+#!/nix/env/bash/bin/bash
+source /nix/env/env.sh
+source /work/.venv/bin/activate
+exec tini -- python tools/api_server.py "$@"
+EOF
+
+EXPOSE 8000
+
+ENTRYPOINT [ "/entrypoint.sh", \
+    "--llama-checkpoint-path", "checkpoints/s2-pro", \
+    "--decoder-checkpoint-path", "checkpoints/s2-pro/codec.pth", \
+    "--listen", "0.0.0.0:8000" \
+    ]
+
+CMD [ "--half", "--compile" ]

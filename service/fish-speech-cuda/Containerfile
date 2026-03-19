@@ -1,0 +1,35 @@
+FROM docker.nix-community.org/nixpkgs/nix-flakes:latest-x86_64-linux
+
+RUN <<EOF
+set -e
+mkdir -p /nix/env
+nix print-dev-env --profile /nix/env/shell -f - > /nix/env/shell.sh <<'EON'
+with builtins;
+with (getFlake "flake:nixpkgs").legacyPackages.${currentSystem};
+mkShell {
+    buildInputs = [
+        git portaudio uv python312
+    ];
+}
+EON
+nix store gc
+EOF
+
+RUN <<EOF
+exec /bin/bash -e <<'EOS'
+source /nix/env/shell.sh
+git clone https://github.com/fishaudio/fish-speech /work
+cd /work
+uv venv --system
+uv sync --extra cu129
+EOS
+EOF
+
+WORKDIR /work
+
+RUN <<EOF
+exec /bin/bash -e <<'EOS'
+source .venv/bin/activate
+hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
+EOS
+EOF

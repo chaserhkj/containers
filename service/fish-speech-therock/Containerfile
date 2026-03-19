@@ -48,7 +48,7 @@ hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
 EOS
 EOF
 
-COPY --chmod=755 <<EOF /entrypoint.sh
+COPY --chmod=755 <<'EOF' /entrypoint.sh
 #!/nix/env/bash/bin/bash
 source /nix/env/env.sh
 source /work/.venv/bin/activate

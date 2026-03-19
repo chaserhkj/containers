@@ -57,10 +57,10 @@ EOF
 
 EXPOSE 8000
 
-ENTRYPOINT ["/entrypoint.sh", \
+ENTRYPOINT [ "/entrypoint.sh", \
     "--llama-checkpoint-path", "checkpoints/s2-pro", \
     "--decoder-checkpoint-path", "checkpoints/s2-pro/codec.pth", \
-    "--listen", "0.0.0.0:8000", \
+    "--listen", "0.0.0.0:8000" \
     ]
 
-CMD ["--half", "--compile"]
+CMD [ "--half", "--compile" ]

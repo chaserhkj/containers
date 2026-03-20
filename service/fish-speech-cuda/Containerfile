@@ -20,7 +20,7 @@ with builtins;
 with (getFlake "flake:nixpkgs").legacyPackages.${currentSystem};
 mkShell {
     buildInputs = [
-        git tini gcc portaudio uv python312
+        git tini gcc portaudio uv
     ];
 }
 EON
@@ -34,7 +34,7 @@ exec /nix/env/bash/bin/bash -e <<'EOS'
 source /nix/env/env.sh
 git clone https://github.com/fishaudio/fish-speech /work
 cd /work
-uv venv --system
+uv venv -p 3.12
 uv sync --extra cu129
 EOS
 EOF

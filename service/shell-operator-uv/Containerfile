@@ -1,6 +1,0 @@
-# shell-operator image with uv included, enabling using
-# uv script for shell-operator managing k8s clusters
-BASE=ghcr.io/flant/shell-operator:v1.14.3
-FROM ${BASE}
-
-COPY --from=ghcr.io/astral-sh/uv:latest / /usr/bin/

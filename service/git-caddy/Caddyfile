@@ -1,0 +1,5 @@
+:80 {
+    cgi * /usr/libexec/git-core/git-http-backend {
+        env GIT_PROJECT_ROOT=/srv/git GIT_HTTP_EXPORT_ALL=1
+    }
+}

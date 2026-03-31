@@ -3,3 +3,13 @@
         env GIT_PROJECT_ROOT=/srv/git GIT_HTTP_EXPORT_ALL=1
     }
 }
+
+:8081 {
+    handle /health {
+        respond "Healthy" 200
+    }
+
+    handle {
+        respond "Not found" 404
+    }
+}

@@ -1,0 +1,2 @@
+FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as builder
+

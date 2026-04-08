@@ -33,8 +33,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build using nix2container
         run: |
-          whoami
-          echo $UID
-          mount
-          cat /etc/nix/nix.conf
           nix run .#nfs-ganesha.copyToRegistry

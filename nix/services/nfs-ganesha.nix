@@ -1,9 +1,5 @@
 {
-  perSystem = {pkgs, ...}: {
-    images.nfs-ganesha = {
-      name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
-      tag = "latest";
-      config = with pkgs; let
+  perSystem = {pkgs, ...}: with pkgs; let
         ganeshaInputConfigured = nfs-ganesha.override {
           useCeph = false;
           useDbus = false;
@@ -52,7 +48,11 @@
             ];
           }
         );
-      in {
+    in {
+    images.nfs-ganesha = {
+      name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
+      tag = "latest";
+      config = {
         Entrypoint = [ 
           "${tini}/bin/tini" "--"
           "${ganeshaConfigured}/bin/ganesha.nfsd"

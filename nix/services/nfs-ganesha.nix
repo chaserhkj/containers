@@ -49,6 +49,7 @@
           }
         );
     in {
+    packages.ganeshaConfigured = ganeshaConfigured.out;
     images.nfs-ganesha = {
       name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
       tag = "latest";

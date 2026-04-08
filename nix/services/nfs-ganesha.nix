@@ -1,6 +1,6 @@
 {
   perSystem = {pkgs, ...}: {
-    image.nfs-ganesha = {
+    images.nfs-ganesha = {
       name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
       tag = "latest";
       config = with pkgs; {
@@ -13,6 +13,9 @@
           "/config/ganesha.conf"
         ];
       };
+      copyToRoot = pkgs.runCommand "runtime-fs" {} ''
+        mkdir -p $out/var/run/ganesha
+      '';
     };
   };
 }

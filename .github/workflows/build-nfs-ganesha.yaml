@@ -33,5 +33,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build using nix2container
         run: |
-          nix build -vL .#ganeshaConfigured
+          sudo nix build -vL .#ganeshaConfigured
+          cat /bin/mount.9P
           nix run .#nfs-ganesha.copyToRegistry

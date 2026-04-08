@@ -3,10 +3,19 @@
     images.nfs-ganesha = {
       name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
       tag = "latest";
-      config = with pkgs; {
+      config = with pkgs; let
+        ganeshaWithoutRPCBind = nfs-ganesha.overrideAttrs (
+          oldAttrs: {
+            cmakeFlags = (oldAttrs.cmakeFlags or []) ++ [
+              "-D_NO_TCP_REGISTER=ON"
+              "-DRPCBIND=OFF"
+            ];
+          }
+        );
+      in {
         Entrypoint = [ 
           "${tini}/bin/tini" "--"
-          "${nfs-ganesha}/bin/ganesha.nfsd"
+          "${ganeshaWithoutRPCBind}/bin/ganesha.nfsd"
         ];
         Cmd = [
           "-F" "-x" "-L" "/dev/stdout" "-f"
@@ -15,6 +24,7 @@
       };
       copyToRoot = pkgs.runCommand "runtime-fs" {} ''
         mkdir -p $out/var/run/ganesha
+        mkdir -p $out/export
       '';
     };
   };

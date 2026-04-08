@@ -10,7 +10,9 @@
     config.packages = let 
         inherit(inputs'.nix2container.packages.nix2container) buildImage;
     in lib.mapAttrs (
-      name: imageDef: let
+      name: imageDefWithExtra: let
+          extraAttrs = imageDefWithExtra.extra or {};
+          imageDef = builtins.removeAttrs imageDefWithExtra ["extra"];
           entryPointImageDef = imageDef // {
             config = (imageDef.config or {}) // {
               Entrypoint = [ "/bin/entrypoint.sh" ];
@@ -31,7 +33,7 @@
         in ((buildImage imageDef)
         // {
           fixedEntrypoint = buildImage entryPointImageDef;
-        })
+        } // extraAttrs )
     ) config.images;
   };
 }

@@ -7,6 +7,11 @@
         ganeshaConfigured = ganeshaInputConfigured.overrideAttrs (
           oldAttrs: {
             outputs = ["out"];
+            meta = oldAttrs.meta // {
+              outputsToInstall = ["out"];
+            };
+            # Patch out post install hooks that installs 9P and dbus files
+            postInstall = "";
             cmakeFlags = (oldAttrs.cmakeFlags or []) ++ [
               # Disable other protocols and only leave NFS4/RDMA
               "-DUSE_9P=OFF"
@@ -49,7 +54,6 @@
           }
         );
     in {
-    packages.ganeshaConfigured = ganeshaConfigured.out;
     images.nfs-ganesha = {
       name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
       tag = "latest";
@@ -67,6 +71,9 @@
         mkdir -p $out/var/run/ganesha
         mkdir -p $out/export
       '';
+      extra = {
+        ganesha = ganeshaConfigured;
+      };
     };
   };
 }

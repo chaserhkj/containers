@@ -1,0 +1,20 @@
+# Builds a nix2container image using regular container engines
+FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:latest-x86_64-linux as builder
+
+ARG TARGET=nfs-ganesha
+
+COPY flake.lock flake.nix /flake
+
+COPY nix /flake/nix
+
+WORKDIR /flake
+
+RUN nix run .#${TARGET}.fixedEntrypoint.copyTo -- oci:/oci:latest
+
+RUN nix run nixpkgs#umoci -- unpack --image /oci:latest /bundle
+
+FROM scratch
+
+COPY --from=builder /bundle/rootfs /
+
+ENTRYPOINT [ "/bin/entrypoint.sh" ]

@@ -33,4 +33,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build using nix2container
         run: |
+          sudo sysctl -w kernel.unprivileged_userns_clone=1
           nix run .#nfs-ganesha.copyToRegistry

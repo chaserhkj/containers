@@ -7,7 +7,7 @@
       description = "Definition of images as passed to nix2container.buildImage";
     };
 
-    packages = let 
+    config.packages = let 
         inherit(inputs'.nix2container.packages.nix2container) buildImage;
     in lib.mapAttrs (
       name: imageDef: let

@@ -7,22 +7,10 @@
 
   outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ./nix/lib/mkImageWithEntrypoint.nix ];
+      imports = [ 
+        ./nix/lib/modules.nix
+        ./nix/images.nix
+      ];
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        images.nfs-ganesha = {
-            name = "nfs-ganesha";
-            config = with pkgs; {
-              Entrypoint = [ 
-                "${tini}/bin/tini" "--"
-                "${nfs-ganesha}/bin/ganesha.nfsd"
-              ];
-              Cmd = [
-                "-F" "-x" "-L" "/dev/stdout" "-f"
-                "/config/ganesha.conf"
-              ];
-            };
-          };
-      };
     };
 }

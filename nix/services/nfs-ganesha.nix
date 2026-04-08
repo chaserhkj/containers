@@ -10,6 +10,15 @@
             meta = oldAttrs.meta // {
               outputsToInstall = ["out"];
             };
+            patches = (oldAttrs.patches or []) ++ [
+              (
+                # Fix for issue: https://github.com/nfs-ganesha/nfs-ganesha/issues/1385
+                fetchpatch {
+                  url = "https://github.com/ffilz/nfs-ganesha/commit/03620115bcb0f785c1318be74503cb2f2d28f6c9.patch";
+                  hash = "sha256-BEeF9Nq+jCtrTogXy7CyKBOjIn+MSeLTAVJN/JgrJXY=";
+                }
+              )
+            ];
             # Patch out post install hooks that installs 9P and dbus files
             postInstall = "";
             cmakeFlags = (oldAttrs.cmakeFlags or []) ++ [

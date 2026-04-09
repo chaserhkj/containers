@@ -1,10 +1,11 @@
 ARG BASE=docker.io/nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04
+ARG EMBED_MODEL=no
 
 FROM scratch as nix-install
 ARG NIX_INSTALLER_VER=2.34.1
 ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/${NIX_INSTALLER_VER}/nix-installer-x86_64-linux /nix-installer
 
-FROM ${BASE}
+FROM ${BASE} as base
 
 RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
     install linux --no-confirm --init none --extra-conf "sandbox = false"
@@ -41,18 +42,29 @@ EOF
 
 WORKDIR /work
 
+FROM base as model-embed-yes
+
 RUN <<EOF
 exec /nix/env/bash/bin/bash -e <<'EOS'
 source /nix/env/env.sh
 source .venv/bin/activate
-hf download fishaudio/s2-pro --local-dir checkpoints/s2-pro
+hf download fishaudio/s2-pro --local-dir /model
 EOS
 EOF
+
+ENV MODEL_PATH=/model
+
+FROM base as model-embed-no
+
+FROM model-embed-${EMBED_MODEL}
 
 COPY --chmod=755 <<'EOF' /entrypoint.sh
 #!/nix/env/bash/bin/bash
 source /nix/env/env.sh
 source /work/.venv/bin/activate
+mkdir -p checkpoints
+[[ -d $MODEL_PATH ]] || exit 1;
+ln -sfT $MODEL_PATH checkpoints/s2-pro
 exec tini -- python tools/api_server.py "$@"
 EOF
 

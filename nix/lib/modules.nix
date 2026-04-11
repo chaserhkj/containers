@@ -7,8 +7,9 @@ in {
   imports = [
     mkImageWithEntryPoint
   ];
-  flake.flakeModules = [
-    mkImageWithEntryPoint
-    containerizedApp
-  ];
+  flake.flakeModules = {
+    inherit
+      mkImageWithEntryPoint 
+      containerizedApp;
+  };
 }

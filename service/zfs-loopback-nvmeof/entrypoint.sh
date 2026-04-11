@@ -56,6 +56,7 @@ import() {
 
 setup_nvmet() {
     mkdir -p $port
+    nvmetcli restore /etc/nvmet/config.json || :
     echo $NVME_OF_BIND_IP > $port/addr_traddr
     echo tcp > $port/addr_trtype
     echo $NVME_OF_BIND_PORT > $port/addr_trsvcid
@@ -73,6 +74,7 @@ cleanup_nvmet() {
 
 
 cleanup() {
+    nvmetcli save /etc/nvmet/config.json
     cleanup_nvmet
     [[ -z $USE_EXISTING_POOL ]] && zpool export $pool_name || :
     [[ -n $lodev ]] && losetup -d $lodev

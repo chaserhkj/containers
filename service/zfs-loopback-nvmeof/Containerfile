@@ -5,6 +5,7 @@
 # Expected volume /dev:/dev
 # Expected volume /sys:/sys
 # Expected volume /zfs.img - image file to use
+# Expected volume /etc/nvmet/config.json - nvmet configuration state
 # Bind mount to /root/.ssh/authorized_keys to provide publickey
 # Bind mount to /opt/ssh-host-key and set ENV SSH_HOST_KEY_DIR=/opt/ssh-host-key to set host keys
 # Set USE_EXISTING_POOL to non-empty string to skip loopback image creation and maybe use existing zpool
@@ -25,6 +26,8 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
     pacman -S --noconfirm --needed zfs-utils nvmetcli openssh python-configshell-fb
 
+COPY --from=docker.io/stagex/user-tini /usr/sbin/tini-static /usr/bin/tini
+
 RUN mkdir -p ~/.nvmetcli && ln -sfT /dev/null ~/.nvmetcli/log.txt && ln -sfT /dev/null ~/.nvmetcli/history.txt && \
     mkdir -p ~/.ssh && chmod 700 ~/.ssh
 
@@ -35,5 +38,5 @@ COPY entrypoint.sh /
 
 ENV IMG_FILE=/zfs.img
 
-ENTRYPOINT ["bash", "entrypoint.sh"]
+ENTRYPOINT ["tini", "-g", "--", "bash", "entrypoint.sh"]
 

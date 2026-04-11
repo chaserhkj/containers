@@ -1,5 +1,5 @@
 let 
-  mkImageWithEntryPoint = import ./mkImageWithEntryPoint.nix;
+  mkImageWithEntryPoint = import ./mkImageWithEntrypoint.nix;
   containerizedApp = import ./containerizedApp.nix;
 in
 {

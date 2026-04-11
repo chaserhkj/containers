@@ -1,7 +1,7 @@
 {...}:
 {
   perSystem = {config, lib, inputs', pkgs, ...}: {
-    options.images = lib.mkOption {
+    options.imagesWithFixedEntrypointVariant = lib.mkOption {
       type = lib.types.lazyAttrsOf lib.types.attrs;
       default = {};
       description = "Definition of images as passed to nix2container.buildImage";
@@ -34,6 +34,6 @@
         // {
           fixedEntrypoint = buildImage entryPointImageDef;
         } // extraAttrs )
-    ) config.images;
+    ) config.imagesWithFixedEntrypointVariant;
   };
 }

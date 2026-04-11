@@ -63,7 +63,7 @@
           }
         );
     in {
-    images.nfs-ganesha = {
+    imagesWithFixedEntrypointVariant.nfs-ganesha = {
       name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
       tag = "latest";
       config = {

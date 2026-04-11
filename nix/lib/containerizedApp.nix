@@ -1,5 +1,7 @@
+localFlake@{withSystem, ...}:
+{...}:
 {
-  perSystem = {inputs', config, lib, ...}: {
+  perSystem = {config, lib, system, ...}: {
     options.defaultImagePrefix = lib.mkOption {
       type = lib.types.str;
       default = "";
@@ -16,7 +18,8 @@
       description = "package to build as containerized app";
     };
     config.packages = let 
-      inherit (inputs'.nix2container.packages.nix2container) buildImage;
+      localInputs' = localFlake.withSystem system ({inputs', ...}: inputs');
+      inherit (localInputs'.nix2container.packages.nix2container) buildImage;
       buildImageFor = pname: package: (buildImage {
         name = "${config.defaultImagePrefix}${pname}";
         tag = config.defaultImageTag;

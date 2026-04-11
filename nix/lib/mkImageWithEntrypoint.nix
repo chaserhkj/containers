@@ -1,6 +1,7 @@
+localFlake@{withSystem, ...}:
 {...}:
 {
-  perSystem = {config, lib, inputs', pkgs, ...}: {
+  perSystem = {config, lib, pkgs, system, ...}: {
     options.imagesWithFixedEntrypointVariant = lib.mkOption {
       type = lib.types.lazyAttrsOf lib.types.attrs;
       default = {};
@@ -8,7 +9,8 @@
     };
 
     config.packages = let 
-        inherit(inputs'.nix2container.packages.nix2container) buildImage;
+        localInputs' = localFlake.withSystem system ({inputs', ...}: inputs');
+        inherit(localInputs'.nix2container.packages.nix2container) buildImage;
     in lib.mapAttrs (
       name: imageDefWithExtra: let
           extraAttrs = imageDefWithExtra.extra or {};

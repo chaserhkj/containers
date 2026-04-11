@@ -38,5 +38,5 @@ COPY entrypoint.sh /
 
 ENV IMG_FILE=/zfs.img
 
-ENTRYPOINT ["tini", "-g", "--", "bash", "entrypoint.sh"]
+ENTRYPOINT ["tini", "-s", "-g", "--", "bash", "entrypoint.sh"]
 

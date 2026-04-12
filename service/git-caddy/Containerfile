@@ -12,9 +12,4 @@ RUN apk add --no-cache git git-daemon
 RUN mkdir -p /var/lib/git/health/ready && cd /var/lib/git/health/ready && \
     git init --bare
 
-# Tell git to ignore permission issues on the health check repo
-# This allows git http backend to be run as ANY user and still able
-# to use the repo for health checks
-RUN git config --global --add safe.directory /var/lib/git/health/ready
-
 COPY Caddyfile /etc/caddy/Caddyfile

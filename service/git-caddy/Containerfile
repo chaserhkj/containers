@@ -9,4 +9,7 @@ COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 
 RUN apk add --no-cache git git-daemon
 
+RUN mkdir -p /var/lib/git/health/ready && cd /var/lib/git/health/ready && \
+    git init --bare
+
 COPY Caddyfile /etc/caddy/Caddyfile

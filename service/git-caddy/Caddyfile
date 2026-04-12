@@ -1,11 +1,16 @@
 :8080 {
+    # Use as readiness probe :8080/ready/info/refs
+    cgi /ready/* /usr/libexec/git-core/git-http-backend {
+        env GIT_PROJECT_ROOT=/var/lib/git/health GIT_HTTP_EXPORT_ALL=1
+    }
     cgi * /usr/libexec/git-core/git-http-backend {
         env GIT_PROJECT_ROOT=/srv/git GIT_HTTP_EXPORT_ALL=1
     }
 }
 
 :8081 {
-    handle /health {
+    # Use as liveness probe :8081/liveness
+    handle /liveness {
         respond "Healthy" 200
     }
 

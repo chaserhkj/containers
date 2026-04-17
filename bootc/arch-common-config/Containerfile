@@ -6,7 +6,9 @@ ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:${NIXPKGS_VERSION}-x86_64-linux as nix-static
 
-RUN nix build nixpkgs#nixStatic
+ARG NIX_STATIC_REV=nixpkgs
+
+RUN nix build ${NIX_STATIC_REV}#nixStatic
 
 RUN cp /result/bin/nix /nixStatic
 

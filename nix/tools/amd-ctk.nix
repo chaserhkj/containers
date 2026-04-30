@@ -6,12 +6,12 @@
       name = "ghcr.io/chaserhkj/containers/amd-ctk";
       tag = "latest";
       config = {
-        Entrypoint = {
+        Entrypoint = [
           "${cliPkg}/bin/amd-ctk"
-        };
-        extra = {
-          cli = cliPkg;
-        };
+        ];
+      };
+      extra = {
+        cli = cliPkg;
       };
     };
   };

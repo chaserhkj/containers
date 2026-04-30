@@ -10,6 +10,7 @@
       imports = [ 
         ./nix/lib/modules.nix
         ./nix/images.nix
+        ./nix/packages.nix
       ];
       systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
     };

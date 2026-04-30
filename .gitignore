@@ -3,5 +3,7 @@
 vendor/
 .vscode/
 /build_args.conf
+# nix builds
+result
 # For building with argo workflows
 .kubeconfig

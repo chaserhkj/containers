@@ -25,14 +25,17 @@ for build_arg_var_name in "${!CTR_BUILD_ARG_@}"; do
   build_flags+=("--build-arg" "$build_arg_name")
 done
 
-# Read build context image redirection from env CTR_BUILD_CONTEXT_IMG_<context name>
+# Read build context image redirection from env
+# CTR_BUILD_CONTEXT_FROM_<id> and CTR_BUILD_CONTEXT_IMG_<id>
 # Values are supposed to be container image refs
-for build_context_var_name in "${!CTR_BUILD_CONTEXT_IMG_@}"; do
-  value="${!build_context_var_name}"
+for build_context_var_name in "${!CTR_BUILD_CONTEXT_FROM_@}"; do
+  context_id="${build_context_var_name#CTR_BUILD_CONTEXT_FROM_}"
+  context_from="${!build_context_var_name}"
+  value_var="CTR_BUILD_CONTEXT_IMG_${context_id}"
+  value="${!value_var:?${value_var} not set}"
   spec="container-image://$value"
-  build_context_name="${build_context_var_name#CTR_BUILD_CONTEXT_IMG_}"
-  echo Build context: "$build_context_name"="$spec"
-  build_flags+=("--build-context" "$build_context_name=$spec")
+  echo Build context: "$context_from"="$spec"
+  build_flags+=("--build-context" "$context_from=$spec")
 done
 
 [[ -n "${CTR_BUILD_FROM}" ]] && build_flags+=("--from" "${CTR_BUILD_FROM}")

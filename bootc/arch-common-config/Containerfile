@@ -3,6 +3,7 @@ ARG NIXPKGS_VERSION=nixos-25.11
 # From ../arch-base
 ARG BASE=bootc-arch-base
 ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
+ARG ARCH_AUR_BUILDER_LOCK=arch-aur-builder:latest
 
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:${NIXPKGS_VERSION}-x86_64-linux as nix-static
 
@@ -12,7 +13,7 @@ RUN nix build ${NIX_STATIC_REV}#nixStatic
 
 RUN cp /result/bin/nix /nixStatic
 
-FROM arch-aur-builder as aur-builder
+FROM ${ARCH_AUR_BUILDER_LOCK} as aur-builder
 
 RUN aur sync -n --noview sesh-bin
 

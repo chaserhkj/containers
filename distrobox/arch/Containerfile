@@ -1,4 +1,5 @@
 ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
+ARG ARCH_AUR_BUILDER_LOCK=arch-aur-builder:latest
 FROM ${ARCH_LOCK} as yay-base
 
 RUN printf '[archlinuxcn]\nServer = https://repo.archlinuxcn.org/$arch\n' >> /etc/pacman.conf
@@ -23,7 +24,7 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     pacman -S --needed --noconfirm yay base-devel
 
 # From ../../base/arch-aur-builder
-FROM arch-aur-builder as aur-builder
+FROM ${ARCH_AUR_BUILDER_LOCK} as aur-builder
 
 RUN aur sync -n --noview bindfs
 

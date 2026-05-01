@@ -1,7 +1,5 @@
 set dotenv-load := true
-podman := require("podman")
-image_ref := env("ARCH_BOOTC_HOST_IMAGE_REF", "docker.io/chaserhkj/arch-bootc-host")
-build_flags := env("PODMAN_BUILD_FLAGS", "")
+CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF := env("CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF", "docker.io/chaserhkj/arch-bootc-host")
 
 default: prepare-all-persistent
 
@@ -15,9 +13,9 @@ prepare-all-live:
     for host in $(ls hosts); do [ -f "hosts/$host/LIVE" ] || continue; just prepare-image $host; done;
 
 prepare-image host: (configure-image host)
-    podman tag localhost/bootc-arch-host:{{host}} {{image_ref}}:{{host}}
+    ${CTR_BUILD_TOOL} tag localhost/bootc-arch-host:{{host}} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
     [ -f hosts/{{host}}/LIVE ] && push_flags="--compression-format=gzip --force-compression" || push_flags=  ; \
-    podman push $push_flags {{image_ref}}:{{host}}
+    ${CTR_BUILD_TOOL} push $push_flags ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
 
 configure-image host:
     #!/usr/bin/env bash
@@ -26,22 +24,22 @@ configure-image host:
     [ -n $base_img ] && base_flag="--from=$base_img"
     export CREDS="$(gpg --decrypt creds.gpg)" || exit 1
 
-    podman build --secret=id=creds,env=CREDS --iidfile {{host}}.intermediate.id -f Containerfile "$base_flag" "$host_dir" {{build_flags}}
+    ${CTR_BUILD_TOOL} build --secret=id=creds,env=CREDS --iidfile {{host}}.intermediate.id -f Containerfile "$base_flag" "$host_dir" ${CTR_BUILD_FLAGS}
 
     if [ -f $host_dir/Containerfile ]; then
         read -r intermediate_img < {{host}}.intermediate.id
-        podman build --iidfile {{host}}.pre-live.id --build-arg BASE=$intermediate_img "$host_dir" {{build_flags}}
+        ${CTR_BUILD_TOOL} build --iidfile {{host}}.pre-live.id --build-arg BASE=$intermediate_img "$host_dir" ${CTR_BUILD_FLAGS}
     else
         cp {{host}}.intermediate.id {{host}}.pre-live.id
     fi
 
     read -r pre_live_image < {{host}}.pre-live.id
     if [ -f $host_dir/LIVE ]; then
-        podman build --iidfile {{host}}.final.id -f Containerfile.live --build-arg BASE=$pre_live_image "$host_dir" {{build_flags}}
+        ${CTR_BUILD_TOOL} build --iidfile {{host}}.final.id -f Containerfile.live --build-arg BASE=$pre_live_image "$host_dir" ${CTR_BUILD_FLAGS}
         read -r final_image < {{host}}.final.id
     else
         final_image=$pre_live_image
     fi
 
-    podman tag $final_image localhost/bootc-arch-host:{{host}}
+    ${CTR_BUILD_TOOL} tag $final_image localhost/bootc-arch-host:{{host}}
 

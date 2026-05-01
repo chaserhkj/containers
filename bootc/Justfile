@@ -1,7 +1,6 @@
 mod arch-config 'arch-host-config/'
 
-build_flags := env("PODMAN_BUILD_FLAGS", "")
-arch_bootc_base := env("ARCH_BOOTC_BASE", "")
+CTR_ARCH_BOOTC_BASE := env("CTR_ARCH_BOOTC_BASE", "")
 
 default:
     just build-image arch-k0s
@@ -17,17 +16,17 @@ build-all:
     just default
 
 build-base-images:
-    just build-image arch-base {{arch_bootc_base}}
-    just build-live-images arch {{arch_bootc_base}}
+    just build-image arch-base ${CTR_ARCH_BOOTC_BASE}
+    just build-live-images arch ${CTR_ARCH_BOOTC_BASE}
 
 build-live-images distro bootc_base="":
     from_flag="" ; [ -n "{{bootc_base}}" ] && from_flag="--build-arg BOOTC_BASE={{bootc_base}}"; \
-    podman build {{distro}}-live --target builder -t bootc-{{distro}}-live-builder {{build_flags}} $from_flag && \
-    podman build {{distro}}-live -t bootc-{{distro}}-live {{build_flags}} $from_flag
+    ${CTR_BUILD_TOOL} build {{distro}}-live --target builder -t bootc-{{distro}}-live-builder ${CTR_BUILD_FLAGS} $from_flag && \
+    ${CTR_BUILD_TOOL} build {{distro}}-live -t bootc-{{distro}}-live ${CTR_BUILD_FLAGS} $from_flag
 
 build-image subdir bootc_base="":
     from_flag="" ; [ -n "{{bootc_base}}" ] && from_flag="--build-arg BOOTC_BASE={{bootc_base}}"; \
-    podman build {{subdir}} -t bootc-{{subdir}} {{build_flags}} $from_flag
+    ${CTR_BUILD_TOOL} build {{subdir}} -t bootc-{{subdir}} ${CTR_BUILD_FLAGS} $from_flag
 
 build-variant-image subdir base:
     #!/usr/bin/env bash
@@ -43,4 +42,4 @@ build-variant-image subdir base:
     fi
     [[ $orig_base_image == *-base ]] && base_image=bootc-{{base}} || base_image=$orig_base_image-$postfix
     echo "Use base $base_image for bootc-{{subdir}}-$postfix"
-    podman build {{subdir}} -t bootc-{{subdir}}-$postfix --build-arg BASE=$base_image {{build_flags}}
+    ${CTR_BUILD_TOOL} build {{subdir}} -t bootc-{{subdir}}-$postfix --build-arg BASE=$base_image ${CTR_BUILD_FLAGS} 

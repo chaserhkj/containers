@@ -1,5 +1,3 @@
-build_flags := env("PODMAN_BUILD_FLAGS", "")
-
 default:
     just build arch
     just build arch-common-gui
@@ -7,4 +5,4 @@ default:
     just build arch-steam
 
 build variant:
-    podman build {{variant}} -t distrobox-{{variant}} {{build_flags}}
+    ${CTR_BUILD_TOOL} build {{variant}} -t distrobox-{{variant}} ${CTR_BUILD_FLAGS}

@@ -3,14 +3,17 @@ mod distro 'distrobox/'
 
 set dotenv-load := true
 
-build_flags := env("PODMAN_BUILD_FLAGS", "")
+export CTR_BUILD_TOOL := env("CTR_BUILD_TOOL", "podman")
+export CTR_BUILD_FLAGS := env("CTR_BUILD_FLAGS", "")
 
 build context:
     tag=$(basename {{context}}) && \
-    podman build {{context}} -t $tag {{build_flags}}
+    ${CTR_BUILD_TOOL} build {{context}} -t $tag ${CTR_BUILD_FLAGS}
 
 pull-bootc-base-images:
-    podman pull archlinux/archlinux:latest ghcr.io/bootcrew/arch-bootc:latest
+    ${CTR_BUILD_TOOL} pull \
+        archlinux/archlinux:latest \
+        ghcr.io/bootcrew/arch-bootc:latest
 
 upgrade-all-bootc-images:
     just pull-bootc-base-images

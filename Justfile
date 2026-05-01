@@ -16,4 +16,5 @@ upgrade-all-bootc-images:
     just pull-bootc-base-images
     just build base/arch-aur-builder
     just bootc build-all
+    echo "Enter to continue" && read
     just bootc arch-config prepare-all-images

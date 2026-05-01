@@ -19,10 +19,13 @@ RUN /bin/sh for-container.sh build-initrd-all-mods
 
 # Build forked cfsctl
 FROM ${ARCH_LOCK} as cfsctl
+# pacman flags attached to full sync commands
+# use to pin packages
+ARG PACMAN_FULL_SYNC_FLAGS=""
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu --noconfirm && \
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
     pacman -Sy --noconfirm rust git make
 
 RUN git clone https://github.com/chaserhkj/composefs-rs /work
@@ -57,10 +60,11 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     rm /tmp/${ZFS_PINNED_PKG_FILENAME}
 
 FROM stage-zfs-use-${ZFS_VER_STRATEGY}
+ARG PACMAN_FULL_SYNC_FLAGS
 
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu --noconfirm
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 
 RUN --mount=type=bind,from=initramfs-build,target=/tmp \
     cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/*/initramfs.img

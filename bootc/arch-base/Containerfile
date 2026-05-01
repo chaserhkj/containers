@@ -9,10 +9,13 @@ RUN aur sync -n --noview zerotier-systemd-manager-git
 
 # Build ssh-key-dir to support $HOME/.ssh/authorized_keys.d
 FROM ${ARCH_LOCK} as ssh-key-dir
+# pacman flags attached to full sync commands
+# use to pin packages
+ARG PACMAN_FULL_SYNC_FLAGS=""
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu --noconfirm && \
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
     pacman -Sy --noconfirm rust git make
 
 RUN git clone https://github.com/coreos/ssh-key-dir /work
@@ -23,10 +26,11 @@ RUN mkdir -p /target && make RELEASE=1 && make install DESTDIR=/target RELEASE=1
 
 # Build forked cfsctl
 FROM ${ARCH_LOCK} as cfsctl
+ARG PACMAN_FULL_SYNC_FLAGS
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu --noconfirm && \
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
     pacman -Sy --noconfirm rust git make
 
 RUN git clone https://github.com/chaserhkj/composefs-rs /work
@@ -41,6 +45,7 @@ COPY bashrc.d.sh /
 
 # Base arch image with extended package setups, to be used as base for site-specific images
 FROM ${ARCH_BOOTC_LOCK} as stage-pre-zfs
+ARG PACMAN_FULL_SYNC_FLAGS
 
 # Remove all thinning options in pacman.conf, these are designed for service containers but we are not
 # Note that /etc/machine-id needs to be added if this is done
@@ -56,8 +61,8 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman-key --init && pacman -Sy && \
     pacman -S archlinux-keyring --noconfirm && \
-    pacman -Qq | pacman -S --noconfirm - && \
-    pacman -Syyu --noconfirm && \
+    pacman -Qq | pacman -S ${PACMAN_FULL_SYNC_FLAGS} --noconfirm - && \
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
     rm -rf /home /root /usr/local /srv /mnt /opt && \
     mkdir -p /var/home /var/roothome /var/usrlocal /var/srv /var/opt /var/mnt && \
     ln -sT var/home /home && ln -sT var/roothome /root && \

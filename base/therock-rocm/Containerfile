@@ -1,11 +1,9 @@
 # Use ubuntu 24.04 as base image
 # Since this is what used by llama.cpp
-ARG BASE=docker.io/library/ubuntu:24.04
+FROM docker.io/library/ubuntu:24.04 as base
+FROM docker.io/archlinux/archlinux as archlinux
+FROM archlinux as extractor
 ARG TARGET_GPU_ARCH=gfx1151
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
-
-FROM ${ARCH_LOCK} as extractor
-ARG TARGET_GPU_ARCH
 ARG THE_ROCK_VERSION=7.12.0a20260202
 ARG THE_ROCK_VARIANT=${TARGET_GPU_ARCH}
 
@@ -17,7 +15,7 @@ RUN wget -nv https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux
 
 RUN mkdir -p /opt/rocm && tar -C /opt/rocm -xf /dist.tar.gz
 
-FROM ${BASE} as therock-base
+FROM base as therock-base
 
 COPY --from=extractor /opt/rocm/ /opt/rocm/
 

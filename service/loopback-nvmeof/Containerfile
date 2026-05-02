@@ -8,8 +8,8 @@
 
 # $ sudo podman run --privileged --pid=host -v /dev:/dev -v /sys:/sys -v ./disk.img:/fs.img loopback-nvmeof
 
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
-FROM ${ARCH_LOCK}
+FROM docker.io/archlinux/archlinux:latest as archlinux
+FROM archlinux
 
 COPY entrypoint.sh /
 

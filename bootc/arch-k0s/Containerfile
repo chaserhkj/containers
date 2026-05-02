@@ -1,9 +1,8 @@
 # From ../arch-base
 # install or skip
 ARG DRBD_INSTALL=install
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 
-FROM ${ARCH_LOCK} as drbd-build
+FROM archlinux as drbd-build
 ARG DRBD_VER=9.3.0
 ARG DRBD_TARGET_KVER=""
 

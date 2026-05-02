@@ -1,0 +1,8 @@
+# Builder image using buildah to run nested builds
+FROM quay.io/buildah/stable as base
+
+FROM base
+
+RUN dnf install -y just
+
+ENV CTR_BUILD_TOOL=buildah

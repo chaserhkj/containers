@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/build-weekly.yaml'
+      - 'builder/**'
       - 'service/git-server/**'
       - 'service/git-caddy/**'
   workflow_dispatch:
@@ -25,6 +26,31 @@ jobs:
       - id: set-ts
         run: echo "ts=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
 
+  build-builder:
+    name: Build the builder image 
+    needs: [timestamp]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push the image
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:builder/"
+          file: Containerfile
+          push: true
+          tags: |
+            ghcr.io/chaserhkj/containers/builder
+            ghcr.io/chaserhkj/containers/builder:${{ needs.timestamp.outputs.timestamp }}
+
   build-git-server:
     name: Build the git-server service image 
     needs: [timestamp]
@@ -40,7 +66,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and push therock rocm base image
+      - name: Build and push the image
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:service/git-server"
@@ -65,7 +91,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and push therock rocm base image
+      - name: Build and push the image
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:service/git-caddy"

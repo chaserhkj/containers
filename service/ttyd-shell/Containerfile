@@ -1,6 +1,4 @@
-ARG BASE
-
-FROM ${BASE}
+FROM base
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y vim bash-completion tini

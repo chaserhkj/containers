@@ -1,8 +1,8 @@
 # This installs llama-swap and podman on top of an image
 # Base image could be, for example, llama.cpp or vLLM
-ARG BASE_IMG=debian:bookworm-slim
+FROM debian:bookworm-slim as base
 FROM ghcr.io/mostlygeek/llama-swap:cpu AS llama-swap
-FROM ${BASE_IMG}
+FROM base
 
 COPY --from=llama-swap /app/llama-swap /usr/local/bin
 

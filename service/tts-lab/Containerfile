@@ -1,5 +1,5 @@
-ARG BASE=nvidia/cuda:13.0.2-devel-ubuntu24.04
-FROM ${BASE}
+FROM docker.io/nvidia/cuda:13.0.2-devel-ubuntu24.04 as base
+FROM base
 ARG DEFAULT_TORCH_PLATFORM=cu130
 ARG DEFAULT_TORCH_VERSION=2.9.1
 # Set for unofficial builds

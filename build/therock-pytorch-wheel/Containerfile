@@ -1,7 +1,7 @@
 # Build custom-versioned pytorch wheels using ROCm from TheRock
 # Converted from https://github.com/ROCm/TheRock/blob/main/.github/workflows/build_portable_linux_pytorch_wheels.yml
-ARG BASE=ghcr.io/rocm/therock_build_manylinux_x86_64@sha256:6e8242d347af7e0c43c82d5031a3ac67b669f24898ea8dc2f1d5b7e4798b66bd
-FROM ${BASE} as src
+FROM ghcr.io/rocm/therock_build_manylinux_x86_64@sha256:6e8242d347af7e0c43c82d5031a3ac67b669f24898ea8dc2f1d5b7e4798b66bd as base
+FROM base as src
 ARG PYTORCH_GIT_REF=release/2.9
 
 RUN git clone https://github.com/ROCm/TheRock /work

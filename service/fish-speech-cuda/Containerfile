@@ -1,11 +1,11 @@
-ARG BASE=docker.io/nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04
 ARG EMBED_MODEL=no
+FROM docker.io/nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04 as base
 
 FROM scratch as nix-install
 ARG NIX_INSTALLER_VER=2.34.1
 ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/${NIX_INSTALLER_VER}/nix-installer-x86_64-linux /nix-installer
 
-FROM ${BASE} as base
+FROM base as pre-model-stage
 
 RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
     install linux --no-confirm --init none --extra-conf "sandbox = false"
@@ -42,7 +42,7 @@ EOF
 
 WORKDIR /work
 
-FROM base as model-embed-yes
+FROM pre-model-stage as model-embed-yes
 
 RUN <<EOF
 exec /nix/env/bash/bin/bash -e <<'EOS'
@@ -54,7 +54,7 @@ EOF
 
 ENV MODEL_PATH=/model
 
-FROM base as model-embed-no
+FROM pre-model-stage as model-embed-no
 
 FROM model-embed-${EMBED_MODEL}
 

@@ -1,6 +1,4 @@
 # Overwrite-able bootc base, in case ghcr CI version is stale
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
-ARG ARCH_BOOTC_LOCK=ghcr.io/bootcrew/arch-bootc:latest
 ARG ZFS_VER_STRATEGY=latest
 # From ../arch-base
 FROM bootc-arch-base as builder
@@ -18,7 +16,7 @@ RUN for mod in /work/modules.d/* ; do ln -s $mod /usr/lib/dracut/modules.d; done
 RUN /bin/sh for-container.sh build-initrd-all-mods
 
 # Build forked cfsctl
-FROM ${ARCH_LOCK} as cfsctl
+FROM archlinux as cfsctl
 # pacman flags attached to full sync commands
 # use to pin packages
 ARG PACMAN_FULL_SYNC_FLAGS=""
@@ -35,7 +33,7 @@ WORKDIR /work
 RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 
 
-FROM ${ARCH_BOOTC_LOCK} as stage-pre-zfs
+FROM bootc/arch as stage-pre-zfs
 
 FROM stage-pre-zfs as stage-zfs-use-latest
 

@@ -3,12 +3,19 @@ mod distro 'distrobox/'
 
 set dotenv-load := true
 
+export buildImageScript := justfile_directory() / "build-image.sh"
+
 export CTR_BUILD_TOOL := env("CTR_BUILD_TOOL", "podman")
-export CTR_BUILD_FLAGS := env("CTR_BUILD_FLAGS", "")
+
+export CTR_BUILD_CONTEXT_FROM_ARCH_BASE := "archlinux"
+export CTR_BUILD_CONTEXT_IMG_ARCH_BASE := env(
+    "CTR_BASE_ARCH",
+    "docker.io/archlinux/archlinux:latest"
+    )
 
 build context:
     tag=$(basename {{context}}) && \
-    ${CTR_BUILD_TOOL} build {{context}} -t $tag ${CTR_BUILD_FLAGS}
+    ${buildImageScript} {{context}} -t $tag
 
 pull-bootc-base-images:
     ${CTR_BUILD_TOOL} pull \

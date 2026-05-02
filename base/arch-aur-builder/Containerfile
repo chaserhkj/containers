@@ -1,6 +1,5 @@
 # This image is for building AUR packages for consumption by other archlinux images
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
-FROM ${ARCH_LOCK}
+FROM archlinux
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \

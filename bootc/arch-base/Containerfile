@@ -1,14 +1,11 @@
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
-ARG ARCH_BOOTC_LOCK=ghcr.io/bootcrew/arch-bootc:latest
-ARG ARCH_AUR_BUILDER_LOCK=arch-aur-builder:latest
 ARG ZFS_VER_STRATEGY=latest
 # From ../../base/arch-aur-builder
-FROM ${ARCH_AUR_BUILDER_LOCK} as aur-builder
+FROM arch-aur-builder as aur-builder
 
 RUN aur sync -n --noview zerotier-systemd-manager-git
 
 # Build ssh-key-dir to support $HOME/.ssh/authorized_keys.d
-FROM ${ARCH_LOCK} as ssh-key-dir
+FROM archlinux as ssh-key-dir
 # pacman flags attached to full sync commands
 # use to pin packages
 ARG PACMAN_FULL_SYNC_FLAGS=""
@@ -25,7 +22,7 @@ WORKDIR /work
 RUN mkdir -p /target && make RELEASE=1 && make install DESTDIR=/target RELEASE=1
 
 # Build forked cfsctl
-FROM ${ARCH_LOCK} as cfsctl
+FROM archlinux as cfsctl
 ARG PACMAN_FULL_SYNC_FLAGS
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
@@ -44,8 +41,10 @@ FROM scratch as bashrc.d
 COPY bashrc.d.sh /
 
 # Base arch image with extended package setups, to be used as base for site-specific images
-FROM ${ARCH_BOOTC_LOCK} as stage-pre-zfs
+FROM bootc/arch as stage-pre-zfs
 ARG PACMAN_FULL_SYNC_FLAGS
+# shell command used to query for packages that are to be reinstalled
+ARG PACMAN_REINSTALL_QUERY="pacman -Qq"
 
 # Remove all thinning options in pacman.conf, these are designed for service containers but we are not
 # Note that /etc/machine-id needs to be added if this is done
@@ -61,7 +60,7 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman-key --init && pacman -Sy && \
     pacman -S archlinux-keyring --noconfirm && \
-    pacman -Qq | pacman -S ${PACMAN_FULL_SYNC_FLAGS} --noconfirm - && \
+    ( eval ${PACMAN_REINSTALL_QUERY} ) | pacman -S --noconfirm - && \
     pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
     rm -rf /home /root /usr/local /srv /mnt /opt && \
     mkdir -p /var/home /var/roothome /var/usrlocal /var/srv /var/opt /var/mnt && \

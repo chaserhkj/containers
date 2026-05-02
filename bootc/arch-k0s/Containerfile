@@ -6,12 +6,22 @@ ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
 
 FROM ${ARCH_LOCK} as drbd-build
 ARG DRBD_VER=9.3.0
+ARG DRBD_TARGET_KVER=""
 
 WORKDIR /work
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm base-devel xmlto kmod inetutils bc libelf git cpio perl tar xz linux-headers
+    <<EOF
+set -xe
+pacman -Sy --needed --noconfirm base-devel xmlto kmod inetutils bc libelf git cpio perl tar xz
+[ -z "${DRBD_TARGET_KVER}" ] && pacman -Sy --needed --noconfirm linux-headers
+[ -z "${DRBD_TARGET_KVER}" ] || { 
+    curl -o /linux-headers-${DRBD_TARGET_KVER}-x86_64.pkg.tar.zst \
+    https://archive.archlinux.org/packages/l/linux-headers/linux-headers-${DRBD_TARGET_KVER}-x86_64.pkg.tar.zst
+    pacman -U /linux-headers-${DRBD_TARGET_KVER}-x86_64.pkg.tar.zst
+}
+EOF
 
 RUN curl -Lo drbd.tar.gz https://pkg.linbit.com/downloads/drbd/9/drbd-${DRBD_VER}.tar.gz && \
     tar xvf drbd.tar.gz && cd drbd-${DRBD_VER} && \

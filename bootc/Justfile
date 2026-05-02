@@ -2,6 +2,12 @@ mod arch-config 'arch-host-config/'
 
 CTR_ARCH_BOOTC_BASE := env("CTR_ARCH_BOOTC_BASE", "")
 
+export CTR_BUILD_CONTEXT_FROM_BOOTC_ARCH_BASE := "bootc/arch"
+export CTR_BUILD_CONTEXT_IMG_BOOTC_ARCH_BASE := env(
+    "CTR_BASE_ARCH_BOOTC",
+    "ghcr.io/bootcrew/arch-bootc:latest"
+    )
+
 default:
     just build-image arch-k0s
     just build-image arch-k0s-config
@@ -19,14 +25,12 @@ build-base-images:
     just build-image arch-base ${CTR_ARCH_BOOTC_BASE}
     just build-live-images arch ${CTR_ARCH_BOOTC_BASE}
 
-build-live-images distro bootc_base="":
-    from_flag="" ; [ -n "{{bootc_base}}" ] && from_flag="--build-arg BOOTC_BASE={{bootc_base}}"; \
-    ${CTR_BUILD_TOOL} build {{distro}}-live --target builder -t bootc-{{distro}}-live-builder ${CTR_BUILD_FLAGS} $from_flag && \
-    ${CTR_BUILD_TOOL} build {{distro}}-live -t bootc-{{distro}}-live ${CTR_BUILD_FLAGS} $from_flag
+build-live-images distro:
+    ${buildImageScript} {{distro}}-live --target builder -t bootc-{{distro}}-live-builder
+    ${buildImageScript} {{distro}}-live -t bootc-{{distro}}-live
 
-build-image subdir bootc_base="":
-    from_flag="" ; [ -n "{{bootc_base}}" ] && from_flag="--build-arg BOOTC_BASE={{bootc_base}}"; \
-    ${CTR_BUILD_TOOL} build {{subdir}} -t bootc-{{subdir}} ${CTR_BUILD_FLAGS} $from_flag
+build-image subdir:
+    ${buildImageScript} {{subdir}} -t bootc-{{subdir}}
 
 build-variant-image subdir base:
     #!/usr/bin/env bash

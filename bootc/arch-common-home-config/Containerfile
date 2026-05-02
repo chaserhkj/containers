@@ -1,8 +1,6 @@
 # Image that contains common configurations that are shared between hosts
 # that are physically located in home premises
-# From ../arch-common-config
-ARG BASE=bootc-arch-common-config
-
-FROM ${BASE}
+FROM bootc-arch-common-config as base
+FROM base
 
 COPY rootfs /

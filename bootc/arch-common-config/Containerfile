@@ -1,9 +1,5 @@
 # Image that contains common configurations that are shared between hosts
 ARG NIXPKGS_VERSION=nixos-25.11
-# From ../arch-base
-ARG BASE=bootc-arch-base
-ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
-ARG ARCH_AUR_BUILDER_LOCK=arch-aur-builder:latest
 
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:${NIXPKGS_VERSION}-x86_64-linux as nix-static
 
@@ -13,17 +9,18 @@ RUN nix build ${NIX_STATIC_REV}#nixStatic
 
 RUN cp /result/bin/nix /nixStatic
 
-FROM ${ARCH_AUR_BUILDER_LOCK} as aur-builder
+FROM arch-aur-builder as aur-builder
 
 RUN aur sync -n --noview sesh-bin
 
-FROM ${ARCH_LOCK} as blesh
+FROM archlinux as blesh
 
 ADD https://github.com/akinomyoga/ble.sh/releases/download/nightly/ble-nightly.tar.xz /
 
 RUN tar -C / -xvf /ble-nightly.tar.xz
 
-FROM ${BASE}
+FROM bootc-arch-base as base
+FROM base
 
 RUN --mount=type=bind,from=nix-static,target=/var/mnt \
     install -m0755 /var/mnt/nixStatic /usr/bin

@@ -1,8 +1,6 @@
 mod arch-config 'arch-host-config/'
 
-CTR_ARCH_BOOTC_BASE := env("CTR_ARCH_BOOTC_BASE", "")
-
-export CTR_BUILD_CONTEXT_FROM_BOOTC_ARCH_BASE := "bootc/arch"
+export CTR_BUILD_CONTEXT_FROM_BOOTC_ARCH_BASE := "bootc-arch"
 export CTR_BUILD_CONTEXT_IMG_BOOTC_ARCH_BASE := env(
     "CTR_BASE_ARCH_BOOTC",
     "ghcr.io/bootcrew/arch-bootc:latest"
@@ -15,15 +13,15 @@ default:
     just build-image arch-common-home-config
     just build-variant-image arch-common-config arch-k0s-config
     just build-variant-image arch-common-home-config arch-k0s-config
-    just build-variant-image arch-amd arch-common-home-config-k0s-config
+    just build-variant-image arch-amd arch-k0s-config-common-home-config
 
 build-all:
     just build-base-images
     just default
 
 build-base-images:
-    just build-image arch-base ${CTR_ARCH_BOOTC_BASE}
-    just build-live-images arch ${CTR_ARCH_BOOTC_BASE}
+    just build-image arch-base
+    just build-live-images arch
 
 build-live-images distro:
     ${buildImageScript} {{distro}}-live --target builder -t bootc-{{distro}}-live-builder
@@ -32,18 +30,14 @@ build-live-images distro:
 build-image subdir:
     ${buildImageScript} {{subdir}} -t bootc-{{subdir}}
 
-build-variant-image subdir base:
+build-variant-image subdir new_base:
     #!/usr/bin/env bash
     set -e
-    postfix=$(echo "{{base}}" | sed "s/[^-]*-//")
-    manifest={{subdir}}/Containerfile
-    # Resolve base image
-    base_arg=$(grep "ARG BASE=.*$" $manifest| head -n1)
-    if [[ -n "$base_arg" ]]; then
-        orig_base_image=$(echo $base_arg | sed "s/^ARG BASE=//")
-    else
-        orig_base_image=$(grep "^FROM" $manifest|tail -n1|choose 1)
-    fi
-    [[ $orig_base_image == *-base ]] && base_image=bootc-{{base}} || base_image=$orig_base_image-$postfix
-    echo "Use base $base_image for bootc-{{subdir}}-$postfix"
-    ${CTR_BUILD_TOOL} build {{subdir}} -t bootc-{{subdir}}-$postfix --build-arg BASE=$base_image ${CTR_BUILD_FLAGS} 
+    postfix=$(echo "{{subdir}}" | sed "s/[^-]*-//")
+
+    echo "Use base {{new_base}} for bootc-{{new_base}}-$postfix"
+
+    export CTR_BUILD_CONTEXT_FROM_VARIANT_BASE=base
+    export CTR_BUILD_CONTEXT_IMG_VARIANT_BASE=bootc-{{new_base}}
+
+    ${buildImageScript} {{subdir}} -t bootc-{{new_base}}-$postfix

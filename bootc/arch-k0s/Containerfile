@@ -1,5 +1,4 @@
 # From ../arch-base
-ARG BASE=bootc-arch-base
 # install or skip
 ARG DRBD_INSTALL=install
 ARG ARCH_LOCK=docker.io/archlinux/archlinux:latest
@@ -29,7 +28,8 @@ RUN curl -Lo drbd.tar.gz https://pkg.linbit.com/downloads/drbd/9/drbd-${DRBD_VER
 
 RUN cd drbd-${DRBD_VER} && make install DESTDIR=/target
 
-FROM ${BASE} as stage-pre-drbd
+FROM bootc-arch-base as base
+FROM base as stage-pre-drbd
 ARG K0S_VERSION="v1.35.1+k0s.0"
 
 ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERSION}/k0s-${K0S_VERSION}-amd64" /usr/bin/k0s

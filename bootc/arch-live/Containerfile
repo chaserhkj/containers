@@ -33,7 +33,7 @@ WORKDIR /work
 RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 
 
-FROM bootc/arch as stage-pre-zfs
+FROM bootc-arch as stage-pre-zfs
 
 FROM stage-pre-zfs as stage-zfs-use-latest
 

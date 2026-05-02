@@ -1,7 +1,4 @@
-ARG BASE=bootc-arch-base
-ARG ARCH_AUR_BUILDER_LOCK=arch-aur-builder:latest
-
-FROM ${ARCH_AUR_BUILDER_LOCK} as amd-container-toolkit
+FROM arch-aur-builder as amd-container-toolkit
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -13,7 +10,8 @@ WORKDIR /var/build/work
 
 RUN make container-toolkit container-toolkit-ctk
 
-FROM ${BASE}
+# This image has no direct build configs 
+FROM base
 
 # ROCm needs to use /opt as image directory
 RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;} || exit 0

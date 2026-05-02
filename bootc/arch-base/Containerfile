@@ -41,7 +41,7 @@ FROM scratch as bashrc.d
 COPY bashrc.d.sh /
 
 # Base arch image with extended package setups, to be used as base for site-specific images
-FROM bootc/arch as stage-pre-zfs
+FROM bootc-arch as stage-pre-zfs
 ARG PACMAN_FULL_SYNC_FLAGS
 # shell command used to query for packages that are to be reinstalled
 ARG PACMAN_REINSTALL_QUERY="pacman -Qq"

@@ -1,9 +1,9 @@
 # Variant that uses docker/buildkit specific features
 # Use ubuntu 24.04 as base image
 # Since this is what used by llama.cpp
-ARG BASE=docker.io/library/ubuntu:24.04
+FROM docker.io/library/ubuntu:24.04 as base
 
-FROM ${BASE} as therock-base
+FROM base as therock-base
 
 ARG TARGET_GPU_ARCH=gfx1151
 ARG THE_ROCK_VERSION=7.12.0a20260202

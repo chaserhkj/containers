@@ -1,6 +1,6 @@
 # Host-specific configuration stage, adds configuration only
 # Assuming we are building from ../arch-base, but this could be overridden
-FROM bootc-arch-base
+FROM bootc-arch-base as base
 
 # Add additional host-specific packages from build context, if any
 RUN --mount=type=bind,target=/tmp \

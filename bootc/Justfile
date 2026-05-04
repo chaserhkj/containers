@@ -12,8 +12,8 @@ default:
     just build-image arch-common-config
     just build-image arch-common-home-config
     just build-variant-image arch-common-config arch-k0s-config
-    just build-variant-image arch-common-home-config arch-k0s-config
-    just build-variant-image arch-amd arch-k0s-config-common-home-config
+    just build-variant-image arch-common-home-config arch-k0s-config-common-config
+    just build-variant-image arch-amd arch-k0s-config-common-config-common-home-config
 
 build-all:
     just build-base-images

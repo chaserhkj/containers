@@ -55,8 +55,8 @@ import() {
 }
 
 setup_nvmet() {
-    mkdir -p $port
     nvmetcli restore /etc/nvmet/config.json || :
+    mkdir -p $port
     echo $NVME_OF_BIND_IP > $port/addr_traddr
     echo tcp > $port/addr_trtype
     echo $NVME_OF_BIND_PORT > $port/addr_trsvcid

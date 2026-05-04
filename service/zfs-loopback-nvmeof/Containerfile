@@ -36,6 +36,10 @@ RUN echo "PasswordAuthentication no" > /etc/ssh/sshd_config.d/10-no-passwd.conf
 
 COPY entrypoint.sh /
 
+COPY --chmod=0755 export-all-zvol.sh /usr/bin/export-all-zvol
+
+COPY --chmod=0755 cleanup-zvol.sh /use/bin/cleanup-zvol
+
 ENV IMG_FILE=/zfs.img
 
 ENTRYPOINT ["tini", "-s", "-g", "--", "bash", "entrypoint.sh"]

@@ -7,4 +7,5 @@ Before=local-fs.target
 What=/
 Where=/realHost
 Type=none
-Options=rbind,rshared
+LazyUnmount=yes
+Options=rbind,rslave

@@ -21,7 +21,7 @@ configure-image host:
     #!/usr/bin/env bash
     set -ex
     host_dir="hosts/{{host}}"
-    [ -f $host_dir/BASE ] && read -r base_img < "$host_dir/BASE"
+    [ -f $host_dir/BASE ] && { read -r base_img < "$host_dir/BASE" || [ -n "$base_img" ]; }
     [ -z $CREDS ] && export CREDS="$(gpg --decrypt creds.gpg)"$'\n'
 
     CTR_BUILD_FROM=$base_img \
@@ -31,7 +31,7 @@ configure-image host:
         -f Containerfile "$host_dir"
 
     if [ -f $host_dir/Containerfile ]; then
-        read -r intermediate_img < {{host}}.intermediate.id
+        read -r intermediate_img < {{host}}.intermediate.id || [ -n "$intermediate_img" ]
         CTR_BUILD_CONTEXT_FROM_BASE=base CTR_BUILD_CONTEXT_IMG_BASE=$intermediate_img \
             ${buildImageScript} \
             --iidfile {{host}}.pre-live.id \
@@ -40,13 +40,13 @@ configure-image host:
         cp {{host}}.intermediate.id {{host}}.pre-live.id
     fi
 
-    read -r pre_live_image < {{host}}.pre-live.id
+    read -r pre_live_image < {{host}}.pre-live.id || [ -n "$pre_live_image" ]
     if [ -f $host_dir/LIVE ]; then
         CTR_BUILD_CONTEXT_FROM_BASE=base CTR_BUILD_CONTEXT_IMG_BASE=$pre_live_image \
             ${buildImageScript} \
             --iidfile {{host}}.final.id \
             -f Containerfile.live "$host_dir"
-        read -r final_image < {{host}}.final.id
+        read -r final_image < {{host}}.final.id || [ -n "$final_image" ]
     else
         final_image=$pre_live_image
     fi

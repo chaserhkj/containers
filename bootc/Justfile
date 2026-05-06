@@ -24,11 +24,11 @@ build-base-images:
     just build-live-images arch
 
 build-live-images distro:
-    ${buildImageScript} {{distro}}-live --target builder -t bootc-{{distro}}-live-builder
-    ${buildImageScript} {{distro}}-live -t bootc-{{distro}}-live
+    ${buildImageScript} --target builder -t bootc-{{distro}}-live-builder {{distro}}-live 
+    ${buildImageScript} -t bootc-{{distro}}-live {{distro}}-live 
 
 build-image subdir:
-    ${buildImageScript} {{subdir}} -t bootc-{{subdir}}
+    ${buildImageScript} -t bootc-{{subdir}} {{subdir}}
 
 build-variant-image subdir new_base:
     #!/usr/bin/env bash
@@ -40,4 +40,4 @@ build-variant-image subdir new_base:
     export CTR_BUILD_CONTEXT_FROM_VARIANT_BASE=base
     export CTR_BUILD_CONTEXT_IMG_VARIANT_BASE=bootc-{{new_base}}
 
-    ${buildImageScript} {{subdir}} -t bootc-{{new_base}}-$postfix
+    ${buildImageScript} -t bootc-{{new_base}}-$postfix {{subdir}}

@@ -15,7 +15,7 @@ export CTR_BUILD_CONTEXT_IMG_ARCH_BASE := env(
 
 build context:
     tag=$(basename {{context}}) && \
-    ${buildImageScript} {{context}} -t $tag
+    ${buildImageScript} -t $tag {{context}} 
 
 pull-bootc-base-images:
     ${CTR_BUILD_TOOL} pull \

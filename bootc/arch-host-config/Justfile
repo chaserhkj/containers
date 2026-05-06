@@ -15,7 +15,7 @@ prepare-all-live:
 prepare-image host: (configure-image host)
     ${CTR_BUILD_TOOL} tag localhost/bootc-arch-host:{{host}} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
     [ -f hosts/{{host}}/LIVE ] && push_flags="--compression-format=gzip --force-compression" || push_flags=  ; \
-    ${CTR_BUILD_TOOL} push $push_flags ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
+    ${CTR_BUILD_TOOL} push $push_flags ${CTR_PUSH_FLAGS} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
 
 configure-image host:
     #!/usr/bin/env bash

@@ -19,6 +19,7 @@ prepare-image host:
 
 configure-image host:
     #!/usr/bin/env bash
+    set -ex
     host_dir="hosts/{{host}}"
     [ -f $host_dir/BASE ] && read -r base_img < "$host_dir/BASE"
     [ -z $CREDS ] && export CREDS="$(gpg --decrypt creds.gpg)"$'\n'

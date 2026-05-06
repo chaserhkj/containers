@@ -12,10 +12,10 @@ prepare-all-persistent:
 prepare-all-live:
     for host in $(ls hosts); do [ -f "hosts/$host/LIVE" ] || continue; just prepare-image $host; done;
 
-prepare-image host: (configure-image host)
-    ${CTR_BUILD_TOOL} tag localhost/bootc-arch-host:{{host}} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
-    [ -f hosts/{{host}}/LIVE ] && push_flags="--compression-format=gzip --force-compression" || push_flags=  ; \
-    ${CTR_BUILD_TOOL} push $push_flags ${CTR_PUSH_FLAGS} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
+prepare-image host:
+    just configure-image host
+    just tag-image host
+    just push-image host
 
 configure-image host:
     #!/usr/bin/env bash
@@ -51,4 +51,14 @@ configure-image host:
     fi
 
     ${CTR_BUILD_TOOL} tag $final_image localhost/bootc-arch-host:{{host}}
+
+tag-image host:
+    ${CTR_BUILD_TOOL} tag localhost/bootc-arch-host:{{host}} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}}
+
+push-image host:
+    [ -f hosts/{{host}}/LIVE ] && push_flags="--compression-format=gzip --force-compression" || push_flags=  ; \
+    retry=0; max_retry=${CTR_PUSH_RETRIES:-3}; backoff=${CTR_PUSH_RETRY_BACKOFF:-"1s"}; \
+    until [ "$retry" -ge $max_retry ]; do \
+    ${CTR_BUILD_TOOL} push $push_flags ${CTR_PUSH_FLAGS:-} ${CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF}:{{host}} && break; \
+    retry=$((retry+1)); sleep "$backoff"; done
 

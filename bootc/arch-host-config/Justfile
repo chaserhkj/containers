@@ -13,9 +13,9 @@ prepare-all-live:
     for host in $(ls hosts); do [ -f "hosts/$host/LIVE" ] || continue; just prepare-image $host; done;
 
 prepare-image host:
-    just configure-image host
-    just tag-image host
-    just push-image host
+    just configure-image {{host}}
+    just tag-image {{host}}
+    just push-image {{host}}
 
 configure-image host:
     #!/usr/bin/env bash

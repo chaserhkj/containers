@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --noconfirm --needed zfs-utils nvmetcli openssh python-configshell-fb
+    pacman -Sy --noconfirm --needed zfs-utils nvmetcli openssh python-configshell-fb
 
 COPY --from=docker.io/stagex/user-tini /usr/sbin/tini-static /usr/bin/tini
 

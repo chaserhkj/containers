@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm yay base-devel
+    pacman -Sy --needed --noconfirm yay base-devel
 
 # From ../../base/arch-aur-builder
 FROM arch-aur-builder as aur-builder
@@ -41,7 +41,7 @@ RUN --mount=type=tmpfs,target=/var/lib/pacman/sync \
 # Pre-install packages installed by distrobox-init, to speed up init process in distrobox
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm zsh bash-completion bc curl diffutils findutils glibc gnupg \
+    pacman -Sy --needed --noconfirm zsh bash-completion bc curl diffutils findutils glibc gnupg \
     iputils inetutils keyutils less lsof man-db man-pages mlocate mtr ncurses nss-mdns openssh \
     pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata unzip \
     util-linux util-linux-libs vte-common wget words xorg-xauth zip mesa vulkan-intel vulkan-radeon
@@ -49,7 +49,7 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 # Customized packages
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm bubblewrap fzf busybox catatonit
+    pacman -Sy --needed --noconfirm bubblewrap fzf busybox catatonit
 
 # symlink busybox's runit implementation, for any process supervising that needs to be done
 # inside the distrobox

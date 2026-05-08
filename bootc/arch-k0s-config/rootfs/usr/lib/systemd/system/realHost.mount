@@ -8,4 +8,4 @@ What=/
 Where=/realHost
 Type=none
 LazyUnmount=yes
-Options=rbind,rslave
+Options=rbind,rshared

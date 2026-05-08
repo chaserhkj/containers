@@ -1,0 +1,10 @@
+[Unit]
+Description=/realHost unmount hook
+After=realHost.mount
+BindsTo=realHost.mount
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/usr/bin/mount --make-rslave /realHost

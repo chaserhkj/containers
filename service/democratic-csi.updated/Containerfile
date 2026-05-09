@@ -1,0 +1,18 @@
+# democratic-csi image with updated tools, for use with new tool options
+# Install 
+FROM scratch as nix-install
+ARG NIX_INSTALLER_VER=2.34.1
+ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/${NIX_INSTALLER_VER}/nix-installer-x86_64-linux /nix-installer
+
+FROM ghcr.io/democratic-csi/democratic-csi:latest as base
+FROM base
+
+RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
+    install linux --no-confirm --init none --extra-conf "sandbox = false"
+
+RUN mv /usr/sbin/nvme /usr/sbin/nvme.old
+
+RUN export USER=root HOME=/root && \
+    . /nix/var/nix/profiles/default/etc/profile.d/nix.sh && \
+    pkg=$(nix build nixpkgs#nvme-cli^out --no-link --print-out-paths) && \
+    ln -sfT $pkg/bin/nvme /usr/sbin/nvme

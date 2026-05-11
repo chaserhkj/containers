@@ -3,6 +3,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix2container.url = "github:nlewo/nix2container";
+    devshell.url = "github:numtide/devshell";
   };
 
   outputs = inputs@{ flake-parts, ... }:

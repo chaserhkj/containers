@@ -1,0 +1,77 @@
+name: Build some nix2container images weekly
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - '.github/workflows/build-nix2container-weekly.yaml'
+      - 'flake.lock'
+      - 'flake.nix'
+      - 'nix/lib/**'
+      - 'nix/services/nfs-ganesha.nix'
+      - 'nix/tools/amd-ctk.nix'
+      - 'nix/packages/amd-ctk.nix'
+      - 'nix/environments/term-agents.nix'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 2,5'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-nfs-ganesha:
+    name: Build nfs-ganesha image using nix2container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build using nix2container
+        run: |
+          nix run .#nfs-ganesha.copyToRegistry
+
+  build-amd-ctk:
+    name: Build amd-ctk image using nix2container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build using nix2container
+        run: |
+          nix run .#amd-ctk.copyToRegistry
+
+  build-term-agents:
+    name: Build term-agents image using nix2container
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Install nix
+        uses: cachix/install-nix-action@v31
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build using nix2container
+        run: |
+          nix run .#term-agents.copyToRegistry --accept-flake-config

@@ -2,7 +2,8 @@
   imports = [
     inputs.devshell.flakeModule
   ];
-  perSystem = {pkgs, self', ...}: with pkgs; let 
+  perSystem = {inputs', pkgs, self', ...}: with pkgs; let 
+      inherit (inputs'.nix2container.packages) nix2container;
       nixPkg = pkgs.nixVersions.latest;
       nixConfig = pkgs.writeTextDir "etc/nix/nix.conf"
         ''
@@ -11,18 +12,33 @@
           build-users-group =
           sandbox = false
         '';
+      corePkgs = with pkgs; [
+        coreutils-full
+        util-linux
+        busybox
+        curl
+        nixPkg
+        git
+      ];
+      agentPkgs = with inputs'.llm-agents.packages; [
+        opencode
+
+        openskills
+        tuicr
+        ck
+      ];
     in {
       devshells.term-agents = {
-        packages = [
-          pkgs.hello
+        packages = corePkgs ++ agentPkgs ++ [
         ];
       };
       imagesWithFixedEntrypointVariant.term-agents = {
-        name = "term-agents";
+        name = "ghcr.io/chaserhkj/containers/term-agents";
+        tag = "latest";
         config = {
-          entrypoint = ["${nixPkg}/bin/nix"];
-          cmd = [];
+          entrypoint = ["${self'.devShells.term-agents.flakeApp.program}"];
         };
+        initializeNixDatabase = true;
         copyToRoot = [
           nixConfig
         ];

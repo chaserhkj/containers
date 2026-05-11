@@ -1,11 +1,11 @@
-name: Build some nix2container images weekly
+name: Build some nix2container images
 
 on:
   push:
     branches: 
       - main
     paths:
-      - '.github/workflows/build-nix2container-weekly.yaml'
+      - '.github/workflows/build-nix2container.yaml'
       - 'flake.lock'
       - 'flake.nix'
       - 'nix/lib/**'
@@ -14,8 +14,8 @@ on:
       - 'nix/packages/amd-ctk.nix'
       - 'nix/environments/term-agents.nix'
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 2,5'
+  # images are pinned by flake.lock, no need to build the same version repeatedly
+  # use a separate cron workflow to run nix flake update and commit to trigger updated builds
 
 permissions:
   contents: read

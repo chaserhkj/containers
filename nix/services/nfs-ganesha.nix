@@ -55,7 +55,7 @@
           }
         );
     in {
-    imagesWithFixedEntrypointVariant.nfs-ganesha = {
+    containers.nfs-ganesha = {
       name = "ghcr.io/chaserhkj/containers/nfs-ganesha";
       tag = "latest";
       config = {
@@ -72,7 +72,8 @@
         mkdir -p $out/var/run/ganesha
         mkdir -p $out/export
       '';
-      extra = {
+      buildFixedEntrypointVariant = true;
+      passthru = {
         ganesha = ganeshaConfigured;
       };
     };

@@ -1,41 +1,43 @@
-localFlake@{withSystem, ...}:
+localFlake@{importApplyContext, buildImageWithSystem, ...}:
 {...}:
 {
+  imports = [ (localFlake.importApplyContext ./containers.nix) ];
   perSystem = {config, lib, pkgs, system, ...}: {
-    options.imagesWithFixedEntrypointVariant = lib.mkOption {
-      type = lib.types.lazyAttrsOf lib.types.attrs;
-      default = {};
-      description = "Definition of images as passed to nix2container.buildImage";
+    options.containers = with lib; with types; mkOption {
+      type = lazyAttrsOf (submodule {
+        options.buildFixedEntrypointVariant = mkOption {
+          type = bool;
+          default = false;
+          description = "flag to enable building fixed entrypoint variant of the image."
+          +" image will be exported as sub attribute fixedEntrypointVariant";
+        };
+      });
     };
+    config._containers = let 
+      inherit (builtins) mapAttrs removeAttrs;
 
-    config.packages = let 
-        localInputs' = localFlake.withSystem system ({inputs', ...}: inputs');
-        inherit(localInputs'.nix2container.packages.nix2container) buildImage;
-    in lib.mapAttrs (
-      name: imageDefWithExtra: let
-          extraAttrs = imageDefWithExtra.extra or {};
-          imageDef = builtins.removeAttrs imageDefWithExtra ["extra"];
-          entryPointImageDef = imageDef // {
-            config = (imageDef.config or {}) // {
-              Entrypoint = [ "/bin/entrypoint.sh" ];
+      buildImage = localFlake.buildImageWithSystem system;
+      addVariant = pname: inputConfig:
+        lib.mkIf inputConfig.buildFixedEntrypointVariant {
+          passthru.fixedEntrypointVariant = let 
+            baseDef = config._containers.${pname}.sanitizedConfig;
+          in buildImage (baseDef // {
+            config = (baseDef.config or {}) // {
+              Entrypoint = ["/bin/entrypoint.sh"];
               Cmd = [];
             };
-            copyToRoot = lib.toList (imageDef.copyToRoot or []) ++ [
+            copyToRoot = lib.toList (baseDef.copyToRoot or []) ++ [
               (let
-                entrypointStr = lib.escapeShellArgs (imageDef.config.Entrypoint or []);
-                cmdStr = if (imageDef.config ? Cmd && imageDef.config.Cmd != [])
-                  then lib.escapeShellArgs imageDef.config.Cmd
+                entrypointStr = lib.escapeShellArgs (baseDef.config.Entrypoint or []);
+                cmdStr = if (baseDef.config ? Cmd && baseDef.config.Cmd != [])
+                  then lib.escapeShellArgs baseDef.config.Cmd
                   else ''"$@"'';
               in pkgs.writeShellScriptBin "entrypoint.sh"
               ''
                 exec ${entrypointStr} ${cmdStr}
-              '')
-            ];
-          };
-        in ((buildImage imageDef)
-        // {
-          fixedEntrypoint = buildImage entryPointImageDef;
-        } // extraAttrs )
-    ) config.imagesWithFixedEntrypointVariant;
+              '')];
+          });
+        };
+    in mapAttrs addVariant config.containers;
   };
 }

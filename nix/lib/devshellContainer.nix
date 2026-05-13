@@ -1,30 +1,52 @@
-localFlake@{withSystem, inputs, ...}:
-{...}:
+localFlake@{withSystem, inputs, lib, importApply, ...}:
+{...}: 
 let 
   local-devshell = inputs.devshell;
+  local-mkImageWithEntryPoint = importApply ./mkImageWithEntryPoint.nix localFlake;
 in {
-  imports = [ local-devshell.flakeModule ];
-  perSystem = {config, options, lib, system, ...}: {
+  imports = [ 
+    local-devshell.flakeModule
+    local-mkImageWithEntryPoint
+  ];
+  perSystem = {config, options, system, pkgs, ...}: let 
+
+    inherit (builtins) mapAttrs;
+
+    # make underlying devshell declaration from devshellContainer config
+    make-devshell-config = name: allConfigs: lib.mkMerge [
+      {
+        packages = [
+          pkgs.nixVersions.latest
+        ];
+      }
+      allConfigs.devshellConfig
+    ];
+
+    # make underlying container attributes from devshellContainer config
+    make-container-attrs = name: allConfigs: lib.mkMerge [
+      {
+
+      }
+      allConfigs.containerAttrs
+    ];
+
+  in {
     options.devshellContainer = lib.mkOption {
-      type = with lib.types; submodule {
+      type = with lib lib.types; submodule {
         options = {
-          devshellAttrs = lib.mkOption {
+          devshellConfig = mkOption {
             type = options.devshells.type;
-            default = {};
-            description = "";
           };
-          containerAttrs = lib.mkOption {
-            type = attrs;
-            default = {};
-            description = "";
+          containerAttrs = mkOption {
+            type = submodule {
+            };
           };
         };
       };
-      default = {
-        devshellAttrs = {};
-        containerAttrs = {};
-      };
     };
-
+    config = {
+      devshells = mapAttrs make-devshell-config config.devshellContainer;
+      imagesWithFixedEntrypointVariant = mapAttrs make-container-attrs config.devshellContainer;
+    };
   };
 }

@@ -9,7 +9,7 @@ COPY nix /flake/nix
 
 WORKDIR /flake
 
-RUN nix run .#${TARGET}.fixedEntrypoint.copyTo -- oci:/oci:latest
+RUN nix run .#${TARGET}.fixedEntrypointVariant.copyTo -- oci:/oci:latest
 
 RUN nix run nixpkgs#umoci -- unpack --image /oci:latest /bundle
 

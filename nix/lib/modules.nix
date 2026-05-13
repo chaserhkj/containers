@@ -1,8 +1,14 @@
-{flake-parts-lib, withSystem, inputs, ...}: let 
+{flake-parts-lib, withSystem, inputs, lib, ...}: let 
   inherit(flake-parts-lib) importApply;
-  importApplyLocalDeps = module: importApply module { inherit withSystem; };
-  mkImageWithEntryPoint = importApplyLocalDeps ./mkImageWithEntrypoint.nix;
-  containerizedApp = importApplyLocalDeps ./containerizedApp.nix;
+  localFlakeContext = {
+    importApplyContext = module: importApply module localFlakeContext;
+    buildImageWithSystem = system: (withSystem system ({inputs', ...}: inputs'))
+      .nix2container.packages.nix2container.buildImage;
+  };
+
+  inherit(localFlakeContext) importApplyContext;
+  mkImageWithEntryPoint = importApplyContext ./mkImageWithEntrypoint.nix;
+  containerizedApps = importApplyContext ./containerizedApps.nix;
 in {
   imports = [
     inputs.flake-parts.flakeModules.flakeModules
@@ -11,6 +17,6 @@ in {
   flake.flakeModules = {
     inherit
       mkImageWithEntryPoint 
-      containerizedApp;
+      containerizedApps;
   };
 }

@@ -2,7 +2,7 @@
   perSystem = {pkgs, self', ...}: let 
     cliPkg = pkgs.callPackage ../packages/amd-ctk.nix {};
   in {
-    imagesWithFixedEntrypointVariant.amd-ctk = {
+    containers.amd-ctk = {
       name = "ghcr.io/chaserhkj/containers/amd-ctk";
       tag = "latest";
       config = {
@@ -10,7 +10,8 @@
           "${cliPkg}/bin/amd-ctk"
         ];
       };
-      extra = {
+      buildFixedEntrypointVariant = true;
+      passthru = {
         cli = cliPkg;
       };
     };

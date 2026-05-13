@@ -2,8 +2,10 @@ localFlake@{buildImageWithSystem, ...}:
 {...}:
 {
   perSystem = {config, lib, system, ...}: 
-  with lib; with types;
   let 
+    inherit (lib) mkOption types;
+    inherit (types) nullOr str submodule pkgs int bool
+    attrsOf lazyAttrsOf anything uniq listOf attrs;
     # Convert the first character of a string to lower case
     lowerFirst = s: 
     let
@@ -17,8 +19,8 @@ localFlake@{buildImageWithSystem, ...}:
       # not type-checked for now
       ExposedPorts = mkOption { type = attrsOf anything; };
       Env = mkOption { type = listOf str; };
-      Entrypoint = mkOption { type = listOf str;};
-      Cmd = mkOption {type = listOf str;};
+      Entrypoint = mkOption { type = uniq (listOf str);};
+      Cmd = mkOption {type = uniq (listOf str);};
       # not type-checked for now
       Volumes = mkOption {type = attrsOf anything; };
       WorkingDir = mkOption {type = nullOr str; default = null;};
@@ -28,13 +30,12 @@ localFlake@{buildImageWithSystem, ...}:
     ociImageConfigSchemaLowerCase = builtins.listToAttrs (
       lib.mapAttrsToList (name: value: { name = lowerFirst name; value = value;}) ociImageConfigSchema
     );
+    ociImageConfigStrictSubmodule = submodule { options = ociImageConfigSchema; };
     # Prototype for nix2container.buildImage input attribute
     buildImageConfigSchema = {
       name = mkOption { type = str; };
       tag = mkOption { type = nullOr str; default = null; };
-      config = mkOption {
-        type = submodule { options = ociImageConfigSchema; };
-      };
+      config = mkOption { type = ociImageConfigStrictSubmodule; };
       copyToRoot = mkOption { type = listOf pkgs; };
       # result of nix2container.pullImage or nix2container.pullImageFromManifest
       # not type-checked for now
@@ -47,17 +48,44 @@ localFlake@{buildImageWithSystem, ...}:
       # not type-checked for now
       layers = mkOption { type = listOf anything; };
     };
-    buildImageConfigStrictType = submodule {
+    buildImageConfigStrictSubmodule = submodule {
       options = buildImageConfigSchema;
     };
-    buildImageConfigInputType = submodule {
+    ociImageConfigInputSubmodule = submodule ({config, options, ...}: {
+      # Accept both CamelCase and camelCase
+      options = ociImageConfigSchema // ociImageConfigSchemaLowerCase;
+      # Redirect camelCase to CamelCase
+      config = let 
+        inherit (builtins) map listToAttrs attrNames;
+      in listToAttrs (map (field: {
+        name = field;
+        value = lib.mkAliasDefinitions options.${lowerFirst field};
+      }) (attrNames ociImageConfigSchema));
+    });
+    buildImageConfigInputSubmodule = submodule ({config, options, ...}: {
       options = buildImageConfigSchema // {
         # Allow omitting name in the input and use default prefix
         name = mkOption { type = nullOr str; default = null; };
-        # Accept both CamelCase and camelCase
-        config = mkOption { type = submodule {
-          options = ociImageConfigSchema // ociImageConfigSchemaLowerCase;
-        };};
+        # user-facing input OCI config
+        config = mkOption {
+          type = ociImageConfigInputSubmodule;
+        };
+        # internal sanitized OCI config for nix2container consumption
+        _config = mkOption {
+          type = ociImageConfigStrictSubmodule;
+          internal = true;
+        };
+      };
+      # sanitize by removing lower case fields
+      config._config = builtins.intersectAttrs ociImageConfigSchema config.config;
+    });
+
+    containersConfigSubmodule = submodule {
+      freeformType = buildImageConfigInputSubmodule;
+      options.passthru = mkOption {
+        type = lazyAttrsOf (uniq anything);
+        description = "passthrough attribute set, to be merged with the"
+        +" derivation as returned by nix2container";
       };
     };
   in {
@@ -73,14 +101,7 @@ localFlake@{buildImageWithSystem, ...}:
         description = "default image tag to use";
       };
       containers = mkOption {
-        type = lazyAttrsOf (submodule {
-          freeformType = buildImageConfigInputType;
-          options.passthru = mkOption {
-            type = lazyAttrsOf (uniq anything);
-            description = "passthrough attribute set, to be merged with the"
-            +" derivation as returned by nix2container";
-          };
-        });
+        type = lazyAttrsOf containersConfigSubmodule;
         description = "nix2container definitions."
           +" uses mostly the same prototype as nix2container"
           +" input attribute sets. see nix2container documentation for details.";
@@ -90,9 +111,9 @@ localFlake@{buildImageWithSystem, ...}:
         type = lazyAttrsOf (submodule {
           options = {
             # Sanitized config before passing into nix2container
-            sanitizedConfig = mkOption { type = buildImageConfigStrictType; };
+            sanitizedConfig = mkOption { type = buildImageConfigStrictSubmodule; };
             # Final config being passed into nix2container
-            finalConfig = mkOption { type = buildImageConfigStrictType; };
+            finalConfig = mkOption { type = buildImageConfigStrictSubmodule; };
             # Final actual passthrough attributes
             passthru = mkOption { type = lazyAttrsOf (uniq anything); };
           };
@@ -103,16 +124,7 @@ localFlake@{buildImageWithSystem, ...}:
     config = let 
       inherit(builtins) mapAttrs removeAttrs attrNames map listToAttrs hasAttr intersectAttrs;
 
-      sanitizeConfig = pname: container: let
-        mergedOCIConfig = listToAttrs (map (field: {
-          name = field;
-          value = lib.mkMerge [
-            container.config.${lowerFirst field}
-            container.config.${field}
-          ];
-        }) (attrNames ociImageConfigSchema));
-      in
-        intersectAttrs buildImageConfigSchema container 
+      sanitizeConfig = pname: container: intersectAttrs buildImageConfigSchema container 
         // { 
           name = if container.name == null
             then config.defaultImagePrefix + pname
@@ -120,7 +132,7 @@ localFlake@{buildImageWithSystem, ...}:
           tag = if container.tag == null
             then config.defaultImageTag
             else container.tag;
-          config = mergedOCIConfig;
+          config = container._config;
         };
 
     in {

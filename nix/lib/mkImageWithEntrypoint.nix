@@ -22,14 +22,14 @@ localFlake@{importApplyContext, buildImageWithSystem, ...}:
           passthru.fixedEntrypointVariant = let 
             baseDef = config._containers.${pname}.sanitizedConfig;
           in buildImage (baseDef // {
-            config = (baseDef.config or {}) // {
+            config = baseDef.config // {
               Entrypoint = ["/bin/entrypoint.sh"];
               Cmd = [];
             };
-            copyToRoot = lib.toList (baseDef.copyToRoot or []) ++ [
+            copyToRoot = lib.toList baseDef.copyToRoot ++ [
               (let
-                entrypointStr = lib.escapeShellArgs (baseDef.config.Entrypoint or []);
-                cmdStr = if (baseDef.config ? Cmd && baseDef.config.Cmd != [])
+                entrypointStr = lib.escapeShellArgs baseDef.config.Entrypoint;
+                cmdStr = if baseDef.config.Cmd != []
                   then lib.escapeShellArgs baseDef.config.Cmd
                   else ''"$@"'';
               in pkgs.writeShellScriptBin "entrypoint.sh"

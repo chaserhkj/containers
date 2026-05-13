@@ -114,8 +114,12 @@ localFlake@{buildImageWithSystem, ...}:
       in
         lib.filterAttrs (name: value: hasAttr name buildImageConfigSchema) container 
         // { 
-          name = container.name or (config.defaultImagePrefix + pname);
-          tag = container.tag or config.defaultImageTag;
+          name = if container.name == null
+            then config.defaultImagePrefix + pname
+            else container.name;
+          tag = if container.tag == null
+            then config.defaultImageTag
+            else container.tag;
           config = mergedOCIConfig;
         };
 

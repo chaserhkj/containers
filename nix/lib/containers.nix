@@ -101,7 +101,7 @@ localFlake@{buildImageWithSystem, ...}:
       };
     };
     config = let 
-      inherit(builtins) mapAttrs removeAttrs attrNames map listToAttrs hasAttr;
+      inherit(builtins) mapAttrs removeAttrs attrNames map listToAttrs hasAttr intersectAttrs;
 
       sanitizeConfig = pname: container: let
         mergedOCIConfig = listToAttrs (map (field: {
@@ -112,7 +112,7 @@ localFlake@{buildImageWithSystem, ...}:
           ];
         }) (attrNames ociImageConfigSchema));
       in
-        lib.filterAttrs (name: value: hasAttr name buildImageConfigSchema) container 
+        intersectAttrs buildImageConfigSchema container 
         // { 
           name = if container.name == null
             then config.defaultImagePrefix + pname

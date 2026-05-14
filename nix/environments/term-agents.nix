@@ -1,7 +1,7 @@
 {...}: {
   perSystem = {inputs', pkgs, ...}: {
-    devshellContainers.term-agent = {};
-    devshells.term-agent = {
+    devshellContainers.term-agents = {};
+    devshells.term-agents = {
       packages = let 
         llm = inputs'.llm-agents.packages;
       in (with pkgs; [

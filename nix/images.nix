@@ -6,4 +6,7 @@
 
     ./tools/amd-ctk.nix
   ];
+  perSystem = {...}: {
+    defaultImagePrefix = "ghcr.io/containers/";
+  };
 }

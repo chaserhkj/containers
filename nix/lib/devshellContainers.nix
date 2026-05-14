@@ -170,7 +170,11 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
       description = "devshell environment wrapped as a nix2container image";
     };
     config = {
-      devshells = mapAttrs (name: configData: configData._devshell) config.devshellContainers;
+      devshells = let 
+        getDevshellOpt = name:
+          (systemCtx.options.devshellContainers.type.getSubOptions [ name ])._devshell;
+      in 
+        mapAttrs (name: configData: lib.mkAliasDefinitions (getDevshellOpt name)) config.devshellContainers;
       containers = mapAttrs (name: configData: configData._container)  config.devshellContainers;
     };
   };

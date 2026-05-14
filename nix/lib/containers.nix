@@ -4,9 +4,9 @@ localFlake@{buildImageWithSystem, flakePartsModule, ...}:
   imports = [ flakePartsModule ];
   perSystem = {config, lib, system, ...}: 
   let 
-    inherit (lib) mkOption types;
-    inherit (types) nullOr str submodule package int bool
-    attrsOf lazyAttrsOf anything uniq listOf attrs;
+    inherit (lib) mkOption types toList;
+    inherit (types) nullOr str submodule package int bool either
+    attrsOf lazyAttrsOf anything uniq listOf attrs coercedTo;
     # Convert the first character of a string to lower case
     lowerFirst = s: 
     let
@@ -40,7 +40,7 @@ localFlake@{buildImageWithSystem, flakePartsModule, ...}:
       name = mkOption { type = str; };
       tag = mkOption { type = nullOr str; default = null; };
       config = mkOption { type = ociImageConfigStrictSubmodule; };
-      copyToRoot = mkOption { type = listOf package; };
+      copyToRoot = mkOption { type = coercedTo (either package (listOf package)) toList (listOf package); };
       # result of nix2container.pullImage or nix2container.pullImageFromManifest
       # not type-checked for now
       fromImage = mkOption { type = anything; default = null; };

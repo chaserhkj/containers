@@ -1,7 +1,9 @@
-localFlake@{importApplyContext, buildImageWithSystem, ...}:
+localFlake@{importApplyContext, buildImageWithSystem, flakePartsModule, ...}:
 {...}:
 {
-  imports = [ (localFlake.importApplyContext ./containers.nix) ];
+  imports = [
+    flakePartsModule
+    ];
   perSystem = {config, lib, pkgs, system, ...}: {
     options.containers = with lib; with types; mkOption {
       type = lazyAttrsOf (submodule {
@@ -16,7 +18,7 @@ localFlake@{importApplyContext, buildImageWithSystem, ...}:
     config._containers = let 
       inherit (builtins) mapAttrs removeAttrs;
 
-      buildImage = localFlake.buildImageWithSystem system;
+      buildImage = buildImageWithSystem system;
       addVariant = pname: inputConfig:
         lib.mkIf inputConfig.buildFixedEntrypointVariant {
           passthru.fixedEntrypointVariant = let 

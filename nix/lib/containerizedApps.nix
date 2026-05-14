@@ -1,8 +1,8 @@
-localFlake@{importApplyContext, ...}:
+localFlake@{importApplyContext, flakePartsModule, ...}:
 {...}:
 {
   imports = [
-    (localFlake.importApplyContext ./containers.nix)
+    flakePartsModule
   ];
   perSystem = {config, lib, system, ...}: {
     options.containerizedApps = lib.mkOption {

@@ -10,18 +10,20 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
 
     devshellContainerOptionSubmodule = let 
       inherit (lib) types mkOption;
-      inherit (types) lines nullOr pkgs listOf str submodule;
+      inherit (types) lines nullOr package listOf str submodule;
+
+      containerSubmoduleType = systemCtx.options.containers.type.nestedTypes.elemType;
+      devshellSubmoduleType = systemCtx.options.devshells.type.nestedTypes.elemType;
     in 
     submodule (subCtx@{config, options, ...}:{
-      freeformType = systemCtx.options.containers.type;
       options = {
         container = mkOption {
-          type = systemCtx.options.containers.type;
+          type = containerSubmoduleType;
           description = "additional container configuration as accepted by containers module";
         };
         # internal resolved container configuration
         _container = mkOption {
-          type = systemCtx.options.containers.type;
+          type = containerSubmoduleType;
           internal = true;
         };
         nixConfig = mkOption {
@@ -29,7 +31,7 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
           description = "/etc/nix/nix.conf contents in the container";
         };
         nixPkg = mkOption {
-          type = nullOr pkgs;
+          type = nullOr package;
           default = pkgs.nixVersions.latest;
           description = "nix package to include in the container, set null to disable nix from container";
         };
@@ -40,7 +42,7 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
         rootEnvConfig = mkOption {
           type = nullOr (submodule {
             options.packages = mkOption {
-              type = listOf pkgs;
+              type = listOf package;
               description = "packages for the root environment";
             };
             options.includedPaths = mkOption {
@@ -52,26 +54,26 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
           +" additional packages can be added using copyToRoot, set null to disable";
         };
         caCertPkg = mkOption {
-          type = nullOr pkgs;
+          type = nullOr package;
           default = pkgs.cacert;
           description = "CA cert package to include in the container, set null to disable";
         };
         nixLdPkg = mkOption {
-          type = nullOr pkgs;
+          type = nullOr package;
           default = pkgs.nix-ld;
           description = "nix-ld package to enable in the container, set null to disable";
         };
         nixLdExtraLibs = mkOption {
-          type = listOf pkgs;
+          type = listOf package;
           description = "extra library packages to be exported to nix-ld";
         };
         devshell = mkOption {
-          type = systemCtx.options.devshells.type;
+          type = devshellSubmoduleType;
           description = "additional devshell configuration as accepted by devshell module";
         };
         # internal resolved devshell config
         _devshell = mkOption {
-          type = systemCtx.options.devshells.type;
+          type = devshellSubmoduleType;
           internal = true;
         };
       };
@@ -147,11 +149,11 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
               (lib.mkIf (config.nixLdPkg != null) [(
               let 
                 libDir = if builtins.elem system [ "x86_64-linux" "mips64-linux" "powerpc64le-linux" ]
-                  then "/lib64"
-                  else "/lib";
+                  then "lib64"
+                  else "lib";
                 in pkgs.runCommand "nix-ld-compat" {}
                 ''
-                install -D -m755 ${config.nixLdPkg}/libexec/nix-ld ${libDir}/$(basename ${config.nixLdPkg.stdenv.cc.bintools.dynamicLinker})
+                install -D -m755 ${config.nixLdPkg}/libexec/nix-ld $out/${libDir}/$(basename ${config.nixLdPkg.stdenv.cc.bintools.dynamicLinker})
                 ''
               )])
             ];
@@ -165,8 +167,7 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
   in {
     options.devshellContainers = lib.mkOption {
       type = lib.types.lazyAttrsOf devshellContainerOptionSubmodule;
-      description = "nix2container definitions to use as base for devshell container."
-      +" set devshell.<name> to modify config of devshell itself";
+      description = "devshell environment wrapped as a nix2container image";
     };
     config = {
       devshells = mapAttrs (name: configData: configData._devshell) config.devshellContainers;

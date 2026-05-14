@@ -1,10 +1,11 @@
-localFlake@{buildImageWithSystem, ...}:
+localFlake@{buildImageWithSystem, flakePartsModule, ...}:
 {...}:
 {
+  imports = [ flakePartsModule ];
   perSystem = {config, lib, system, ...}: 
   let 
     inherit (lib) mkOption types;
-    inherit (types) nullOr str submodule pkgs int bool
+    inherit (types) nullOr str submodule package int bool
     attrsOf lazyAttrsOf anything uniq listOf attrs;
     # Convert the first character of a string to lower case
     lowerFirst = s: 
@@ -13,14 +14,17 @@ localFlake@{buildImageWithSystem, ...}:
       rest = builtins.substring 1 (builtins.stringLength s) s;
     in
       first + rest;
+
+    singleDefStringListType = (listOf str) // { merge = lib.options.mergeEqualOption; };
+    
     # Prototype for OCI image config as used by nix2container
     ociImageConfigSchema = {
       User = mkOption { type = nullOr str; default = null; };
       # not type-checked for now
       ExposedPorts = mkOption { type = attrsOf anything; };
       Env = mkOption { type = listOf str; };
-      Entrypoint = mkOption { type = uniq (listOf str);};
-      Cmd = mkOption {type = uniq (listOf str);};
+      Entrypoint = mkOption { type = singleDefStringListType; };
+      Cmd = mkOption {type = singleDefStringListType; };
       # not type-checked for now
       Volumes = mkOption {type = attrsOf anything; };
       WorkingDir = mkOption {type = nullOr str; default = null;};
@@ -36,7 +40,7 @@ localFlake@{buildImageWithSystem, ...}:
       name = mkOption { type = str; };
       tag = mkOption { type = nullOr str; default = null; };
       config = mkOption { type = ociImageConfigStrictSubmodule; };
-      copyToRoot = mkOption { type = listOf pkgs; };
+      copyToRoot = mkOption { type = listOf package; };
       # result of nix2container.pullImage or nix2container.pullImageFromManifest
       # not type-checked for now
       fromImage = mkOption { type = anything; default = null; };
@@ -144,7 +148,7 @@ localFlake@{buildImageWithSystem, ...}:
       }) config.containers;
 
       packages = let 
-        buildImage = localFlake.buildImageWithSystem system;
+        buildImage = buildImageWithSystem system;
         buildImageFor = pname: data:
           buildImage data.finalConfig // data.passthru;
       in mapAttrs buildImageFor config._containers;

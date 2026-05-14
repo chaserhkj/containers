@@ -21,6 +21,9 @@ in {
     containerizedApps
     devshellContainers
   ];
+  perSystem = {...}: {
+    defaultImagePrefix = "ghcr.io/chaserhkj/containers/";
+  };
   flake.flakeModules = {
     inherit
       containers

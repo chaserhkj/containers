@@ -10,22 +10,10 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
 
     devshellContainerOptionSubmodule = let 
       inherit (lib) types mkOption;
-      inherit (types) lines nullOr package listOf str submodule;
-
-      containerSubmoduleType = systemCtx.options.containers.type.nestedTypes.elemType;
-      devshellSubmoduleType = systemCtx.options.devshells.type.nestedTypes.elemType;
+      inherit (types) lines nullOr package listOf str submodule attrs;
     in 
     submodule (subCtx@{config, options, ...}:{
       options = {
-        container = mkOption {
-          type = containerSubmoduleType;
-          description = "additional container configuration as accepted by containers module";
-        };
-        # internal resolved container configuration
-        _container = mkOption {
-          type = containerSubmoduleType;
-          internal = true;
-        };
         nixConfig = mkOption {
           type = lines;
           description = "/etc/nix/nix.conf contents in the container";
@@ -67,13 +55,14 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
           type = listOf package;
           description = "extra library packages to be exported to nix-ld";
         };
-        devshell = mkOption {
-          type = devshellSubmoduleType;
-          description = "additional devshell configuration as accepted by devshell module";
+        # Additional container config to be applied
+        _container = mkOption {
+          type = attrs;
+          internal = true;
         };
-        # internal resolved devshell config
+        # Additional devshell config to be applied
         _devshell = mkOption {
-          type = devshellSubmoduleType;
+          type = attrs;
           internal = true;
         };
       };
@@ -97,69 +86,63 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
           includedPaths = [ "/bin" ];
         };
 
-        # Evaluating final devshell config
-        _devshell = lib.mkMerge [
-          {
-            packages = lib.mkIf (config.nixPkg != null) [
-              config.nixPkg
-            ];
-          }
-          (lib.mkAliasDefinitions subCtx.options.devshell)
-        ];
+        # additional devshell config
+        _devshell = {
+          packages = lib.mkIf (config.nixPkg != null) [
+            config.nixPkg
+          ];
+        };
 
-        # Evaluating container config
-        _container = lib.mkMerge [
-          {
-            config = {
-              Env = lib.mkMerge [
-                [ "USER=root" "HOME=/root" ]
-                (lib.mkIf (config.caCertPkg != null) [
-                  "NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt"
-                ])
-                (lib.mkIf (config.nixLdPkg != null) (let
-                  nix-ld-path = lib.fileContents "${config.nixLdPkg.stdenv.cc}/nix-support/dynamic-linker";
-                  nix-ld-lib-path = lib.makeLibraryPath ([config.nixLdPkg.stdenv.cc.cc] ++ config.nixLdExtraLibs); 
-                in [
-                  "NIX_LD=${nix-ld-path}"
-                  "NIX_LD_LIBRARY_PATH=${nix-ld-lib-path}"
-                ]))
-              ];
-            };
-            initializeNixDatabase = config.nixPkg != null;
-            copyToRoot = let 
-              inherit (builtins) map;
-              inherit (lib.strings) concatLines;
-              baseFS = pkgs.runCommand "base-fs" {}
-                ''
-                mkdir $out
-                ${concatLines (map (dir: "mkdir -p $out/${dir}") config.baseFSDirs)}
-                '';
-              rootEnv = pkgs.buildEnv {
-                name = "root";
-                paths = config.rootEnvConfig.packages;
-                pathsToLink = config.rootEnvConfig.includedPaths;
-              };
-            in lib.mkMerge [
-              [baseFS rootEnv]
-              # nix config
-              (lib.mkIf (config.nixPkg != null) [(
-                pkgs.writeTextDir "etc/nix/nix.conf" config.nixConfig
-              )])
-              # nix-ld compat
-              (lib.mkIf (config.nixLdPkg != null) [(
-              let 
-                libDir = if builtins.elem system [ "x86_64-linux" "mips64-linux" "powerpc64le-linux" ]
-                  then "lib64"
-                  else "lib";
-                in pkgs.runCommand "nix-ld-compat" {}
-                ''
-                install -D -m755 ${config.nixLdPkg}/libexec/nix-ld $out/${libDir}/$(basename ${config.nixLdPkg.stdenv.cc.bintools.dynamicLinker})
-                ''
-              )])
+        # additional container config
+        _container = {
+          config = {
+            Env = lib.mkMerge [
+              [ "USER=root" "HOME=/root" ]
+              (lib.mkIf (config.caCertPkg != null) [
+                "NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt"
+              ])
+              (lib.mkIf (config.nixLdPkg != null) (let
+                nix-ld-path = lib.fileContents "${config.nixLdPkg.stdenv.cc}/nix-support/dynamic-linker";
+                nix-ld-lib-path = lib.makeLibraryPath ([config.nixLdPkg.stdenv.cc.cc] ++ config.nixLdExtraLibs); 
+              in [
+                "NIX_LD=${nix-ld-path}"
+                "NIX_LD_LIBRARY_PATH=${nix-ld-lib-path}"
+              ]))
             ];
-          }
-          (lib.mkAliasDefinitions subCtx.options.container)
-        ];
+          };
+          initializeNixDatabase = config.nixPkg != null;
+          copyToRoot = let 
+            inherit (builtins) map;
+            inherit (lib.strings) concatLines;
+            baseFS = pkgs.runCommand "base-fs" {}
+              ''
+              mkdir $out
+              ${concatLines (map (dir: "mkdir -p $out/${dir}") config.baseFSDirs)}
+              '';
+            rootEnv = pkgs.buildEnv {
+              name = "root";
+              paths = config.rootEnvConfig.packages;
+              pathsToLink = config.rootEnvConfig.includedPaths;
+            };
+          in lib.mkMerge [
+            [baseFS rootEnv]
+            # nix config
+            (lib.mkIf (config.nixPkg != null) [(
+              pkgs.writeTextDir "etc/nix/nix.conf" config.nixConfig
+            )])
+            # nix-ld compat
+            (lib.mkIf (config.nixLdPkg != null) [(
+            let 
+              libDir = if builtins.elem system [ "x86_64-linux" "mips64-linux" "powerpc64le-linux" ]
+                then "lib64"
+                else "lib";
+              in pkgs.runCommand "nix-ld-compat" {}
+              ''
+              install -D -m755 ${config.nixLdPkg}/libexec/nix-ld $out/${libDir}/$(basename ${config.nixLdPkg.stdenv.cc.bintools.dynamicLinker})
+              ''
+            )])
+          ];
+        };
       };
     });
 
@@ -170,12 +153,16 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
       description = "devshell environment wrapped as a nix2container image";
     };
     config = {
-      devshells = let 
-        getDevshellOpt = name:
-          (systemCtx.options.devshellContainers.type.getSubOptions [ name ])._devshell;
-      in 
-        mapAttrs (name: configData: lib.mkAliasDefinitions (getDevshellOpt name)) config.devshellContainers;
-      containers = mapAttrs (name: configData: configData._container)  config.devshellContainers;
+      # Transfer devshells config
+      devshells = mapAttrs (name: configData: configData._devshell)  config.devshellContainers;
+      # Transfer container config
+      # Entrypoint comes from devShell and needs to be populated externally
+      containers = mapAttrs (name: configData: lib.mkMerge [
+        configData._container
+        {
+          config.Entrypoint = [self'.devShells.${name}.flakeApp.program];
+        }
+      ])  config.devshellContainers;
     };
   };
 }

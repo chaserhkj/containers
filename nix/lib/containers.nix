@@ -63,7 +63,7 @@ localFlake@{buildImageWithSystem, flakePartsModule, ...}:
         inherit (builtins) map listToAttrs attrNames;
       in listToAttrs (map (field: {
         name = field;
-        value = lib.mkAliasDefinitions options.${lowerFirst field};
+        value = lib.modules.mkAliasAndWrapDefsWithPriority lib.id options.${lowerFirst field};
       }) (attrNames ociImageConfigSchema));
     });
     buildImageConfigInputSubmodule = submodule ({config, options, ...}: {

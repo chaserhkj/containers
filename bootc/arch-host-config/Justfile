@@ -23,10 +23,12 @@ configure-image host:
     host_dir="hosts/{{host}}"
     [ -f $host_dir/BASE ] && { read -r base_img < "$host_dir/BASE" || [ -n "$base_img" ]; }
     [ -z $CREDS ] && export CREDS="$(gpg --decrypt creds.gpg)"$'\n'
+    [ -z $NCPS_CRED ] && export NCPS_CRED="$(gpg --decrypt ncps_cred.gpg)"$'\n'
 
     CTR_BUILD_FROM=$base_img \
         ${buildImageScript} \
         --secret=id=creds,env=CREDS \
+        --secret=id=ncps_cred,env=NCPS_CRED \
         --iidfile {{host}}.intermediate.id \
         -f Containerfile "$host_dir"
 

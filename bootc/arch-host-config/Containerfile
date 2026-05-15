@@ -14,6 +14,9 @@ COPY rootfs /
 RUN --mount=type=secret,id=creds \
     chpasswd < /run/secrets/creds
 
+RUN --mount=type=secret,id=ncps_cred \
+    cp /run/secrets/ncps_cred /etc/nix/ncps.cred.txt
+
 # Run setup script from build context, if any
 RUN --mount=type=bind,target=/tmp \
     [ -f /tmp/setup.sh ] && bash /tmp/setup.sh || exit 0

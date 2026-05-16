@@ -16,7 +16,9 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
     pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 
-FROM builder-${INITRAMFS_BUILDER_FULL_SYNC}-full-sync as initramfs-build
+FROM builder-${INITRAMFS_BUILDER_FULL_SYNC}-full-sync as builder
+
+FROM builder as initramfs-build
 
 RUN git clone https://github.com/chaserhkj/bootc-live /work
 WORKDIR /work

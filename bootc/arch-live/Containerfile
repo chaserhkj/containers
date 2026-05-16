@@ -1,13 +1,22 @@
 # Overwrite-able bootc base, in case ghcr CI version is stale
 ARG ZFS_VER_STRATEGY=latest
+# yes or no
+ARG INITRAMFS_BUILDER_FULL_SYNC=yes
 # From ../arch-base
-FROM bootc-arch-base as builder
+FROM bootc-arch-base as builder-no-full-sync
 
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Sy git kexec-tools erofs-utils --needed --noconfirm
 
-FROM builder as initramfs-build
+FROM builder-no-full-sync as builder-yes-full-sync
+ARG PACMAN_FULL_SYNC_FLAGS=""
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
+
+FROM builder-${INITRAMFS_BUILDER_FULL_SYNC}-full-sync as initramfs-build
 
 RUN git clone https://github.com/chaserhkj/bootc-live /work
 WORKDIR /work
@@ -17,9 +26,7 @@ RUN /bin/sh for-container.sh build-initrd-all-mods
 
 # Build forked cfsctl
 FROM archlinux as cfsctl
-# pacman flags attached to full sync commands
-# use to pin packages
-ARG PACMAN_FULL_SYNC_FLAGS=""
+ARG PACMAN_FULL_SYNC_FLAGS
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \

@@ -1,4 +1,5 @@
 [Unit]
 Description=Prerequisite synchronization point for remote fs mounted via Zerotier
+RefuseManualStart=yes
 Requires=zerotier-one.service
 After=zerotier-one.service

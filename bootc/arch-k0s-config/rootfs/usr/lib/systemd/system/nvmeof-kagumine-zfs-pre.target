@@ -1,0 +1,4 @@
+[Unit]
+RefuseManualStart=yes
+Requires=zt-remote-fs-pre.target
+After=zt-remote-fs-pre.target

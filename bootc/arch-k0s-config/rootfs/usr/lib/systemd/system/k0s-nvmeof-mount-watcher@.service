@@ -1,0 +1,6 @@
+[Unit]
+Description=k0s NVMeOF mount watcher
+Before=k0scontroller.service
+
+[Service]
+ExecStart=/usr/lib/scripts/k0s-nvmeof-mount-watcher.sh %i

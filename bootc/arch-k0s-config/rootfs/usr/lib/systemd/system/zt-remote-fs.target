@@ -1,0 +1,5 @@
+[Unit]
+Description=Remote fs mounted via Zerotier
+After=zt-remote-fs-pre.target
+DefaultDependencies=no
+Conflicts=shutdown.target

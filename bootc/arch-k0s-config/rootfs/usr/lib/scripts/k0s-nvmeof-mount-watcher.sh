@@ -23,6 +23,8 @@ write_dropin() {
     cat > "${dropin_dir}/dependency.conf" <<-EOF
 [Unit]
 DefaultDependencies=no
+Before=umount.target ${TARGET}
+Conflicts=umount.target
 Requires=${PRE_TARGET}
 After=${PRE_TARGET}
 EOF

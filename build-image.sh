@@ -31,6 +31,7 @@ done
 for build_context_var_name in "${!CTR_BUILD_CONTEXT_FROM_@}"; do
   context_id="${build_context_var_name#CTR_BUILD_CONTEXT_FROM_}"
   context_from="${!build_context_var_name}"
+  [[ -z $context_from ]] && continue
   value_var="CTR_BUILD_CONTEXT_IMG_${context_id}"
   value="${!value_var:?${value_var} not set}"
   spec="container-image://$value"

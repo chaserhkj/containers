@@ -6,6 +6,14 @@ export CTR_BUILD_CONTEXT_IMG_BOOTC_ARCH_BASE := env(
     "ghcr.io/bootcrew/arch-bootc:latest"
     )
 
+pkg_overrides_img := env("CTR_PKG_OVERRIDES_IMG", "")
+export CTR_BUILD_CONTEXT_FROM_PKG_OVERRIDES := if pkg_overrides_img != "" { "pkg-overrides" } else {""}
+export CTR_BUILD_CONTEXT_IMG_PKG_OVERRIDES := pkg_overrides_img
+
+builder_pkg_overrides_img := env("CTR_BUILDER_PKG_OVERRIDES_IMG", "")
+export CTR_BUILD_CONTEXT_FROM_BUILDER_PKG_OVERRIDES := if builder_pkg_overrides_img != "" { "builder-pkg-overrides" } else {""}
+export CTR_BUILD_CONTEXT_IMG_BUILDER_PKG_OVERRIDES := builder_pkg_overrides_img
+
 default:
     just build-image arch-k0s
     just build-image arch-k0s-config

@@ -4,8 +4,10 @@ FROM scratch as builder-pkg-overrides
 FROM arch-aur-builder as pkg-builder
 
 # pkg overrides, used for toolchains
-RUN --mount=type=bind,from=builder-pkg-overrides,target=/mnt \
-    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
+RUN --mount=type=bind,from=builder-pkg-overrides,target=/tmp sudo bash <<'EOF'
+[[ -z "$(ls -A /tmp)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+EOF
 
 FROM pkg-builder as aur-pkgs
 
@@ -13,6 +15,7 @@ RUN aur sync -n --noview zerotier-systemd-manager-git
 
 # Build ssh-key-dir to support $HOME/.ssh/authorized_keys.d
 FROM pkg-builder as ssh-key-dir
+USER root
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -26,6 +29,7 @@ RUN mkdir -p /target && make RELEASE=1 && make install DESTDIR=/target RELEASE=1
 
 # Build forked cfsctl
 FROM pkg-builder as cfsctl
+USER root
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -70,8 +74,10 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     ln -sT var/srv /srv && ln -sT var/opt /opt && ln -sT var/mnt /mnt 
 
 # pkg overrides, used for kernel and kernel modules (zfs, etc.)
-RUN --mount=type=bind,from=pkg-overrides,target=/mnt \
-    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
+RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
+[[ -z "$(ls -A /tmp)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+EOF
 
 # locale-gen
 RUN sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen

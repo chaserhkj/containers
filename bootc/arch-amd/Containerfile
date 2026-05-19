@@ -3,8 +3,10 @@ FROM scratch as builder-pkg-overrides
 FROM arch-aur-builder as pkg-builder
 
 # pkg overrides, used for toolchains
-RUN --mount=type=bind,from=builder-pkg-overrides,target=/mnt \
-    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
+RUN --mount=type=bind,from=builder-pkg-overrides,target=/tmp sudo bash <<'EOF'
+[[ -z "$(ls -A /tmp)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+EOF
 
 FROM pkg-builder as amd-container-toolkit
 

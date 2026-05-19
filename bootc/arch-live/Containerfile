@@ -4,8 +4,10 @@ FROM scratch as builder-pkg-overrides
 FROM arch-aur-builder as pkg-builder
 
 # pkg overrides, used for toolchains
-RUN --mount=type=bind,from=builder-pkg-overrides,target=/mnt \
-    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
+RUN --mount=type=bind,from=builder-pkg-overrides,target=/tmp sudo bash <<'EOF'
+[[ -z "$(ls -A /tmp)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+EOF
 
 # From ../arch-base
 FROM bootc-arch-base as builder
@@ -24,6 +26,7 @@ RUN /bin/sh for-container.sh build-initrd-all-mods
 
 # Build forked cfsctl
 FROM pkg-builder as cfsctl
+USER root
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -40,8 +43,10 @@ FROM bootc-arch
 ARG PACMAN_FULL_SYNC_FLAGS
 
 # pkg overrides, used for kernel and kernel modules (zfs, etc.)
-RUN --mount=type=bind,from=pkg-overrides,target=/mnt \
-    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
+RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
+[[ -z "$(ls -A /tmp)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+EOF
 
 # archlinuxcn repo configurations
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

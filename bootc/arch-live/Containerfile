@@ -42,12 +42,6 @@ RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 FROM bootc-arch
 ARG PACMAN_FULL_SYNC_FLAGS
 
-# pkg overrides, used for kernel and kernel modules (zfs, etc.)
-RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
-[[ -z "$(ls -A /tmp)" ]] && exit 0
-pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
-EOF
-
 # archlinuxcn repo configurations
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
@@ -57,6 +51,12 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
+
+# pkg overrides, used for kernel and kernel modules (zfs, etc.)
+RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
+[[ -z "$(ls -A /tmp)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+EOF
 
 RUN --mount=type=bind,from=initramfs-build,target=/tmp \
     cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/*/initramfs.img

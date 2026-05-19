@@ -7,8 +7,8 @@ export CTR_BUILD_CONTEXT_IMG_BOOTC_ARCH_BASE := env(
     )
 
 arch_aur_builder_img := env("CTR_ARCH_AUR_BUILDER_IMG", "")
-export CTR_BUILD_CONTEXT_FROM_PKG_OVERRIDES := if arch_aur_builder_img != "" { "arch-aur-builder" } else {""}
-export CTR_BUILD_CONTEXT_IMG_PKG_OVERRIDES := arch_aur_builder_img
+export CTR_BUILD_CONTEXT_FROM_ARCH_AUR_BUILDER := if arch_aur_builder_img != "" { "arch-aur-builder" } else {""}
+export CTR_BUILD_CONTEXT_IMG_ARCH_AUR_BUILDER := arch_aur_builder_img
 
 pkg_overrides_img := env("CTR_PKG_OVERRIDES_IMG", "")
 export CTR_BUILD_CONTEXT_FROM_PKG_OVERRIDES := if pkg_overrides_img != "" { "pkg-overrides" } else {""}

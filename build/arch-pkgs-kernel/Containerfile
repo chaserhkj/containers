@@ -1,0 +1,29 @@
+FROM arch-aur-builder as builder
+
+RUN sudo pacman -Syy linux linux-headers --noconfirm --needed
+
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 6AD860EED4598027 && \
+    aur sync -n --noview zfs-linux zfs-utils
+
+RUN sudo bash <<'EOF'
+mkdir /pkgs
+cd /var/cache/pacman/pkg
+
+pkg=$(ls|grep -E '^linux-[0-9\.-]+(arch[0-9]+)?-[0-9]+-x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
+cp -v $pkg /pkgs
+
+pkg=$(ls|grep -E '^linux-headers-[0-9\.-]+(arch[0-9]+)?-[0-9]+-x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
+cp -v $pkg /pkgs
+
+cd /var/build/repo
+
+pkg=$(ls| grep -E '^zfs-linux-[0-9\.-_]+(arch[0-9]+)?[\.0-9-]+x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
+cp -v $pkg /pkgs
+
+pkg=$(ls| grep -E '^zfs-utils-[0-9\.-]+x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
+cp -v $pkg /pkgs
+EOF
+
+FROM scratch as arch-pkgs-base
+FROM arch-pkgs-base
+COPY --from=builder /pkgs/*.pkg.tar.* /

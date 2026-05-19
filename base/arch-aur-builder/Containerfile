@@ -1,10 +1,14 @@
 # This image is for building AUR packages for consumption by other archlinux images
 FROM docker.io/archlinux/archlinux as archlinux
 FROM archlinux
+ARG PACMAN_FULL_SYNC_FLAGS
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu --noconfirm && \
+    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
     pacman -S --needed --noconfirm git base-devel
 
 RUN useradd -m -d /var/build -g wheel builder && \

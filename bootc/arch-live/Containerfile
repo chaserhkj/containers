@@ -1,22 +1,18 @@
-# Overwrite-able bootc base, in case ghcr CI version is stale
-ARG ZFS_VER_STRATEGY=latest
-# yes or no
-ARG INITRAMFS_BUILDER_FULL_SYNC=yes
+FROM scratch as pkg-overrides
+FROM scratch as builder-pkg-overrides
+
+FROM arch-aur-builder as pkg-builder
+
+# pkg overrides, used for toolchains
+RUN --mount=type=bind,from=builder-pkg-overrides,target=/mnt \
+    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
+
 # From ../arch-base
-FROM bootc-arch-base as builder-no-full-sync
+FROM bootc-arch-base as builder
 
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Sy git kexec-tools erofs-utils --needed --noconfirm
-
-FROM builder-no-full-sync as builder-yes-full-sync
-ARG PACMAN_FULL_SYNC_FLAGS=""
-
-RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
-
-FROM builder-${INITRAMFS_BUILDER_FULL_SYNC}-full-sync as builder
 
 FROM builder as initramfs-build
 
@@ -27,12 +23,10 @@ RUN for mod in /work/modules.d/* ; do ln -s $mod /usr/lib/dracut/modules.d; done
 RUN /bin/sh for-container.sh build-initrd-all-mods
 
 # Build forked cfsctl
-FROM archlinux as cfsctl
-ARG PACMAN_FULL_SYNC_FLAGS
+FROM pkg-builder as cfsctl
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
     pacman -Sy --noconfirm rust git make
 
 RUN git clone https://github.com/chaserhkj/composefs-rs /work
@@ -42,13 +36,12 @@ WORKDIR /work
 RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
 
 
-FROM bootc-arch as stage-pre-zfs
+FROM bootc-arch
+ARG PACMAN_FULL_SYNC_FLAGS
 
-FROM stage-pre-zfs as stage-zfs-use-latest
-
-# archzfs repo configurations
-RUN printf '[archzfs]\nSigLevel = Required\nServer = https://github.com/archzfs/archzfs/releases/download/experimental\n' | tee -a /etc/pacman.conf && \
-    pacman-key --init && pacman-key --recv-keys 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9 && pacman-key --lsign-key 3A9917BF0DED5C13F69AC68FABEC0A1208037BE9
+# pkg overrides, used for kernel and kernel modules (zfs, etc.)
+RUN --mount=type=bind,from=pkg-overrides,target=/mnt \
+    [ -n "$(ls -A /mnt)" ] && pacman -U --noconfirm --needed *.pkg.tar.*
 
 # archlinuxcn repo configurations
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
@@ -56,30 +49,12 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     printf '[archlinuxcn]\nServer = https://repo.archlinuxcn.org/$arch\n' | tee -a /etc/pacman.conf && \
     pacman -Sy --noconfirm --needed archlinuxcn-keyring
 
-FROM stage-pre-zfs as stage-zfs-use-pinned
-ARG ZFS_PINNED_PKG_URL
-ARG ZFS_PINNED_PKG_FILENAME
-
-RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    curl -Lo /tmp/${ZFS_PINNED_PKG_FILENAME} ${ZFS_PINNED_PKG_URL} && \
-    pacman --noconfirm -U /tmp/${ZFS_PINNED_PKG_FILENAME} && \
-    rm /tmp/${ZFS_PINNED_PKG_FILENAME}
-
-FROM stage-zfs-use-${ZFS_VER_STRATEGY}
-ARG PACMAN_FULL_SYNC_FLAGS
-
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 
 RUN --mount=type=bind,from=initramfs-build,target=/tmp \
     cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/*/initramfs.img
-
-# ZFS
-RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --noconfirm --needed zfs-utils zfs-linux
 
 # Common tools, including tools that might be needed to work with bootc
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

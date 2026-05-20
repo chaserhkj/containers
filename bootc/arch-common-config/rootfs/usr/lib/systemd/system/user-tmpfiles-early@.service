@@ -1,0 +1,16 @@
+[Unit]
+Description=Create User Files and Directories
+Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)
+DefaultDependencies=no
+Conflicts=shutdown.target
+Before=user@%i.service shutdown.target
+Wants=systemd-tmpfiles-setup.service
+After=systemd-tmpfiles-setup.service
+RefuseManualStop=yes
+
+[Service]
+User=%i
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-tmpfiles --user --create --remove --boot
+SuccessExitStatus=DATAERR

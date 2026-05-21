@@ -1,6 +1,6 @@
 [Unit]
 Description=Remote fs mounted via Zerotier
-wants=zt-remote-fs-pre.target
+Wants=zt-remote-fs-pre.target
 After=zt-remote-fs-pre.target
 DefaultDependencies=no
 Conflicts=shutdown.target

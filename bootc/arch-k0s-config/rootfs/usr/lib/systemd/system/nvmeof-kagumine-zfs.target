@@ -1,4 +1,5 @@
 [Unit]
+Wants=nvmeof-kagumine-zfs-pre.target
 After=nvmeof-kagumine-zfs-pre.target
 DefaultDependencies=no
 Conflicts=shutdown.target

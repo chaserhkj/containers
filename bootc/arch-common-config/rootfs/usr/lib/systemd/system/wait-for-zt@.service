@@ -10,4 +10,6 @@ Before=shutdown.target
 [Service]
 Type=oneshot
 ExecStart=/usr/lib/systemd/systemd-networkd-wait-online -i %i --timeout=0
+ExecStart=/usr/bin/mkdir -p /run/zt-network-online
+ExecStart=/usr/bin/touch /run/zt-network-online/%i
 RemainAfterExit=yes

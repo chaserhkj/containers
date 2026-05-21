@@ -1,0 +1,13 @@
+[Unit]
+Description=Wait for ZT Network %i to be Online
+ConditionCapability=CAP_NET_ADMIN
+DefaultDependencies=no
+Conflicts=shutdown.target
+BindsTo=systemd-networkd.service zerotier-one.service
+After=systemd-networkd.service zerotier-one.service
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/systemd/systemd-networkd-wait-online -i %i --timeout=0
+RemainAfterExit=yes

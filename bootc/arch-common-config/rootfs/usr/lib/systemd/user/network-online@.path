@@ -1,0 +1,6 @@
+[Unit]
+Description=Path-based event trigger for network interface %i
+
+[Path]
+PathExists=/run/network-online/%i
+Unit=network-services@%i.target

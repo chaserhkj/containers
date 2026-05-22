@@ -1,0 +1,6 @@
+[Unit]
+Description=Path-based event trigger for zerotier network %i to be online
+
+[Path]
+PathExists=/run/zt-network-online/%i
+Unit=zt-services@%i.target

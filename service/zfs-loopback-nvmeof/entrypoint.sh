@@ -28,6 +28,15 @@ setup_lb() {
     lodev=$(losetup -f -b $IMG_SEC_SIZE --direct-io=on --show $IMG_FILE)
 }
 
+ensure_value() {
+    local dest=$1
+    local value=$2
+    local current=
+    [[ -f $dest ]] && current=$(cat $dest)
+    [[ "$current" == "$value" ]] && return 0
+    echo $value > $dest
+}
+
 
 init() {
     setup_lb
@@ -57,25 +66,16 @@ import() {
 setup_nvmet() {
     nvmetcli restore /etc/nvmet/config.json || :
     mkdir -p $port
-    echo $NVME_OF_BIND_IP > $port/addr_traddr
-    echo tcp > $port/addr_trtype
-    echo $NVME_OF_BIND_PORT > $port/addr_trsvcid
-    echo ipv4 > $port/addr_adrfam
+    ensure_value $port/addr_traddr $NVME_OF_BIND_IP
+    ensure_value $port/addr_trtype tcp
+    ensure_value $port/addr_trsvcid $NVME_OF_BIND_PORT
+    ensure_value $port/addr_adrfam ipv4
     nvmetcli save /etc/nvmet/config.json
 }
-
-cleanup_nvmet() {
-    for port_link in $port/subsystems/*; do
-        rm -f $port_link
-    done
-    rmdir $port || :
-}
-
-
 
 cleanup() {
     nvmetcli save /etc/nvmet/config.json
-    cleanup_nvmet
+    nvmetcli clear
     [[ -z $USE_EXISTING_POOL ]] && zpool export $pool_name || :
     [[ -n $lodev ]] && losetup -d $lodev
 }

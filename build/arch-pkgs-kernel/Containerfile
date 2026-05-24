@@ -12,9 +12,6 @@ cd /var/cache/pacman/pkg
 pkg=$(ls|grep -E '^linux-[0-9\.-]+(arch[0-9]+)?-[0-9]+-x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
 cp -v $pkg /pkgs
 
-pkg=$(ls|grep -E '^linux-headers-[0-9\.-]+(arch[0-9]+)?-[0-9]+-x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
-cp -v $pkg /pkgs
-
 cd /var/build/repo
 
 pkg=$(ls| grep -E '^zfs-linux-[0-9\.-_]+(arch[0-9]+)?[\.0-9-]+x86_64\.pkg\.tar\.zst$'|sort|tail -n1)

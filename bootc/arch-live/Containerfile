@@ -58,8 +58,20 @@ RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
 pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
 EOF
 
-RUN --mount=type=bind,from=initramfs-build,target=/tmp \
-    cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/*/initramfs.img
+# Check and clean up stale kernel module directories
+RUN bash -ex <<'EOF'
+num_kernels=0
+for d in /usr/lib/modules/*; do
+pacman -Qo $d 1>&/dev/null && num_kernels=$((num_kernels + 1)) && continue
+rm -rf $d
+done
+[[ "$num_kernels" == "1" ]] && exit 0 || exit 1
+EOF
+
+RUN --mount=type=bind,from=initramfs-build,target=/tmp bash -ex <<'EOF'
+kver=$(ls /usr/lib/modules|sort|tail -n1)
+cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/$kver/initramfs.img
+EOF
 
 # Common tools, including tools that might be needed to work with bootc
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

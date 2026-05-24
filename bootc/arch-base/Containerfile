@@ -79,6 +79,16 @@ RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
 pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
 EOF
 
+# Check and clean up stale kernel module directories
+RUN bash -ex <<'EOF'
+num_kernels=0
+for d in /usr/lib/modules/*; do
+pacman -Qo $d 1>&/dev/null && num_kernels=$((num_kernels + 1)) && continue
+rm -rf $d
+done
+[[ "$num_kernels" == "1" ]] && exit 0 || exit 1
+EOF
+
 # locale-gen
 RUN sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 

@@ -15,7 +15,8 @@ RUN --mount=type=secret,id=creds \
     chpasswd < /run/secrets/creds
 
 RUN --mount=type=secret,id=ncps_cred \
-    cp /run/secrets/ncps_cred /etc/nix/ncps.cred.txt
+    cp /run/secrets/ncps_cred /etc/nix/ncps.cred.txt && \
+    chown hkj:hkj /etc/nix/ncps.cred.txt && chmod 0400 /etc/nix/ncps.cred.txt
 
 # Run setup script from build context, if any
 RUN --mount=type=bind,target=/tmp \

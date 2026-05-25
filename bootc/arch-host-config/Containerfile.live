@@ -9,5 +9,7 @@ RUN /bin/sh for-container.sh build-initrd-all-mods
 
 FROM base
 
-RUN --mount=type=bind,from=initramfs-build,target=/tmp \
-    cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/*/initramfs.img
+RUN --mount=type=bind,from=initramfs-build,target=/tmp bash -ex <<'EOF'
+kver=$(ls /usr/lib/modules|sort|tail -n1)
+cp -f /tmp/work/initrd-all-mods.img /usr/lib/modules/$kver/initramfs.img
+EOF

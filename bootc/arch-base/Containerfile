@@ -128,7 +128,7 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 # Container tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm podman buildah skopeo umoci docker-compose podman-docker distrobox fuse-overlayfs krun podlet
+    pacman -Sy --needed --noconfirm podman buildah skopeo umoci docker-compose podman-docker distrobox flatpak-xdg-utils fuse-overlayfs krun podlet
 
 # AUR packages
 RUN --mount=type=bind,from=aur-pkgs,source=/var/build/repo,target=/var/local-repo \

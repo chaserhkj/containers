@@ -57,36 +57,53 @@ ARG PACMAN_REINSTALL_QUERY="pacman -Qq"
 # and we don't need to do anything about it
 RUN sed -i '/^NoExtract *=.*$/d' /etc/pacman.conf
 
-# Reinstall everything to obtain the thinned files of default packages
-# This effectively updates everything as well so we update keyring alongside
-# After this, filesystem package overrides some bootc symlinks when reinstalling
-# So we want to reinstate them
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman-key --init && pacman -Sy && \
-    pacman -S archlinux-keyring --noconfirm && \
-    ( eval ${PACMAN_REINSTALL_QUERY} ) | pacman -S --noconfirm - && \
-    pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm && \
-    rm -rf /home /root /usr/local /srv /mnt /opt && \
-    mkdir -p /var/home /var/roothome /var/usrlocal /var/srv /var/opt /var/mnt && \
-    ln -sT var/home /home && ln -sT var/roothome /root && \
-    ln -sT ../var/usrlocal /usr/local && \
-    ln -sT var/srv /srv && ln -sT var/opt /opt && ln -sT var/mnt /mnt 
+    --mount=type=bind,from=pkg-overrides,target=/tmp/pkg-overrides \
+    env PACMAN_REINSTALL_QUERY="${PACMAN_REINSTALL_QUERY}" \
+        PACMAN_FULL_SYNC_FLAGS="${PACMAN_FULL_SYNC_FLAGS}" \
+    bash -ex <<'EOF'
 
-# pkg overrides, used for kernel and kernel modules (zfs, etc.)
-RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
-[[ -z "$(ls -A /tmp)" ]] && exit 0
-pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+pacman-key --init
+pacman -Sy
+pacman -S archlinux-keyring --noconfirm
+
+# Reinstall everything to obtain the thinned files of default packages
+# This effectively updates everything as well so we update keyring alongside
+( eval ${PACMAN_REINSTALL_QUERY} ) | pacman -S --noconfirm -
+pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
+
+# Install package overrides, mainly for kernel and kernel modules
+[[ -z "$(ls -A /tmp/pkg-overrides)" ]] && pacman -U --noconfirm --needed /tmp/pkg-overrides/*.pkg.tar.*
+
+# cleanup kernel files installed at default location
+rm -rf /boot
+mkdir -p /boot
+
+# After this, filesystem package overrides some bootc symlinks when reinstalling
+# So we want to reinstate them
+rm -rf /home /root /usr/local /srv /mnt /opt
+mkdir -p /var/home /var/roothome /var/usrlocal /var/srv /var/opt /var/mnt
+ln -sT var/home /home
+ln -sT var/roothome /root
+ln -sT ../var/usrlocal /usr/local
+ln -sT var/srv /srv
+ln -sT var/opt /opt
+ln -sT var/mnt /mnt 
 EOF
 
-# Check and clean up stale kernel module directories
 RUN bash -ex <<'EOF'
+# Check and clean up stale kernel module directories
 num_kernels=0
 for d in /usr/lib/modules/*; do
-pacman -Qo $d 1>&/dev/null && num_kernels=$((num_kernels + 1)) && continue
-rm -rf $d
+    pacman -Qo $d 1>&/dev/null && num_kernels=$((num_kernels + 1)) && continue
+    rm -rf $d
 done
-[[ "$num_kernels" == "1" ]] && exit 0 || exit 1
+[[ "$num_kernels" == "1" ]] || exit 1
+
+# Also regenerates initramfs if base bootc image has a mismatched version
+kver=$(ls /usr/lib/modules|sort|tail -n1)
+[[ -f /usr/lib/modules/$kver/initramfs.img ]] || dracut --force /usr/lib/modules/$kver/initramfs.img
 EOF
 
 # locale-gen

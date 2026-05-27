@@ -52,18 +52,21 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 
+RUN --mount=type=bind,from=pkg-overrides,target=/tmp/pkgs bash -ex <<'EOF'
 # pkg overrides, used for kernel and kernel modules (zfs, etc.)
-RUN --mount=type=bind,from=pkg-overrides,target=/tmp bash <<'EOF'
-[[ -z "$(ls -A /tmp)" ]] && exit 0
-pacman -U --noconfirm --needed /tmp/*.pkg.tar.*
+[[ -z "$(ls -A /tmp/pkgs)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/pkgs/*.pkg.tar.*
+# cleanup kernel files installed at default location
+rm -rf /boot
+mkdir -p /boot
 EOF
 
 # Check and clean up stale kernel module directories
 RUN bash -ex <<'EOF'
 num_kernels=0
 for d in /usr/lib/modules/*; do
-pacman -Qo $d 1>&/dev/null && num_kernels=$((num_kernels + 1)) && continue
-rm -rf $d
+    pacman -Qo $d 1>&/dev/null && num_kernels=$((num_kernels + 1)) && continue
+    rm -rf $d
 done
 [[ "$num_kernels" == "1" ]] && exit 0 || exit 1
 EOF

@@ -74,7 +74,7 @@ pacman -S archlinux-keyring --noconfirm
 pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 
 # Install package overrides, mainly for kernel and kernel modules
-[[ -z "$(ls -A /tmp/pkg-overrides)" ]] && pacman -U --noconfirm --needed /tmp/pkg-overrides/*.pkg.tar.*
+[[ -z "$(ls -A /tmp/pkg-overrides)" ]] || pacman -U --noconfirm --needed /tmp/pkg-overrides/*.pkg.tar.*
 
 # cleanup kernel files installed at default location
 rm -rf /boot

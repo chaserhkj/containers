@@ -1,0 +1,13 @@
+FROM ghcr.io/open-webui/open-terminal:slim AS base
+
+FROM scratch as nix-install
+ARG NIX_INSTALLER_VER=2.34.1
+ADD --chmod=755 https://github.com/NixOS/nix-installer/releases/download/${NIX_INSTALLER_VER}/nix-installer-x86_64-linux /nix-installer
+
+FROM base AS final
+RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
+    install linux --no-confirm --init none --extra-conf "sandbox = false"
+
+ENV USER=root HOME=/root
+
+ENV PATH="/nix/var/nix/profiles/default/bin:/root/.nix-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

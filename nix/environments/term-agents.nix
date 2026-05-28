@@ -7,6 +7,13 @@
       in (with pkgs; [
         git
         curl
+        jq
+
+        uv
+        bun
+        (writeShellScriptBin "npx" ''
+          exec ${bun}/bin/bunx "$@"
+        '')
       ])++(with llm; [
         opencode
 

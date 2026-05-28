@@ -76,15 +76,21 @@ localFlake@{importApplyContext, devshell, flakePartsModule, ...}:
         build-users-group =
         sandbox = false
         '';
-        rootEnvConfig = {
-          packages = with pkgs; [
-            bashInteractive
-            coreutils-full
-            util-linux
-            busybox
-          ];
-          includedPaths = [ "/bin" ];
-        };
+        rootEnvConfig = lib.mkMerge [
+          {
+            packages = with pkgs; [
+              bashInteractive
+              coreutils-full
+              util-linux
+              busybox
+            ];
+            includedPaths = [ "/bin" ];
+          }
+          (lib.mkIf (config.caCertPkg != null) {
+            packages = [config.caCertPkg];
+            includedPaths = ["/etc/ssl"];
+          })
+        ];
 
         # additional devshell config
         _devshell = {

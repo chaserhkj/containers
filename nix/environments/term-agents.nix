@@ -7,6 +7,8 @@
       in (with pkgs; [
         git
         curl
+
+        aider-chat
       ])++(with llm; [
         opencode
 

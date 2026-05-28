@@ -8,7 +8,7 @@
         git
         curl
 
-        aider-chat
+        aider-chat-full
       ])++(with llm; [
         opencode
 

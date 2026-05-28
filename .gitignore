@@ -6,3 +6,6 @@ vendor/
 result
 # For building with argo workflows
 .kubeconfig
+
+# Aider
+.aider*

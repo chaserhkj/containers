@@ -12,7 +12,9 @@ RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
 
 ENV PATH="/nix/var/nix/profiles/default/bin:/home/user/.nix-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-RUN su user -c "nix profile add nixpkgs#uv nixpkgs#bun"
+RUN su user -c "nix profile add nixpkgs#uv nixpkgs#bun nixpkgs#go nixpks#cargo"
+
+RUN su user -c "nix profile add nixpkgs#curl nixpkgs#defuddle"
 
 COPY <<'EOF' /entrypoint-wrapper.sh
 #!/bin/bash

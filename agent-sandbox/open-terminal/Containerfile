@@ -10,11 +10,13 @@ RUN --mount=type=bind,from=nix-install,target=/mnt /mnt/nix-installer \
         --extra-conf "sandbox = false" --extra-conf "build-users-group =" && \
     chown user:user -R /nix
 
-ENV PATH="/nix/var/nix/profiles/default/bin:/home/user/.nix-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ENV PATH="/nix/var/nix/profiles/default/bin:/home/user/.nix-profile/bin:/home/user/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 RUN su user -c "nix profile add nixpkgs#uv nixpkgs#bun nixpkgs#go nixpks#cargo"
 
 RUN su user -c "nix profile add nixpkgs#curl nixpkgs#defuddle"
+
+RUN su user -c "nix profile add nixpkgs#mcporter nixpkgs#ctx7"
 
 COPY <<'EOF' /entrypoint-wrapper.sh
 #!/bin/bash

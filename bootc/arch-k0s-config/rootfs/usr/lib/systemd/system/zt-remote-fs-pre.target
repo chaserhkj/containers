@@ -1,6 +1,0 @@
-[Unit]
-Description=Prerequisite synchronization point for remote fs mounted via Zerotier
-RefuseManualStart=yes
-Requires=zerotier-one.service
-Wants=wait-for-zt@zt3uq46eqh.service
-After=zerotier-one.service network.target wait-for-zt@zt3uq46eqh.service

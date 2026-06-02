@@ -1,0 +1,6 @@
+[Unit]
+Description=Prerequisite synchronization point for NVME-of connections over ZT
+RefuseManualStart=yes
+Requires=primary-zt-network.target
+After=primary-zt-network.target
+Before=nvme-cleanup.service

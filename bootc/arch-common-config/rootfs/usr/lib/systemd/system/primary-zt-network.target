@@ -1,0 +1,7 @@
+[Unit]
+Description=Primary ZT network
+DefaultDependencies=no
+Requires=zerotier-one.service
+Wants=provision-zerotier-main.service wait-for-zt@zt3uq46eqh.service
+After=zerotier-one.service network.target wait-for-zt@zt3uq46eqh.service
+

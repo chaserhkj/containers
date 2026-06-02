@@ -1,0 +1,7 @@
+[Unit]
+Description=run nvme disconnect-all as cleanup at shutdown
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStop=/usr/bin/nvme disconnect-all

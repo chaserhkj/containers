@@ -1,0 +1,5 @@
+[Unit]
+Description=Prerequisite synchronization point for remote fs mounted via Zerotier
+RefuseManualStart=yes
+Requires=primary-zt-network.target nvme-zt.target
+After=primary-zt-network.target nvme-zt.target

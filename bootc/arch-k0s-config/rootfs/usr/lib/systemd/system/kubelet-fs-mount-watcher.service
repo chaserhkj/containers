@@ -1,0 +1,6 @@
+[Unit]
+Description=k0s mount watcher - injecting dependencies to kubelet-fs-pre.target and kubelet-fs.target
+Before=k0scontroller.service
+
+[Service]
+ExecStart=/usr/lib/scripts/kubelet-fs-mount-watcher.sh

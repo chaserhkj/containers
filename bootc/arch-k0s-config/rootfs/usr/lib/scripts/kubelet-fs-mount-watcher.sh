@@ -1,10 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-nvmeof_class=${1:?"Must specify nvmeof target class in arg 1"}
-PREFIX="/var/lib/k0s/kubelet/plugins/kubernetes.io/csi/org.democratic-csi.nvmeof.$nvmeof_class/"
-PRE_TARGET="nvmeof-$nvmeof_class-pre.target"
-TARGET="nvmeof-$nvmeof_class.target"
+PREFIX="/var/lib/k0s/kubelet/"
+PRE_TARGET="kubelet-fs-pre.target"
+TARGET="kubelet-fs.target"
 
 RUNTIME_DIR='/run/systemd/system'
 
@@ -41,7 +40,7 @@ EOF
     systemctl daemon-reload
 }
 
-echo "k0s-nvmeof-mount-watcher: scanning existing mounts..."
+echo "kubelet-fs-mount-watcher: scanning existing mounts..."
 findmnt --output TARGET --raw --noheadings 2>/dev/null \
     | while read -r target; do
         if [[ "$target" == "$PREFIX"* ]]; then
@@ -49,7 +48,7 @@ findmnt --output TARGET --raw --noheadings 2>/dev/null \
         fi
     done
 
-echo "k0s-nvmeof-mount-watcher: listening for new mounts..."
+echo "kubelet-fs-mount-watcher: listening for new mounts..."
 findmnt --poll=mount --output TARGET --raw --noheadings 2>/dev/null \
     | while read -r target; do
         if [[ "$target" == "$PREFIX"* ]]; then

@@ -1,48 +1,15 @@
 # From ../arch-base
-# install or skip
-ARG DRBD_INSTALL=install
-
-FROM archlinux as drbd-build
-ARG DRBD_VER=9.3.2
-ARG DRBD_TARGET_KVER=""
-
-WORKDIR /work
-
-RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    <<EOF
-set -xe
-pacman -Sy --needed --noconfirm base-devel xmlto kmod inetutils bc libelf git cpio perl tar xz
-[ -z "${DRBD_TARGET_KVER}" ] && pacman -Sy --needed --noconfirm linux-headers
-[ -z "${DRBD_TARGET_KVER}" ] || { 
-    curl -o /linux-headers-${DRBD_TARGET_KVER}-x86_64.pkg.tar.zst \
-    https://archive.archlinux.org/packages/l/linux-headers/linux-headers-${DRBD_TARGET_KVER}-x86_64.pkg.tar.zst
-    pacman -U /linux-headers-${DRBD_TARGET_KVER}-x86_64.pkg.tar.zst
-}
-EOF
-
-RUN curl -Lo drbd.tar.gz https://pkg.linbit.com/downloads/drbd/9/drbd-${DRBD_VER}.tar.gz && \
-    tar xvf drbd.tar.gz && cd drbd-${DRBD_VER} && \
-    make -j$(nproc) KDIR=/lib/modules/*/build
-
-RUN cd drbd-${DRBD_VER} && make install DESTDIR=/target
-
 FROM bootc-arch-base as base
-FROM base as stage-pre-drbd
+FROM base
 ARG K0S_VERSION="v1.35.3+k0s.0"
 
 ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERSION}/k0s-${K0S_VERSION}-amd64" /usr/bin/k0s
-
-FROM stage-pre-drbd as stage-drbd-skip
-FROM stage-pre-drbd as stage-drbd-install
 
 # Install drbd
 RUN --mount=type=bind,target=/mnt,from=drbd-build \
     KVER=$(ls /lib/modules) && KDIR=lib/modules/$KVER && \
     cp -vr /mnt/target/$KDIR/updates/. /$KDIR/updates/ && \
     depmod -a $KVER
-
-FROM stage-drbd-${DRBD_INSTALL}
 
 # cri-o and cni need to use /opt as image directory
 RUN [ -L /opt ] && { rm -f /opt && mkdir -p /opt;} || exit 0

@@ -1,4 +1,50 @@
 # From ../arch-base
+FROM scratch as builder-pkg-overrides
+
+# build libkrun and libkrunfw from git
+FROM arch-aur-builder as libkrun
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    sudo pacman -Sy --needed --noconfirm glibc gcc-libs libkrunfw pipewire virglrenderer \
+    cargo patchelf clang bc python-pyelftools cpio
+
+# pkg overrides, used for toolchains
+RUN --mount=type=bind,from=builder-pkg-overrides,target=/tmp/pkgs sudo bash <<'EOF'
+[[ -z "$(ls -A /tmp/pkgs)" ]] && exit 0
+pacman -U --noconfirm --needed /tmp/pkgs/*.pkg.tar.*
+EOF
+
+RUN bash -ex <<'EOF'
+git clone https://github.com/containers/libkrun
+cd libkrun
+cargo fetch --locked --target "$(rustc --print host-tuple)"
+
+export ZSTD_SYS_USE_PKG_CONFIG=1
+make BLK=1 NET=1 EFI=0 GPU=1 SND=1 INPUT=1 VERBOSE=1
+
+sudo mkdir -p /target
+pkgdir=/target
+
+sudo make DESTDIR="$pkgdir" PREFIX=/usr LIBDIR_Linux=lib install
+sudo install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+EOF
+
+# Skip libkrunfw for now since release version worked fine
+# RUN bash -ex <<'EOF'
+# git clone https://github.com/containers/libkrunfw
+# cd libkrunfw
+# make
+
+# sudo mkdir -p /target
+# pkgdir=/target
+
+# sudo make DESTDIR="$pkgdir" PREFIX=/usr LIBDIR_Linux=lib install
+
+# sudo install -Dm644 LICENSE-GPL-2.0-only "$pkgdir"/usr/share/licenses/$pkgname/LICENSE-GPL-2.0-only
+# sudo install -Dm644 LICENSE-LGPL-2.1-only "$pkgdir"/usr/share/licenses/$pkgname/LICENSE-LGPL-2.1-only
+# EOF
+
 FROM bootc-arch-base as base
 FROM base
 ARG K0S_VERSION="v1.35.4+k0s.0"
@@ -14,6 +60,9 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     yes | pacman -Sy --needed iptables-nft && \
     pacman -S --noconfirm --needed crun krun cri-o
+
+# Use git version of libkrun and libkrunfw to get latest patches
+COPY --from=libkrun /target/ /
 
 # /opt/cni needs to be writable, copy stock version from /usr/lib/cni to /var/lib/cni/bin and link it from /opt/cni
 # The copy is also done by tmpfiles.d as well, for updates

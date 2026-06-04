@@ -24,21 +24,6 @@ WORKDIR /work
 RUN for mod in /work/modules.d/* ; do ln -s $mod /usr/lib/dracut/modules.d; done;
 RUN /bin/sh for-container.sh build-initrd-all-mods
 
-# Build forked cfsctl
-FROM pkg-builder as cfsctl
-USER root
-
-RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --noconfirm rust git make
-
-RUN git clone https://github.com/chaserhkj/composefs-rs /work
-
-WORKDIR /work
-
-RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
-
-
 FROM bootc-arch
 ARG PACMAN_FULL_SYNC_FLAGS
 
@@ -97,14 +82,6 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 
 # Bootc completion
 RUN bootc completion bash >> /etc/bash.bashrc
-
-# Install cfsctl
-COPY --from=cfsctl /cfsctl /usr/bin
-
-# Install bootc-cfsctl-cleanup
-ADD --chmod=0755 \
-    https://gist.githubusercontent.com/chaserhkj/ad666a558800abeae9bc51202ad0da78/raw/7d45923cafb24bfa76fb57035cbb5d1fc8d4e72a/bootc-cfsctl-cleanup \
-    /usr/bin/bootc-cfsctl-cleanup
 
 # Layering other live-system-specific configurations
 COPY rootfs /

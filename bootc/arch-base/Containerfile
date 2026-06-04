@@ -27,20 +27,6 @@ WORKDIR /work
 
 RUN mkdir -p /target && make RELEASE=1 && make install DESTDIR=/target RELEASE=1
 
-# Build forked cfsctl
-FROM pkg-builder as cfsctl
-USER root
-
-RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --noconfirm rust git make
-
-RUN git clone https://github.com/chaserhkj/composefs-rs /work
-
-WORKDIR /work
-
-RUN cargo build --release -p cfsctl && cp target/release/cfsctl /cfsctl
-
 FROM scratch as bashrc.d
 
 COPY bashrc.d.sh /
@@ -151,14 +137,6 @@ RUN bootc completion bash > /etc/bashrc.d/10-bootc-completion.sh
 
 # Install ssh-key-dir
 COPY --from=ssh-key-dir /target /
-
-# Install cfsctl
-COPY --from=cfsctl /cfsctl /usr/bin
-
-# Install bootc-cfsctl-cleanup
-ADD --chmod=0755 \
-    https://gist.githubusercontent.com/chaserhkj/ad666a558800abeae9bc51202ad0da78/raw/7d45923cafb24bfa76fb57035cbb5d1fc8d4e72a/bootc-cfsctl-cleanup \
-    /usr/bin/bootc-cfsctl-cleanup
 
 # Copy rootfs that has all file-based configurations
 

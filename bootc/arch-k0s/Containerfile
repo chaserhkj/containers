@@ -1,7 +1,7 @@
 # From ../arch-base
 FROM bootc-arch-base as base
 FROM base
-ARG K0S_VERSION="v1.35.3+k0s.0"
+ARG K0S_VERSION="v1.35.4+k0s.0"
 
 ADD --chmod=0755 "https://github.com/k0sproject/k0s/releases/download/${K0S_VERSION}/k0s-${K0S_VERSION}-amd64" /usr/bin/k0s
 

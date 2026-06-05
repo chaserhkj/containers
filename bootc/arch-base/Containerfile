@@ -66,6 +66,10 @@ pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 rm -rf /boot
 mkdir -p /boot
 
+# Explicitly use gpt-auto root on kernel cmdline
+mkdir -p /usr/lib/bootc/kargs.d
+echo 'kargs = [ "root=gpt-auto" ]' > /usr/lib/bootc/kargs.d/10-gpt-auto.toml
+
 # After this, filesystem package overrides some bootc symlinks when reinstalling
 # So we want to reinstate them
 rm -rf /home /root /usr/local /srv /mnt /opt

@@ -4,46 +4,72 @@ FROM scratch as builder-pkg-overrides
 # build libkrun and libkrunfw from git
 FROM arch-aur-builder as libkrun
 
-RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    sudo pacman -Sy --needed --noconfirm glibc gcc-libs libkrunfw pipewire virglrenderer \
-    cargo patchelf clang bc python-pyelftools cpio
-
 # pkg overrides, used for toolchains
 RUN --mount=type=bind,from=builder-pkg-overrides,target=/tmp/pkgs sudo bash <<'EOF'
 [[ -z "$(ls -A /tmp/pkgs)" ]] && exit 0
 pacman -U --noconfirm --needed /tmp/pkgs/*.pkg.tar.*
 EOF
 
+RUN mkdir /var/build/libkrun
+
+COPY <<'EOF' /var/build/libkrun/PKGBUILD
+_pkgname=libkrun
+pkgname=${_pkgname}-git
+pkgver=1.18.1
+pkgrel=1
+pkgdesc="A dynamic library providing Virtualization-based process isolation capabilities"
+url='https://github.com/containers/libkrun'
+arch=('x86_64')
+license=('Apache-2.0')
+conflicts=("$_pkgname")
+provides=("$_pkgname")
+makedepends=('cargo' 'patchelf' 'clang')
+depends=('glibc' 'gcc-libs' 'libkrunfw' 'pipewire' 'virglrenderer')
+source=("git+https://github.com/containers/libkrun")
+sha256sums=('SKIP')
+
+pkgver() {
+  cd "$_pkgname"
+  ( set -o pipefail
+    git describe --tags --long 2>/dev/null | sed 's/\([^-]*-g\)/r\1/;s/-/./g' ||
+    printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+  )
+}
+prepare() {
+  cd "$_pkgname"
+
+  cargo fetch --locked --target "$(rustc --print host-tuple)"
+}
+
+build() {
+  cd "$_pkgname"
+
+  export ZSTD_SYS_USE_PKG_CONFIG=1
+  make BLK=1 NET=1 EFI=0 GPU=1 SND=1 INPUT=1 VERBOSE=1
+}
+
+package() {
+  cd "$_pkgname"
+
+  make DESTDIR="$pkgdir" PREFIX=/usr LIBDIR_Linux=lib install
+}
+EOF
+
 RUN bash -ex <<'EOF'
-git clone https://github.com/containers/libkrun
-cd libkrun
-cargo fetch --locked --target "$(rustc --print host-tuple)"
+cd /var/build/libkrun
+sudo chown builder PKGBUILD
 
-export ZSTD_SYS_USE_PKG_CONFIG=1
-make BLK=1 NET=1 EFI=0 GPU=1 SND=1 INPUT=1 VERBOSE=1
+makepkg -s --needed --noconfirm
+pkg_count=$(ls libkrun-git-v*.pkg.tar.zst|wc -l)
 
-sudo mkdir -p /target
-pkgdir=/target
+[[ "$pkg_count" != "1" ]] && exit 1
 
-sudo make DESTDIR="$pkgdir" PREFIX=/usr LIBDIR_Linux=lib install
-sudo install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+sudo mkdir -p /output
+sudo cp libkrun-git-v*.pkg.tar.zst /output/
+
 EOF
 
 # Skip libkrunfw for now since release version worked fine
-# RUN bash -ex <<'EOF'
-# git clone https://github.com/containers/libkrunfw
-# cd libkrunfw
-# make
-
-# sudo mkdir -p /target
-# pkgdir=/target
-
-# sudo make DESTDIR="$pkgdir" PREFIX=/usr LIBDIR_Linux=lib install
-
-# sudo install -Dm644 LICENSE-GPL-2.0-only "$pkgdir"/usr/share/licenses/$pkgname/LICENSE-GPL-2.0-only
-# sudo install -Dm644 LICENSE-LGPL-2.1-only "$pkgdir"/usr/share/licenses/$pkgname/LICENSE-LGPL-2.1-only
-# EOF
 
 FROM bootc-arch-base as base
 FROM base
@@ -62,7 +88,8 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     pacman -S --noconfirm --needed crun krun cri-o
 
 # Use git version of libkrun and libkrunfw to get latest patches
-COPY --from=libkrun /target/ /
+RUN --mount=from=libkrun,target=/tmp/pkgs \
+    yes | pacman -U --needed /tmp/pkgs/output/*.pkg.tar.zst
 
 # /opt/cni needs to be writable, copy stock version from /usr/lib/cni to /var/lib/cni/bin and link it from /opt/cni
 # The copy is also done by tmpfiles.d as well, for updates

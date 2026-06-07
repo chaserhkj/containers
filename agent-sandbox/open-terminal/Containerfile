@@ -26,5 +26,7 @@ EOF
 
 RUN chmod +x /entrypoint-wrapper.sh
 
+WORKDIR /home/user
+
 ENTRYPOINT ["/entrypoint-wrapper.sh"]
 CMD ["run"]

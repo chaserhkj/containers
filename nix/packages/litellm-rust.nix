@@ -13,4 +13,5 @@
   };
   cargoHash = "sha256-xYKuy3L+58xVGuJCDyP2Qc33DLO7tokg2Gh+HaLp2D8=";
   cargoDepsName = pname;
+  meta.mainProgram = pname;
 }

@@ -6,7 +6,7 @@
       name = "ghcr.io/chaserhkj/containers/litellm-rust";
       tag = "latest";
       config.Entrypoint = [
-        "${cliPkg}/bin/litellm-rust"
+        "${cliPkg}/bin/lite"
       ];
       config.Cmd = [
         "--config" "/config.yaml"

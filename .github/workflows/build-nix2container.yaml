@@ -13,6 +13,8 @@ on:
       - 'nix/tools/amd-ctk.nix'
       - 'nix/packages/amd-ctk.nix'
       - 'nix/environments/term-agents.nix'
+      - 'nix/services/litellm-rust.nix'
+      - 'nix/packages/litellm-rust.nix'
   workflow_dispatch:
   # images are pinned by flake.lock, no need to build the same version repeatedly
   # use a separate cron workflow to run nix flake update and commit to trigger updated builds

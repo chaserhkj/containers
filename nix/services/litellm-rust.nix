@@ -9,6 +9,7 @@
         "${cliPkg}/bin/lite"
       ];
       config.Cmd = [
+        "serve" "--host" "0.0.0.0"
         "--config" "/config.yaml"
       ];
       buildFixedEntrypointVariant = true;

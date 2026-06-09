@@ -1,0 +1,24 @@
+FROM docker.io/library/ubuntu:24.04 as base
+FROM docker.io/archlinux/archlinux as extractor
+ARG GPU_ARCH=gfx1151
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy unzip jq wget --needed --noconfirm
+
+ENV GPU_ARCH=${GPU_ARCH}
+
+RUN bash -ex <<'EOF'
+build=$(curl https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest -s | jq .name -r)
+wget -nv -O /release.zip https://github.com/lemonade-sdk/llamacpp-rocm/releases/download/${build}/llama-${build}-ubuntu-rocm-${GPU_ARCH}-x64.zip
+mkdir -p /target
+cd /target
+unzip /release.zip
+chmod +x /target/llama-cli /target/llama-server /target/rpc-server /target/llama-bench
+EOF
+
+FROM base
+
+COPY --from=extractor /target /llama.cpp
+
+ENV PATH="/llama.cpp:${PATH}"

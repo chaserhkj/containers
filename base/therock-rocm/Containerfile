@@ -4,7 +4,7 @@ FROM docker.io/library/ubuntu:24.04 as base
 FROM docker.io/archlinux/archlinux as archlinux
 FROM archlinux as extractor
 ARG TARGET_GPU_ARCH=gfx1151
-ARG THE_ROCK_VERSION=7.12.0a20260202
+ARG THE_ROCK_VERSION=7.14.0a20260608
 ARG THE_ROCK_VARIANT=${TARGET_GPU_ARCH}
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \

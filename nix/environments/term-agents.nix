@@ -1,5 +1,5 @@
 {...}: {
-  perSystem = {inputs', pkgs, ...}: {
+  perSystem = {inputs', pkgs, self', ...}: {
     devshellContainers.term-agents = {};
     devshells.term-agents = {
       packages = let 
@@ -20,6 +20,8 @@
         openskills
         tuicr
         ck
+      ]) ++ (with self'.packages; [
+        open-code-review
       ]);
     };
   };

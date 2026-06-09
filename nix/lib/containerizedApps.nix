@@ -14,9 +14,9 @@ localFlake@{importApplyContext, flakePartsModule, ...}:
       inherit (builtins) mapAttrs;
 
       buildImageFor = pname: package: {
-        config.Entrypoint = (lib.mkIf (package.useTini or false) [
+        config.Entrypoint = (if (package.useTini or false) then [
           "${pkgs.tini}/bin/tini" "--"
-        ])
+        ] else [])
           ++ [ (lib.getExe package) ];
         passthru.app = package;
       };

@@ -94,7 +94,7 @@ jobs:
           tags: |
             ghcr.io/chaserhkj/containers/llama-server-gfx1151:latest
             ghcr.io/chaserhkj/containers/llama-server-gfx1151:${{ env.ADDITIONAL_TAG }}
-          file: .devops/rocm.Dockerfile
+          file: Containerfile
           build-args: |
             GPU_ARCH=gfx1151
 
@@ -123,7 +123,7 @@ jobs:
           tags: |
             ghcr.io/chaserhkj/containers/llama-server-gfx103x:latest
             ghcr.io/chaserhkj/containers/llama-server-gfx103x:${{ env.ADDITIONAL_TAG }}
-          file: .devops/rocm.Dockerfile
+          file: Containerfile
           build-args: |
             GPU_ARCH=gfx103X
 
@@ -152,6 +152,6 @@ jobs:
           tags: |
             ghcr.io/chaserhkj/containers/llama-server-gfx110x:latest
             ghcr.io/chaserhkj/containers/llama-server-gfx110x:${{ env.ADDITIONAL_TAG }}
-          file: .devops/rocm.Dockerfile
+          file: Containerfile
           build-args: |
             GPU_ARCH=gfx110X

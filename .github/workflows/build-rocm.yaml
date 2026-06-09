@@ -1,11 +1,11 @@
-name: Build container images for gfx1151 stack
+name: Build container images for rocm stack
 
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/build-gfx1151-stack.yaml'
+      - '.github/workflows/build-rocm.yaml'
       - 'base/therock-rocm/**'
   workflow_dispatch:
   schedule:

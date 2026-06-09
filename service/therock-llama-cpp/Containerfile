@@ -24,7 +24,7 @@ EOF
 FROM base
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
-    apt-get update -y && apt-get install -y libatomic1
+    apt-get update -y && apt-get install -y libatomic1 curl
 
 COPY --from=extractor /target /llama.cpp
 

@@ -4,7 +4,7 @@ ARG GPU_ARCH=gfx1151
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy unzip jq wget --needed --noconfirm
+    pacman -Sy unzip jq wget binutils --needed --noconfirm
 
 ENV GPU_ARCH=${GPU_ARCH}
 
@@ -14,10 +14,17 @@ wget -nv -O /release.zip https://github.com/lemonade-sdk/llamacpp-rocm/releases/
 mkdir -p /target
 cd /target
 unzip /release.zip
-chmod +x /target/llama-cli /target/llama-server /target/rpc-server /target/llama-bench
+for f in /target/*; do
+[[ -f $f ]] || continue
+readelf -h $f | grep "Executable file" 2>&1 1>&/dev/null || continue
+chmod +x $f
+done
 EOF
 
 FROM base
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update -y && apt-get install -y libatomic1
 
 COPY --from=extractor /target /llama.cpp
 

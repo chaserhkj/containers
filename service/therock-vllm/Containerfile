@@ -26,4 +26,4 @@ COPY --from=extractor /vllm /opt/vllm
 
 ENV PATH="/opt/vllm/bin:${PATH}"
 
-ENTRYPOINT [ "vllm" ]
+ENTRYPOINT [ "vllm-server" ]

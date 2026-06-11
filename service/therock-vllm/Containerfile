@@ -14,7 +14,7 @@ jq '[.[]|select(.name|test("'$GPU_ARCH'$"))][0]|.assets.[]|select(.name|test("\\
 )
 mkdir -p /tmp/download
 cd /tmp/download
-for u in urls; do wget -nv $u; done;
+for u in $urls; do wget -nv $u; done;
 mkdir -p /vllm
 cd /vllm
 cat $(ls /tmp/download/*.tar.gz|sort)| tar -xzf -

@@ -1,0 +1,29 @@
+FROM docker.io/library/ubuntu:24.04 as base
+FROM docker.io/archlinux/archlinux as extractor
+ARG GPU_ARCH=gfx1151
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy jq wget --needed --noconfirm
+
+ENV GPU_ARCH=${GPU_ARCH}
+
+RUN bash -ex <<'EOF'
+urls=$(curl https://api.github.com/repos/lemonade-sdk/vllm-rocm/releases -s |
+jq '[.[]|select(.name|test("'$GPU_ARCH'$"))][0]|.assets.[]|select(.name|test("\\.tar\\.gz$"))|.browser_download_url' -r
+)
+mkdir -p /tmp/download
+cd /tmp/download
+for u in urls; do wget -nv $u; done;
+mkdir -p /vllm
+cd /vllm
+cat $(ls /tmp/download/*.tar.gz|sort)| tar -xzf -
+EOF
+
+FROM base
+
+COPY --from=extractor /vllm /opt/vllm
+
+ENV PATH="/opt/vllm/bin:${PATH}"
+
+ENTRYPOINT [ "vllm" ]

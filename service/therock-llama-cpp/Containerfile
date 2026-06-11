@@ -29,3 +29,5 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt \
 COPY --from=extractor /target /llama.cpp
 
 ENV PATH="/llama.cpp:${PATH}"
+
+ENTRYPOINT [ "llama-server" ]

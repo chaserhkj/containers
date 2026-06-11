@@ -1,0 +1,70 @@
+name: Build container images for therock rocm stack
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/build-the-rock.yaml'
+      - 'base/therock-rocm/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 2,5'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  timestamp:
+    runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.set-ts.outputs.ts }}
+    steps:
+      - id: set-ts
+        run: echo "ts=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+
+  build-therock-gfx1151:
+    if: |
+      github.event_name == 'schedule' || 
+      !contains(github.event.head_commit.message, '[skip-base]')
+    name: Build the rock rocm base image for gfx1151 devices
+    runs-on: ubuntu-latest
+    outputs:
+      therock_version: ${{ steps.check_therock_version.outputs.therock_version }}
+    steps:
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+      
+      - name: Determine latest therock version
+        id: check_therock_version
+        run: |
+          version=$( curl https://therock-nightly-tarball.s3.amazonaws.com/index.html |
+            grep 'const files = ' |
+            sed -E 's/.*= (\[.+\]);/\1/g' |
+            jq '[.[] | select(.name | contains("linux-gfx1151"))] | sort_by(.mtime) | .[-1].name ' -r |
+            sed -E 's/therock-dist-linux-gfx1151-(.*).tar.gz/\1/' )
+          echo "Latest therock build version $version"
+          echo therock_version=$version >> "$GITHUB_OUTPUT"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push therock rocm base image
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:base/therock-rocm/"
+          push: true
+          tags: |
+            ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:latest
+            ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:${{ steps.check_therock_version.outputs.therock_version }}
+          build-args: |
+            THE_ROCK_VERSION=${{ steps.check_therock_version.outputs.therock_version }}

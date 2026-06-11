@@ -1,13 +1,13 @@
-name: Build container images for rocm stack
+name: repackage prebuilt binaries for rocm stack
 
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/build-rocm.yaml'
-      - 'base/therock-rocm/**'
+      - '.github/workflows/build-rocm-prebuilt.yaml'
       - 'service/therock-llama-cpp/**'
+      - 'service/therock-vllm/**'
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * 2,5'
@@ -25,53 +25,8 @@ jobs:
       - id: set-ts
         run: echo "ts=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
 
-  build-therock-gfx1151:
-    if: |
-      github.event_name == 'schedule' || 
-      !contains(github.event.head_commit.message, '[skip-base]')
-    name: Build the rock rocm base image for gfx1151 devices
-    runs-on: ubuntu-latest
-    outputs:
-      therock_version: ${{ steps.check_therock_version.outputs.therock_version }}
-    steps:
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-      
-      - name: Determine latest therock version
-        id: check_therock_version
-        run: |
-          version=$( curl https://therock-nightly-tarball.s3.amazonaws.com/index.html |
-            grep 'const files = ' |
-            sed -E 's/.*= (\[.+\]);/\1/g' |
-            jq '[.[] | select(.name | contains("linux-gfx1151"))] | sort_by(.mtime) | .[-1].name ' -r |
-            sed -E 's/therock-dist-linux-gfx1151-(.*).tar.gz/\1/' )
-          echo "Latest therock build version $version"
-          echo therock_version=$version >> "$GITHUB_OUTPUT"
-
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push therock rocm base image
-        uses: docker/build-push-action@v6
-        with:
-          context: "{{defaultContext}}:base/therock-rocm/"
-          push: true
-          tags: |
-            ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:latest
-            ghcr.io/chaserhkj/containers/therock-rocm-gfx1151:${{ steps.check_therock_version.outputs.therock_version }}
-          build-args: |
-            THE_ROCK_VERSION=${{ steps.check_therock_version.outputs.therock_version }}
-
   build-llama-server-gfx1151:
-    name: Build the llama sever image for gfx1151 devices
+    name: Build the llama server image for gfx1151 devices
     runs-on: ubuntu-latest
     needs: [timestamp]
     env:
@@ -100,7 +55,7 @@ jobs:
             GPU_ARCH=gfx1151
 
   build-llama-server-gfx103X:
-    name: Build the llama sever image for gfx103X devices
+    name: Build the llama server image for gfx103X devices
     runs-on: ubuntu-latest
     needs: [timestamp]
     env:
@@ -129,7 +84,7 @@ jobs:
             GPU_ARCH=gfx103X
 
   build-llama-server-gfx110X:
-    name: Build the llama sever image for gfx110X devices
+    name: Build the llama server image for gfx110X devices
     runs-on: ubuntu-latest
     needs: [timestamp]
     env:
@@ -153,6 +108,64 @@ jobs:
           tags: |
             ghcr.io/chaserhkj/containers/llama-server-gfx110x:latest
             ghcr.io/chaserhkj/containers/llama-server-gfx110x:${{ env.ADDITIONAL_TAG }}
+          file: Containerfile
+          build-args: |
+            GPU_ARCH=gfx110X
+
+  build-vllm-gfx1151:
+    name: Build the vllm image for gfx1151 devices
+    runs-on: ubuntu-latest
+    needs: [timestamp]
+    env:
+      ADDITIONAL_TAG: ${{ needs.timestamp.outputs.timestamp }}
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push vllm image
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:service/therock-vllm"
+          push: true
+          tags: |
+            ghcr.io/chaserhkj/containers/vllm-gfx1151:latest
+            ghcr.io/chaserhkj/containers/vllm-gfx1151:${{ env.ADDITIONAL_TAG }}
+          file: Containerfile
+          build-args: |
+            GPU_ARCH=gfx1151
+
+  build-vllm-gfx110X:
+    name: Build the vllm image for gfx110X devices
+    runs-on: ubuntu-latest
+    needs: [timestamp]
+    env:
+      ADDITIONAL_TAG: ${{ needs.timestamp.outputs.timestamp }}
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push vllm image
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:service/therock-vllm"
+          push: true
+          tags: |
+            ghcr.io/chaserhkj/containers/vllm-gfx110x:latest
+            ghcr.io/chaserhkj/containers/vllm-gfx110x:${{ env.ADDITIONAL_TAG }}
           file: Containerfile
           build-args: |
             GPU_ARCH=gfx110X

@@ -40,4 +40,4 @@ RUN mkdir -p /target && \
 
 FROM therock-base
 
-COPY --from=migraphx /target /
+COPY --from=migraphx /target /opt/migraphx

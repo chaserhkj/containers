@@ -1,0 +1,12 @@
+[Unit]
+Description=Preinstall nixpkgs package for binary %i as primary user
+Wants=network-online.target network.target
+After=network-online.target
+ConditionPathExists=!/var/home/hkj/.nix-profile/bin/%i
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=hkj
+Group=hkj
+ExecStart=/usr/bin/nixStatic profile add "nixpkgs#%i"

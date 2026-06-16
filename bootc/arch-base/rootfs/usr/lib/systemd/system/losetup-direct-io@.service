@@ -11,4 +11,4 @@ Type=oneshot
 RemainAfterExit=yes
 TimeoutSec=infinity
 ExecStart=/usr/bin/losetup -f --direct-io=on %f
-ExecStop=/usr/bin/losetup -d /dev/disk/by-loop-ref/%i
+ExecStop=/bin/bash -c "/usr/bin/losetup -d $(/usr/bin/losetup -nO NAME -j %f)"

@@ -1,0 +1,8 @@
+[Unit]
+Description=Tmpfs for user
+
+[Mount]
+What=none
+Where=/usr/tmp
+Options=defaults
+Type=tmpfs

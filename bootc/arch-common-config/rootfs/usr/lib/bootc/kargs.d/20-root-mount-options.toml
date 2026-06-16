@@ -1,0 +1,1 @@
+kargs = [ "rootflags=noatime,space_cache=v2,compress=zstd:3,discard=async" ]

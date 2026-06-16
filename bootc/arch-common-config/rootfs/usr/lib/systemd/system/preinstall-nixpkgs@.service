@@ -1,7 +1,7 @@
 [Unit]
 Description=Preinstall nixpkgs package for binary %i as primary user
 Wants=network-online.target network.target
-After=network-online.target
+After=network-online.target systemd-tmpfiles-setup.service
 ConditionPathExists=!/var/home/hkj/.nix-profile/bin/%i
 
 [Service]

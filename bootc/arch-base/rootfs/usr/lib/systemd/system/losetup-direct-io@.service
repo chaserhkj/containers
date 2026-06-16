@@ -1,0 +1,14 @@
+[Unit]
+Description=Attach File %f to Loopback Block Device with direct-io
+DefaultDependencies=no
+RequiresMountsFor=%f
+IgnoreOnIsolate=yes
+Wants=modprobe@loop.service
+After=modprobe@loop.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutSec=infinity
+ExecStart=/usr/bin/losetup -f --direct-io=on %f
+ExecStop=/usr/bin/losetup -d /dev/disk/by-loop-ref/%i

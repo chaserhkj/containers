@@ -1,0 +1,36 @@
+# Images that are meant to be used on systems with graphical interfaces
+FROM bootc-arch-common-home-config as base
+
+FROM arch-aur-builder as aur-builder
+
+RUN aur sync -n --noview pass-secret-service
+
+FROM base
+
+# interactive usage essentials
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --needed --noconfirm ly pass tpm2-tools ssh-tpm-agent
+
+# GUI essentials
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -S --needed --noconfirm xwayland-satellite ttf-liberation wqy-microhei wqy-zenhei \
+        xdg-desktop-portal-gtk xdg-desktop-portal-gnome lxqt-openssh-askpass \
+        fcitx5 fcitx5-chinese-addons fcitx5-configtool fcitx5-gtk fcitx5-qt fcitx5-pinyin-zhwiki
+
+# Niri-based GUI environment and other GUI utils
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -S --needed --noconfirm niri fuzzel mako swaybg swaylock \
+        waybar otf-font-awesome ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
+
+# Desktop group permissions
+RUN usermod -a -G input,audio,video,render,tss hkj
+
+RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-repo \
+    --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --config /etc/pacman-local-repo.conf --needed --noconfirm pass-secret-service
+
+COPY rootfs /

@@ -1,7 +1,6 @@
 [Unit]
 Description=Bind mount for persistent nix store
-Requires=var.mount
-After=var.mount
+RequiresMountsFor=/var/nix
 
 [Mount]
 What=/var/nix

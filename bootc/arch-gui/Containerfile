@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 # Niri-based GUI environment and other GUI utils
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm niri fuzzel mako swaybg swaylock \
+    pacman -S --needed --noconfirm niri fuzzel mako swaybg swaylock alacritty kanshi \
         waybar otf-font-awesome ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
 
 # Desktop group permissions

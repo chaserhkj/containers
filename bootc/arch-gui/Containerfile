@@ -15,14 +15,14 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 # GUI essentials
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm xwayland-satellite ttf-liberation wqy-microhei wqy-zenhei \
+    pacman -Sy --needed --noconfirm xwayland-satellite ttf-liberation wqy-microhei wqy-zenhei \
         xdg-desktop-portal-gtk xdg-desktop-portal-gnome lxqt-openssh-askpass \
         fcitx5 fcitx5-chinese-addons fcitx5-configtool fcitx5-gtk fcitx5-qt fcitx5-pinyin-zhwiki
 
 # Niri-based GUI environment and other GUI utils
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -S --needed --noconfirm niri fuzzel mako swaybg swaylock alacritty kanshi \
+    pacman -Sy --needed --noconfirm niri fuzzel mako swaybg swaylock alacritty kanshi \
         waybar otf-font-awesome ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
 
 # Desktop group permissions

@@ -3,11 +3,10 @@
 FROM bootc-arch-base as base
 
 # Add additional host-specific packages from build context, if any
-RUN --mount=type=bind,target=/tmp \
+RUN --mount=type=bind,target=/tmp/ctx \
     --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    --mount=type=tmpfs,target=/tmp \
-    [ -f /tmp/PKGS ] && { pacman -Sy - --noconfirm --needed </tmp/PKGS; } || exit 0
+    [ -f /tmp/ctx/PKGS ] && { pacman -Sy - --noconfirm --needed </tmp/ctx/PKGS; } || exit 0
 
 # Adding layer
 COPY rootfs /
@@ -20,5 +19,5 @@ RUN --mount=type=secret,id=ncps_cred \
     chown hkj:hkj /etc/nix/ncps.cred.txt && chmod 0400 /etc/nix/ncps.cred.txt
 
 # Run setup script from build context, if any
-RUN --mount=type=bind,target=/tmp \
-    [ -f /tmp/setup.sh ] && bash /tmp/setup.sh || exit 0
+RUN --mount=type=bind,target=/tmp/ctx \
+    [ -f /tmp/ctx/setup.sh ] && bash /tmp/ctx/setup.sh || exit 0

@@ -97,6 +97,7 @@ done
 [[ "$num_kernels" == "1" ]] || exit 1
 
 # Always regenerate initramfs to include lvm
+kver=$(ls /usr/lib/modules|sort|tail -n1)
 dracut --verbose --force /usr/lib/modules/$kver/initramfs.img
 EOF
 

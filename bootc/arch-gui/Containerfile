@@ -17,7 +17,8 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Sy --needed --noconfirm xwayland-satellite ttf-liberation wqy-microhei wqy-zenhei \
         xdg-desktop-portal-gtk xdg-desktop-portal-gnome lxqt-openssh-askpass \
-        fcitx5 fcitx5-chinese-addons fcitx5-configtool fcitx5-gtk fcitx5-qt fcitx5-pinyin-zhwiki
+        fcitx5 fcitx5-chinese-addons fcitx5-configtool fcitx5-gtk fcitx5-qt fcitx5-pinyin-zhwiki \
+	pipewire pipewire-alsa pipewire-audio pipewire-jack pipewire-pulse pipewire-libcamera pipewire-v4l2 pipewire-roc wireplumber
 
 # Niri-based GUI environment and other GUI utils
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

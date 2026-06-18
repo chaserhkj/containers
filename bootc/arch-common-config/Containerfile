@@ -51,7 +51,7 @@ RUN --mount=type=bind,from=blesh,target=/tmp \
 # Install CLI power tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm tmux zoxide atuin fzf chezmoi
+    pacman -Sy --needed --noconfirm tmux zoxide atuin fzf
 
 RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-repo \
     --mount=type=tmpfs,target=/usr/lib/sysimage/lib/pacman/sync \

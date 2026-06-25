@@ -43,6 +43,7 @@
             skills
           ])
           ++ (with self'.packages; [
+            mozilla-cq
             open-code-review
           ])
           ++ [

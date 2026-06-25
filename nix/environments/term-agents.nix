@@ -12,6 +12,7 @@
         packages =
           let
             llm = inputs'.llm-agents.packages;
+            git-ai = inputs'.git-ai.packages;
           in
           (with pkgs; [
             git
@@ -43,7 +44,10 @@
           ])
           ++ (with self'.packages; [
             open-code-review
-          ]);
+          ])
+          ++ [
+            git-ai.minimal
+          ];
       };
     };
 }

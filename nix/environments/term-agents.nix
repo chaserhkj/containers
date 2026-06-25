@@ -1,28 +1,49 @@
-{...}: {
-  perSystem = {inputs', pkgs, self', ...}: {
-    devshellContainers.term-agents = {};
-    devshells.term-agents = {
-      packages = let 
-        llm = inputs'.llm-agents.packages;
-      in (with pkgs; [
-        git
-        curl
-        jq
+{ ... }: {
+  perSystem =
+    {
+      inputs',
+      pkgs,
+      self',
+      ...
+    }:
+    {
+      devshellContainers.term-agents = { };
+      devshells.term-agents = {
+        packages =
+          let
+            llm = inputs'.llm-agents.packages;
+          in
+          (with pkgs; [
+            git
+            diffutils
+            curl
+            jq
 
-        uv
-        bun
-        (writeShellScriptBin "npx" ''
-          exec ${bun}/bin/bunx "$@"
-        '')
-      ])++(with llm; [
-        opencode
+            uv
+            bun
+            (writeShellScriptBin "npx" ''
+              exec ${bun}/bin/bunx "$@"
+            '')
+          ])
+          ++ (with llm; [
+            opencode
 
-        openskills
-        tuicr
-        ck
-      ]) ++ (with self'.packages; [
-        open-code-review
-      ]);
+            backlog-md
+            tuicr
+
+            ck
+            qmd
+            codegraph
+
+            mcporter
+            context-hub
+
+            openskills
+            skills
+          ])
+          ++ (with self'.packages; [
+            open-code-review
+          ]);
+      };
     };
-  };
 }

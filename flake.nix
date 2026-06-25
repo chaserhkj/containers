@@ -1,7 +1,7 @@
 {
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix2container.url = "github:nlewo/nix2container";
     devshell.url = "github:numtide/devshell";
     llm-agents.url = "github:numtide/llm-agents.nix";

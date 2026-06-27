@@ -7,5 +7,5 @@ result
 # For building with argo workflows
 .kubeconfig
 
-# Aider
-.cecli/
+# opencode workspace config
+opencode.json

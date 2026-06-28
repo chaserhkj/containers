@@ -44,7 +44,6 @@
             skills
           ])
           ++ (with self'.packages; [
-            cecli
             mozilla-cq
             open-code-review
           ])

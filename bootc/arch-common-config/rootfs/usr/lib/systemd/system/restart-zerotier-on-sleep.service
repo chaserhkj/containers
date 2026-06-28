@@ -1,0 +1,9 @@
+[Unit]
+Before=sleep.target
+StopWhenUnneeded=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/systemctl stop zerotier-one.service
+ExecStop=/usr/bin/systemctl start zerotier-one.service

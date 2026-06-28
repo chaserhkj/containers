@@ -28,6 +28,7 @@
           ])
           ++ (with llm; [
             opencode
+            hermes-agent
 
             backlog-md
             tuicr

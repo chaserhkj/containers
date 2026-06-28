@@ -117,7 +117,7 @@ RUN cp -f /etc/pacman.conf /etc/pacman-local-repo.conf && \
 # Common tools, including tools that might be needed to work with bootc
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm sudo neovim bash-completion moreutils man less jq yq bubblewrap fsverity-utils ripgrep fd sd lsd bat bottom dust duf dog && \
+    pacman -Sy --needed --noconfirm sudo neovim bash-completion moreutils inetutils man less jq yq bubblewrap fsverity-utils ripgrep fd sd lsd bat bottom dust duf dog && \
     ln -sT nvim /usr/bin/vim
 
 # Container tools

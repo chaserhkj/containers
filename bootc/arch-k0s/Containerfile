@@ -100,9 +100,4 @@ RUN mkdir -p /var/lib/cni/bin && \
     rm -rf /opt/cni/bin && \
     ln -sfT /var/lib/cni/bin /opt/cni/bin
 
-# Other host tools required by k0s
-RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
-    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --noconfirm --needed inetutils
-
 COPY rootfs /

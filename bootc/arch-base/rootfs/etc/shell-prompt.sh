@@ -14,7 +14,7 @@ _prompt_time() {
 }
 
 _prompt_load() {
-    printf "(%s/%s)" "$(awk '{ print $1, $2, $3 }' < /proc/loadavg)" "$(grep ^processor /proc/cpuinfo|wc -l)"
+    printf "(%s/%s)" "$(awk '{ print $1, $2, $3 }' </proc/loadavg)" "$(grep ^processor /proc/cpuinfo | wc -l)"
 }
 
 _prompt_mem() {
@@ -24,6 +24,7 @@ _prompt_mem() {
 _get_prompt() {
     local last_code=$?
     local _reset _dim _bold _set_cur _reset_cur _blue _green _red _yellow
+    local _purple _cyan _white _black_white
     _reset="\[$(tput sgr0)\]"
     _dim="\[$(tput dim)\]"
     _bold="\[$(tput bold)\]"
@@ -36,6 +37,7 @@ _get_prompt() {
     _purple="\[$(tput setaf 5)\]"
     _cyan="\[$(tput setaf 6)\]"
     _white="\[$(tput setaf 7)\]"
+    _black_white="\[$(tput setaf 0)$(tput setbf 7)\]"
     # Separator
     _prompt_="$_dim""$(_prompt_sep _)$_reset"
     _prompt_+="$PROMPT_STATUS_PREFIX"
@@ -43,24 +45,33 @@ _get_prompt() {
     # Time
     _prompt_+='\n'"$_set_cur$_blue$(_prompt_time)$_reset$_reset_cur"
     # Root indicator
-    local _user_color _sym _host_color _ssh_color
+    local _user_color_code _user_color _reversed_user_color _sym _host_color _ssh_color
     if [[ $UID == 0 ]]; then
-        _user_color="$_red"
+        _user_color_code=1
         _sym='#'
-    if [[ $USER != root ]]; then
-            _user_color="$_yellow"
-        _sym='*'
-    fi
+        if [[ $USER != root ]]; then
+            _user_color_code=3
+            _sym='*'
+        fi
     else
-        _user_color="$_green"
-    _sym='$'
+        _user_color_code=2
+        _sym='$'
     fi
+    _user_color="\[$(tput setaf $_user_color_code)\]"
+    _reversed_user_color="\[$(tput setaf 7)$(tput setbf $_user_color_code)\]"
     if [[ -n $PROMPT_HOST_COLOR_CODE ]]; then
-        _host_color="\[$(tput setaf $PROMPT_HOST_COLOR_CODE)\]"
+        local _host_fg_color_code _host_bg_color_code
+        if [[ $PROMPT_HOST_COLOR_CODE == */* ]]; then
+            _host_fg_color_code=${PROMPT_HOST_COLOR_CODE%%/*}
+            _host_bg_color_code=${PROMPT_HOST_COLOR_CODE##*/}
+            _host_color="\[$(tput setaf $_host_fg_color_code)$(tput setbf $_host_bg_color_code)\]"
+        else
+            _host_color="\[$(tput setaf $PROMPT_HOST_COLOR_CODE)\]"
+        fi
         _ssh_color=$_host_color
     else
-        _host_color=$_user_color
-        _ssh_color=$_white
+        _host_color=$_reversed_user_color
+        _ssh_color=$_black_white
     fi
     local _shell
     [[ -n $BASH ]] && _shell=bash
@@ -73,7 +84,7 @@ _get_prompt() {
     _prompt_+="$_blue$_bold$(_prompt_load)$_reset"
     # Mem
     _prompt_+="$_blue$_bold$(_prompt_mem) $_reset"
-    [[ -n $SSH_CLIENT ]] && _prompt_+="$_ssh_color$_bold"'['"$(echo $SSH_CLIENT|cut -d' ' -f1)"' ->]'" $_reset"
+    [[ -n $SSH_CLIENT ]] && _prompt_+="$_ssh_color$_bold"'['"$(echo $SSH_CLIENT | cut -d' ' -f1)"' ->]'" $_reset"
     # Extra contexts
     _prompt_+="$_bold$PROMPT_CONTEXT$_reset"
     _prompt_+="$PROMPT_STATUS_POSTFIX"
@@ -92,8 +103,8 @@ _prompt() {
 }
 
 if [ -n "$BASH_VERSION" ]; then
-    PROMPT_COMMAND+=( _prompt )
-    # Separator before each output 
+    PROMPT_COMMAND+=(_prompt)
+    # Separator before each output
     PS0='$(tput dim; _prompt_sep -; tput sgr0;)\n'
 elif [ -n "$ZSH_VERSION" ]; then
     # With bash this is provided by BLE, but for zsh we do it here

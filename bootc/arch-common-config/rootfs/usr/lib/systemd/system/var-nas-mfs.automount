@@ -1,0 +1,6 @@
+[Unit]
+Description=NFS automount for MooseFS
+
+[Automount]
+Where=/var/nas/mfs
+TimeoutIdleSec=900

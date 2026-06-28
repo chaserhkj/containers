@@ -1,0 +1,11 @@
+[Unit]
+Description=NFS mount for MooseFS
+Wants=primary-zt-network.target
+After=primary-zt-network.target
+
+[Mount]
+What=mfs-nfs.0.zt:/
+Where=/var/nas/mfs
+Options=soft,timeo=30,retrans=2,noauto
+TimeoutSec=10
+Type=nfs4

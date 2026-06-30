@@ -44,6 +44,8 @@
             skills
           ])
           ++ (with self'.packages; [
+            graphrag
+            llm-wiki-compiler
             mozilla-cq
             open-code-review
           ])

@@ -28,6 +28,7 @@
           ])
           ++ (with llm; [
             opencode
+            pi
             hermes-agent
 
             backlog-md

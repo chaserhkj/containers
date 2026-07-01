@@ -37,7 +37,7 @@ _get_prompt() {
     _purple="\[$(tput setaf 5)\]"
     _cyan="\[$(tput setaf 6)\]"
     _white="\[$(tput setaf 7)\]"
-    _black_white="\[$(tput setaf 0)$(tput setbf 7)\]"
+    _black_white="\[$(tput setaf 0)$(tput setab 7)\]"
     # Separator
     _prompt_="$_dim""$(_prompt_sep _)$_reset"
     _prompt_+="$PROMPT_STATUS_PREFIX"
@@ -58,13 +58,13 @@ _get_prompt() {
         _sym='$'
     fi
     _user_color="\[$(tput setaf $_user_color_code)\]"
-    _reversed_user_color="\[$(tput setaf 7)$(tput setbf $_user_color_code)\]"
+    _reversed_user_color="\[$(tput setaf 7)$(tput setab $_user_color_code)\]"
     if [[ -n $PROMPT_HOST_COLOR_CODE ]]; then
         local _host_fg_color_code _host_bg_color_code
         if [[ $PROMPT_HOST_COLOR_CODE == */* ]]; then
             _host_fg_color_code=${PROMPT_HOST_COLOR_CODE%%/*}
             _host_bg_color_code=${PROMPT_HOST_COLOR_CODE##*/}
-            _host_color="\[$(tput setaf $_host_fg_color_code)$(tput setbf $_host_bg_color_code)\]"
+            _host_color="\[$(tput setaf $_host_fg_color_code)$(tput setab $_host_bg_color_code)\]"
         else
             _host_color="\[$(tput setaf $PROMPT_HOST_COLOR_CODE)\]"
         fi

@@ -45,7 +45,7 @@ _get_prompt() {
     # Time
     _prompt_+='\n'"$_set_cur$_blue$(_prompt_time)$_reset$_reset_cur"
     # Root indicator
-    local _user_color_code _user_color _reversed_user_color _sym _host_color _ssh_color
+    local _user_color_code _user_color _reversed_user_color _sym _host_color _ssh_color _ssh_host_color
     if [[ $UID == 0 ]]; then
         _user_color_code=1
         _sym='#'
@@ -68,10 +68,10 @@ _get_prompt() {
         else
             _host_color="\[$(tput setaf $PROMPT_HOST_COLOR_CODE)\]"
         fi
-        _ssh_color=$_host_color
+        _ssh_host_color=$_host_color
     else
-        _host_color=$_reversed_user_color
-        _ssh_color=$_black_white
+        _host_color=$_user_color
+        _ssh_host_color=$_reversed_user_color
     fi
     local _shell
     [[ -n $BASH ]] && _shell=bash
@@ -84,13 +84,17 @@ _get_prompt() {
     _prompt_+="$_blue$_bold$(_prompt_load)$_reset"
     # Mem
     _prompt_+="$_blue$_bold$(_prompt_mem) $_reset"
-    [[ -n $SSH_CLIENT ]] && _prompt_+="$_ssh_color$_bold"'['"$(echo $SSH_CLIENT | cut -d' ' -f1)"' ->]'" $_reset"
+    _ssh_color=$_black_white
+    if [[ -n $SSH_CLIENT ]]; then
+        _prompt_+="$_ssh_color$_bold"'['"$(echo $SSH_CLIENT | cut -d' ' -f1)"' ->]'" $_reset"
+        _host_color=$_ssh_host_color
+    fi
     # Extra contexts
     _prompt_+="$_bold$PROMPT_CONTEXT$_reset"
     _prompt_+="$PROMPT_STATUS_POSTFIX"
     # Context line
     # User@Host
-    _prompt_+='\n'"$_bold$_user_color"'[${USER}@'"$_host_color"'\h'"$_user_color"'] '"$_reset"
+    _prompt_+='\n'"$_bold$_user_color"'[${USER}@'"$_host_color"'\h'"$_reset$_bold$_user_color"'] '"$_reset"
     # PWD
     _prompt_+="$_user_color"'\w'"$_reset"'\n'
     # Prompt line

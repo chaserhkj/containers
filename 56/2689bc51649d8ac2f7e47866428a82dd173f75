@@ -1,0 +1,14 @@
+bootc/arch-base/rootfs/etc/shell-prompt.sh
+  h_8d23b84102cdcd 48,71,73-74,87-88,90-91,97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "562689bc51649d8ac2f7e47866428a82dd173f75",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

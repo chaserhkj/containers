@@ -1,0 +1,21 @@
+FROM arch-pkgs-kernel as kernel-base
+
+FROM arch-aur-builder as builder
+
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 6AD860EED4598027 && \
+    aur sync -n --noview zfs-linux zfs-utils
+
+RUN sudo bash <<'EOF'
+mkdir /pkgs
+cd /var/build/repo
+
+pkg=$(ls| grep -E '^zfs-linux-[0-9\.-_]+(arch[0-9]+)?[\.0-9-]+x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
+cp -v $pkg /pkgs
+
+pkg=$(ls| grep -E '^zfs-utils-[0-9\.-]+x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
+cp -v $pkg /pkgs
+EOF
+
+FROM scratch as arch-pkgs-base
+COPY --from=kernel-base / /
+COPY --from=builder /pkgs/*.pkg.tar.* /

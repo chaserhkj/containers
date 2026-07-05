@@ -1,12 +1,25 @@
-FROM arch-pkgs-kernel as kernel-base
-
 FROM arch-aur-builder as builder
+
+ARG KERNEL_VERSION=7.0.14.arch1.1-1
+
+RUN sudo bash <<EOF
+set -euo pipefail
+mkdir -p /pkgs
+cd /tmp
+
+curl -fLO "https://archive.archlinux.org/packages/l/linux/linux-${KERNEL_VERSION}-x86_64.pkg.tar.zst"
+curl -fLO "https://archive.archlinux.org/packages/l/linux-headers/linux-headers-${KERNEL_VERSION}-x86_64.pkg.tar.zst"
+
+pacman -U --noconfirm linux-${KERNEL_VERSION}-x86_64.pkg.tar.zst linux-headers-${KERNEL_VERSION}-x86_64.pkg.tar.zst
+
+cp -v linux-${KERNEL_VERSION}-x86_64.pkg.tar.zst /pkgs/
+cp -v linux-headers-${KERNEL_VERSION}-x86_64.pkg.tar.zst /pkgs/
+EOF
 
 RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 6AD860EED4598027 && \
     aur sync -n --noview zfs-linux zfs-utils
 
 RUN sudo bash <<'EOF'
-mkdir /pkgs
 cd /var/build/repo
 
 pkg=$(ls| grep -E '^zfs-linux-[0-9\.-_]+(arch[0-9]+)?[\.0-9-]+x86_64\.pkg\.tar\.zst$'|sort|tail -n1)
@@ -17,5 +30,4 @@ cp -v $pkg /pkgs
 EOF
 
 FROM scratch as arch-pkgs-base
-COPY --from=kernel-base / /
 COPY --from=builder /pkgs/*.pkg.tar.* /

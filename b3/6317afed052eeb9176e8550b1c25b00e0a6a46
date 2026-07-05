@@ -1,0 +1,14 @@
+build/arch-pkgs-kernel-with-zfs/Containerfile
+  h_8d23b84102cdcd 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "b36317afed052eeb9176e8550b1c25b00e0a6a46",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

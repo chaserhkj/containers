@@ -1,6 +1,6 @@
 FROM arch-aur-builder as builder
 
-ARG KERNEL_VERSION=7.0.14.arch1.1-1
+ARG KERNEL_VERSION=7.0.14.arch1-1
 
 RUN sudo bash <<EOF
 set -euo pipefail

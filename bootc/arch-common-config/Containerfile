@@ -59,7 +59,7 @@ RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-
     pacman -Sy --config /etc/pacman-local-repo.conf --needed --noconfirm sesh-bin networkd-broker
 
 # Post installation steps for sesh
-RUN echo "$(sesh completion bash)" > /etc/bash_completion.d/sesh.bash
+RUN mkdir -p /etc/bash_completion.d && echo "$(sesh completion bash)" > /etc/bash_completion.d/sesh.bash
 
 # For mounting storage over network
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

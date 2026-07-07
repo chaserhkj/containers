@@ -19,6 +19,8 @@
             diffutils
             curl
             jq
+            ripgrep
+            ast-grep
 
             uv
             bun

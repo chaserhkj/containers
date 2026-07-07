@@ -37,12 +37,17 @@
             ck
             qmd
             codegraph
+            semble
 
             mcporter
             context-hub
 
             openskills
             skills
+
+            agent-browser
+            rtk
+            terminal-use
           ])
           ++ (with self'.packages; [
             openkb

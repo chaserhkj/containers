@@ -45,6 +45,7 @@
             skills
           ])
           ++ (with self'.packages; [
+            openkb
             graphrag
             llm-wiki-compiler
             mozilla-cq

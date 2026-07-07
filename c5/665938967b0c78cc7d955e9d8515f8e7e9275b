@@ -1,0 +1,18 @@
+nix/packages/openkb.nix
+  h_8d23b84102cdcd 1-47
+nix/environments/term-agents.nix
+  h_8d23b84102cdcd 48
+nix/packages.nix
+  h_8d23b84102cdcd 7-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "c5665938967b0c78cc7d955e9d8515f8e7e9275b",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

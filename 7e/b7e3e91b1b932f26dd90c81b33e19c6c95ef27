@@ -1,0 +1,33 @@
+"backlog/tasks/task-1 - Create-grun-script-for-arch-gui-bootc-images.md"
+  s_d8baf3c5992df4::t_0bcd780487c7b2 7,22-29
+  s_d8baf3c5992df4::t_97e84626bb9bb0 1-6,8-21,30-40
+"backlog/tasks/task-2 - Add-shell-hooks-to-auto-export-envs-to-gui.env-in-arch-gui-bootc-images.md"
+  s_d8baf3c5992df4::t_058c6b2818f290 1-6,8-23,25,27,35-37,39-43,51
+  s_d8baf3c5992df4::t_0da6cdef71cb5a 7,44-50
+  s_d8baf3c5992df4::t_4439b575b45d0e 24,26,28-34,38
+"backlog/tasks/task-3 - Use-grun-to-provide-x11-ssh-askpass-in-arch-gui-bootc-images.md"
+  s_d8baf3c5992df4::t_f59b786ab5ee47 7,37-39
+  s_d8baf3c5992df4::t_cfdca347d63f40 25-31
+  s_d8baf3c5992df4::t_33291f7f750afd 1-6,8-24,32-36,40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "7eb7e3e91b1b932f26dd90c81b33e19c6c95ef27",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_d8baf3c5992df4": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0bb5cdfbeffezmY4ZUbpWguSIO",
+        "model": "openrouter/deepseek/deepseek-v4-flash"
+      },
+      "human_author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

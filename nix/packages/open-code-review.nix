@@ -3,14 +3,14 @@
   buildGoModule,
 }: buildGoModule rec {
   pname = "open-code-review";
-  version = "1.2.6";
+  version = "1.7.5";
   src = fetchFromGitHub {
     owner = "alibaba";
     repo = "open-code-review";
     tag = "v${version}";
-    hash = "sha256-CoVh8FHP16RqNbP6Ev0CpsGvos3ei+IkcXeV2dpTUdQ=";
+    hash = "sha256-a61duWHPBemfsFfPfJXkBx6mZbUKgZ3otrb6Q1ZkzJw=";
   };
-  vendorHash = "sha256-ILvC95XbaM86StJdC2Xt3ayWxXG3FqgOzz8x7puO5sA=";
+  vendorHash = "sha256-/1pHXdQler4mZd8wHEyfsmLmpEUKVge1m4774X9c9/w=";
   subPackages = [
     "cmd/opencodereview"
   ];

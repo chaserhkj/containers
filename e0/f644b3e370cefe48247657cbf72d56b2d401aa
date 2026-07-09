@@ -1,0 +1,14 @@
+nix/packages/open-code-review.nix
+  h_8d23b84102cdcd 6,11,13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "e0f644b3e370cefe48247657cbf72d56b2d401aa",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

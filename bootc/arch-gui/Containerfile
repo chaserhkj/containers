@@ -24,7 +24,8 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Sy --needed --noconfirm niri fuzzel mako swaybg swaylock alacritty kanshi \
-        waybar otf-font-awesome ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
+        waybar otf-font-awesome ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono \
+        noto-fonts noto-fonts-extra noto-fonts-emoji
 
 # Image-included GUI apps
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \

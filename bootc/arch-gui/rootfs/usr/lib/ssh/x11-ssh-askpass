@@ -1,1 +1,2 @@
-/usr/bin/lxqt-openssh-askpass
+#!/bin/bash
+exec grun /usr/bin/lxqt-openssh-askpass "$@"

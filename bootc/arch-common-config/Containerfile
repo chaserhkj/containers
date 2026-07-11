@@ -48,6 +48,9 @@ RUN --mount=type=bind,from=blesh,target=/tmp \
     bash /tmp/ble-nightly/ble.sh --install /usr/share && \
     sed "/ble-bind .* C-r.*/d" /usr/share/blesh/contrib/fzf-key-bindings.bash > /usr/share/blesh/fzf-key-bindings.bash
 
+# Install bash-prexec for zsh-style hooks in bash
+ADD https://raw.githubusercontent.com/rcaloras/bash-preexec/refs/heads/master/bash-preexec.sh /usr/share/bash-preexec.sh
+
 # Install CLI power tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \

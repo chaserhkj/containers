@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if (( ! $# )); then
+    echo "grun script: run GUI process using proper environment"
+    echo "Usage: $0 [cmds]"
+    exit 0
+fi
+
+# Determine how to run a gui process
+
+# Always use env file if it exists
+env_file="${XDG_RUNTIME_DIR}/gui.env"
+if [[ -f "$env_file" ]]; then
+    mapfile -d '' envs < $env_file
+    unset $(compgen -e)
+    export "${envs[@]}"
+    exec "$@"
+fi
+
+# Try to use environment directly next
+if [[ -n "$WAYLAND_DISPLAY" ]] || [[ -n "$DISPLAY" ]]; then
+    exec "$@"
+fi
+
+# If no environment set, check if systemd user session has display set
+if systemctl --user show-environment | grep -E '^(WAYLAND_DISPLAY|DISPLAY)' >& /dev/null; then
+    exec systemd-run --user -qP --wait --service-type=oneshot -- /usr/bin/lxqt-openssh-askpass "$@"
+fi
+
+# Final measure: try to enumerate all user-owned processes and search for env
+# This is slow, so allow this to be manually disabled via env
+if (( ${GRUN_DISABLE_PROC:-0} == 0 )); then
+    for p in /proc/*; do
+        [[ ! -d $p ]] && continue
+        [[ "$(stat -c %U $p)" != "$USER" ]] && continue
+        if tr '\0' '\n' < $p/environ | grep -E '^(WAYLAND_DISPLAY|DISPLAY)' >& /dev/null; then
+            mapfile -d '' envs < $p/environ
+            unset $(compgen -e)
+            export "${envs[@]}"
+            exec "$@"
+        fi
+    done
+fi
+
+# Error out
+exit 1

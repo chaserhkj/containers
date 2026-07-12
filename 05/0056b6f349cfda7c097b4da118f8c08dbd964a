@@ -1,0 +1,14 @@
+bootc/arch-common-config/Containerfile
+  h_8d23b84102cdcd 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "050056b6f349cfda7c097b4da118f8c08dbd964a",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

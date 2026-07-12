@@ -24,7 +24,7 @@ fi
 
 # If no environment set, check if systemd user session has display set
 if systemctl --user show-environment | grep -E '^(WAYLAND_DISPLAY|DISPLAY)' >& /dev/null; then
-    exec systemd-run --user -qP --wait --service-type=oneshot -- /usr/bin/lxqt-openssh-askpass "$@"
+    exec systemd-run --user -qP --wait --service-type=oneshot -- "$@"
 fi
 
 # Final measure: try to enumerate all user-owned processes and search for env

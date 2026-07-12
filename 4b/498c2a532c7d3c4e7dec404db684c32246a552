@@ -1,0 +1,14 @@
+bootc/arch-gui/rootfs/usr/bin/grun
+  h_8d23b84102cdcd 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "4b498c2a532c7d3c4e7dec404db684c32246a552",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

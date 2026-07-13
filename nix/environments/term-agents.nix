@@ -42,7 +42,8 @@
             semble
 
             mcporter
-            context-hub
+
+            ctx7
 
             openskills
             skills

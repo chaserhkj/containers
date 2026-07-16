@@ -1,0 +1,14 @@
+bootc/arch-common-config/rootfs/etc/load-shell-hooks.sh
+  h_8d23b84102cdcd 1-2,8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "bdeb1546ce10a131ad03015dc3246a06ca8af9e1",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

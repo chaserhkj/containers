@@ -1,0 +1,10 @@
+[Unit]
+Description=SSH TPM agent proxy socket for idle shutdown
+
+[Socket]
+ListenStream=%t/ssh-tpm-agent.sock
+SocketMode=0600
+Service=ssh-tpm-agent-proxy.service
+
+[Install]
+WantedBy=sockets.target

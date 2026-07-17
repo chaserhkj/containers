@@ -1,0 +1,11 @@
+[Unit]
+Description=ssh-tpm-agent proxy service for idle shutdown
+Requires=ssh-tpm-agent-proxy.socket ssh-tpm-agent.service
+After=ssh-tpm-agent.service
+
+[Service]
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd --exit-idle-time=15min %t/ssh-tpm-agent-real.sock
+
+
+[Install]
+Also=ssh-agent.socket

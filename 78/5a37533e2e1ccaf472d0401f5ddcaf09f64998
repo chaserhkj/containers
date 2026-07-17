@@ -1,0 +1,14 @@
+bootc/arch-gui/rootfs/usr/lib/systemd/user/ssh-tpm-agent.socket.d/99-idle-shutdown.conf
+  h_8d23b84102cdcd 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "785a37533e2e1ccaf472d0401f5ddcaf09f64998",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

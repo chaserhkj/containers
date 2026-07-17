@@ -1,0 +1,14 @@
+bootc/arch-base/rootfs/usr/lib/systemd/system/zerotier-systemd-manager.service.d/reload-networkd.conf
+  h_8d23b84102cdcd 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "abe70eaf558267cd4cbd5c68f9948f0090495b0e",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

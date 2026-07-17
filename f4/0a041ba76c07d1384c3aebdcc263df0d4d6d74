@@ -1,0 +1,14 @@
+bootc/arch-base/rootfs/usr/lib/systemd/system/usr-overlay-pause@.service
+  h_8d23b84102cdcd 1-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f40a041ba76c07d1384c3aebdcc263df0d4d6d74",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

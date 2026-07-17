@@ -120,10 +120,15 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     pacman -Sy --needed --noconfirm sudo neovim bash-completion moreutils inetutils man less jq yq bubblewrap fsverity-utils ripgrep fd sd lsd bat bottom dust duf dog && \
     ln -sT nvim /usr/bin/vim
 
-# Container & VM tools
+# Container tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm podman buildah skopeo umoci docker-compose podman-docker distrobox flatpak fuse-overlayfs krun podlet edk2-ovmf
+    pacman -Sy --needed --noconfirm podman buildah skopeo umoci docker-compose podman-docker distrobox flatpak fuse-overlayfs krun podlet
+
+# VM tools for minimal headless VM usage
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --needed --noconfirm qemu-base edk2-ovmf mkosi
 
 # AUR packages
 RUN --mount=type=bind,from=aur-pkgs,source=/var/build/repo,target=/var/local-repo \

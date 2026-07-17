@@ -1,0 +1,13 @@
+[Unit]
+Description=Pause service for /usr overlay '%i'
+Documentation=man:usrovl(1)
+
+[Service]
+Type=simple
+RuntimeDirectory=usr-overlay
+RuntimeDirectoryMode=0755
+ExecStart=/usr/bin/usrovl --pidfile /run/usr-overlay/%i %i catatonit -P
+PIDFile=/run/usr-overlay/%i
+
+[Install]
+WantedBy=multi-user.target

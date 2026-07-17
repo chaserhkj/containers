@@ -1,0 +1,20 @@
+bootc/arch-gui/rootfs/usr/lib/systemd/user/ssh-tpm-agent.service.d/99-idle-shutdown.conf
+  h_8d23b84102cdcd 1-5
+bootc/arch-gui/rootfs/usr/lib/systemd/user/ssh-tpm-agent.socket.d/99-idle-shutdown.conf
+  h_8d23b84102cdcd 1-2
+bootc/arch-gui/rootfs/usr/lib/systemd/user/ssh-tpm-agent-proxy.service
+  h_8d23b84102cdcd 1-11
+bootc/arch-gui/rootfs/usr/lib/systemd/user/ssh-tpm-agent-proxy.socket
+  h_8d23b84102cdcd 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "e3a09c8744a49f1ffe37833749b3f997c241fc4e",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

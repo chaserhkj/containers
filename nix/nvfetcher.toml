@@ -2,3 +2,27 @@
 src.github = "ROCm/container-toolkit"
 fetch.github = "ROCm/container-toolkit"
 extract = ["go.mod", "go.sum"]
+
+[graphrag]
+src.github = "microsoft/graphrag"
+fetch.github = "microsoft/graphrag"
+
+[llm-wiki-compiler]
+src.github = "atomicstrata/llm-wiki-compiler"
+fetch.github = "atomicstrata/llm-wiki-compiler"
+extract = ["package-lock.json"]
+
+[cq]
+src.github = "mozilla-ai/cq"
+src.include_regex = "cli/v[0-9\\.]*"
+fetch.github = "mozilla-ai/cq"
+extract = ["cli/go.mod", "cli/go.sum"]
+
+[open-code-review]
+src.github = "alibaba/open-code-review"
+fetch.github = "alibaba/open-code-review"
+extract = ["go.mod", "go.sum"]
+
+[openkb]
+src.github = "vectifyai/openkb"
+fetch.github = "vectifyai/openkb"

@@ -1,21 +1,18 @@
-{ buildGoModule
-, fetchFromGitHub
+{
+  buildGoApplication,
+  extraSources,
+  lib,
 }:
-
-buildGoModule rec {
+let
   pname = "cq";
-  version = "0.15.0";
-
-  src = (fetchFromGitHub {
-    owner = "mozilla-ai";
-    repo = "cq";
-    rev = "cli/v${version}";
-    hash = "sha256-vMgrSsdh38ZL76B/j/iNK7VqUw+aNPxDZKPZE90CUXE=";
-  }) + "/cli";
+  source = extraSources.${pname};
+in
+buildGoApplication {
+  inherit pname;
+  version = lib.strings.removePrefix "cli/" source.version;
+  src = source.src + "/cli";
+  modules = builtins.dirOf source.extract."cli/go.sum" + "/gomod2nix.toml";
 
   postInstall = "mv $out/bin/cli $out/bin/cq";
-
-  vendorHash = "sha256-tbvDJ8+sPpp7y+PxeHd7KW6qQB0x+upbdDvah9tqZck=";
-
   meta.mainProgram = "cq";
 }

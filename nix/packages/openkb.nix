@@ -8,17 +8,13 @@
   pyproject-nix,
   pyproject-build-systems,
   uv2nix,
+  extraSources,
 }:
 let
   pname = "openkb";
-  version = "0.4.3";
+  source = extraSources.${pname};
   workspace = uv2nix.lib.workspace.loadWorkspace {
-    workspaceRoot = fetchFromGitHub {
-      owner = "vectifyai";
-      repo = "openkb";
-      rev = "v${version}";
-      hash = "sha256-uerCUku2dbl2rzJRNJzC6r/+M7OgCk95b/8c8E+aF/Q=";
-    };
+    workspaceRoot = source.src;
   };
   python = lib.head (
     pyproject-nix.lib.util.filterPythonInterpreters {

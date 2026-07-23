@@ -1,6 +1,5 @@
 {
   lib,
-  fetchFromGitHub,
   pythonInterpreters,
   callPackage,
   callPackages,
@@ -8,17 +7,13 @@
   pyproject-nix,
   pyproject-build-systems,
   uv2nix,
+  extraSources,
 }:
 let
   pname = "graphrag";
-  version = "3.1.1";
+  source = extraSources.${pname};
   workspace = uv2nix.lib.workspace.loadWorkspace {
-    workspaceRoot = fetchFromGitHub {
-      owner = "microsoft";
-      repo = "graphrag";
-      rev = "v${version}";
-      hash = "sha256-SE4n8d2N9HKygxeRIZrDy7T127/aKIokzAbWey8UUmk=";
-    };
+    workspaceRoot = source.src;
   };
   python = lib.head (
     pyproject-nix.lib.util.filterPythonInterpreters {

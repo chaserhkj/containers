@@ -1,22 +1,18 @@
 {
   lib,
   buildNpmPackage,
-  fetchFromGitHub,
+  extraSources,
 }:
-
-buildNpmPackage rec {
+let
+  inherit (builtins) readFile dirOf;
+  inherit (lib.strings) trim;
   pname = "llm-wiki-compiler";
-  version = "1.1.0";
-
-  src = fetchFromGitHub {
-    owner = "atomicstrata";
-    repo = pname;
-    rev = "v${version}";
-    hash = "sha256-MvA3R5+tGVSeVEkmKLS/TSq4fbHFEwhRmePMf3SseJo=";
-  };
-
-  npmDepsHash = "sha256-saESo+sC2gSQ1V0KQ1FBnrS1InLfeTJ4Kq3zfaMaWsM=";
-
+  source = extraSources.${pname};
+in
+buildNpmPackage {
+  inherit pname;
+  inherit (source) version src;
+  npmDepsHash = trim (readFile (dirOf source.extract."package-lock.json" + "/npmDepsHash"));
   meta = {
     license = lib.licenses.mit;
     mainProgram = "llmwiki";

@@ -21,4 +21,70 @@
       "go.sum" = ./. + "/sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.sum";
     };
   };
+  cq = {
+    pname = "cq";
+    version = "cli/v0.16.0";
+    src = fetchFromGitHub {
+      owner = "mozilla-ai";
+      repo = "cq";
+      rev = "cli/v0.16.0";
+      fetchSubmodules = false;
+      sha256 = "sha256-kyr/vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=";
+    };
+    extract = {
+      "cli/go.sum" = ./. + "/sha256-kyr_vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=/cli/go.sum";
+      "cli/go.mod" = ./. + "/sha256-kyr_vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=/cli/go.mod";
+    };
+  };
+  graphrag = {
+    pname = "graphrag";
+    version = "v3.1.1";
+    src = fetchFromGitHub {
+      owner = "microsoft";
+      repo = "graphrag";
+      rev = "v3.1.1";
+      fetchSubmodules = false;
+      sha256 = "sha256-BW9czN4+ZDp/5CBfEYX/SKDgJH+BQZtFTALwnNXl5G0=";
+    };
+  };
+  llm-wiki-compiler = {
+    pname = "llm-wiki-compiler";
+    version = "v1.1.0";
+    src = fetchFromGitHub {
+      owner = "atomicstrata";
+      repo = "llm-wiki-compiler";
+      rev = "v1.1.0";
+      fetchSubmodules = false;
+      sha256 = "sha256-ANlXSxnyAkVdPiwrdDA+clAiAPY1jXfVhnPdZYZc84Q=";
+    };
+    extract = {
+      "package-lock.json" = ./. + "/sha256-ANlXSxnyAkVdPiwrdDA+clAiAPY1jXfVhnPdZYZc84Q=/package-lock.json";
+    };
+  };
+  open-code-review = {
+    pname = "open-code-review";
+    version = "v1.7.15";
+    src = fetchFromGitHub {
+      owner = "alibaba";
+      repo = "open-code-review";
+      rev = "v1.7.15";
+      fetchSubmodules = false;
+      sha256 = "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e/RIqlHxr9YE=";
+    };
+    extract = {
+      "go.mod" = ./. + "/sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.mod";
+      "go.sum" = ./. + "/sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.sum";
+    };
+  };
+  openkb = {
+    pname = "openkb";
+    version = "v0.4.5";
+    src = fetchFromGitHub {
+      owner = "vectifyai";
+      repo = "openkb";
+      rev = "v0.4.5";
+      fetchSubmodules = false;
+      sha256 = "sha256-vEYlcFe4vFVUpZIcVUbaZhmsSDDrNXFjKJpKb+/fqBQ=";
+    };
+  };
 }

@@ -22,5 +22,118 @@
             "type": "github"
         },
         "version": "v1.3.0"
+    },
+    "cq": {
+        "cargoLock": null,
+        "date": null,
+        "extract": {
+            "cli/go.mod": "sha256-kyr_vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=/cli/go.mod",
+            "cli/go.sum": "sha256-kyr_vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=/cli/go.sum"
+        },
+        "name": "cq",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "mozilla-ai",
+            "repo": "cq",
+            "rev": "cli/v0.16.0",
+            "sha256": "sha256-kyr/vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "cli/v0.16.0"
+    },
+    "graphrag": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "graphrag",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "microsoft",
+            "repo": "graphrag",
+            "rev": "v3.1.1",
+            "sha256": "sha256-BW9czN4+ZDp/5CBfEYX/SKDgJH+BQZtFTALwnNXl5G0=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v3.1.1"
+    },
+    "llm-wiki-compiler": {
+        "cargoLock": null,
+        "date": null,
+        "extract": {
+            "package-lock.json": "sha256-ANlXSxnyAkVdPiwrdDA+clAiAPY1jXfVhnPdZYZc84Q=/package-lock.json"
+        },
+        "name": "llm-wiki-compiler",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "atomicstrata",
+            "repo": "llm-wiki-compiler",
+            "rev": "v1.1.0",
+            "sha256": "sha256-ANlXSxnyAkVdPiwrdDA+clAiAPY1jXfVhnPdZYZc84Q=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v1.1.0"
+    },
+    "open-code-review": {
+        "cargoLock": null,
+        "date": null,
+        "extract": {
+            "go.mod": "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.mod",
+            "go.sum": "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.sum"
+        },
+        "name": "open-code-review",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "alibaba",
+            "repo": "open-code-review",
+            "rev": "v1.7.15",
+            "sha256": "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e/RIqlHxr9YE=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v1.7.15"
+    },
+    "openkb": {
+        "cargoLock": null,
+        "date": null,
+        "extract": null,
+        "name": "openkb",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "vectifyai",
+            "repo": "openkb",
+            "rev": "v0.4.5",
+            "sha256": "sha256-vEYlcFe4vFVUpZIcVUbaZhmsSDDrNXFjKJpKb+/fqBQ=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v0.4.5"
     }
 }

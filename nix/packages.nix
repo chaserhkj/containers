@@ -4,6 +4,7 @@
     let
       extendedPkgs = (pkgs.extend (
         final: prev: {
+          inherit(inputs) pyproject-nix pyproject-build-systems uv2nix;
           extraSources = prev.callPackage ./_sources/generated.nix { };
         }
       )).extend inputs.gomod2nix.overlays.default;

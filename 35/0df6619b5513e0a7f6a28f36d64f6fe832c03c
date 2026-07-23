@@ -1,0 +1,26 @@
+flake.nix
+  h_8d23b84102cdcd 29-33,40
+nix/meta/default.nix
+  h_8d23b84102cdcd 1-18
+nix/packages/llm-wiki-compiler.nix
+  h_8d23b84102cdcd 9
+nix/packages.nix
+  h_8d23b84102cdcd 3-19,23
+nix/packages/amd-ctk.nix
+  h_8d23b84102cdcd 2-4,6-10
+nix/tools/amd-ctk.nix
+  h_8d23b84102cdcd 2-3
+nix/packages/graphrag.nix
+  h_8d23b84102cdcd 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "350df6619b5513e0a7f6a28f36d64f6fe832c03c",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

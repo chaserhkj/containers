@@ -1,0 +1,58 @@
+schema = 3
+
+[mod]
+  [mod.'github.com/cpuguy83/go-md2man/v2']
+    version = 'v2.0.5'
+    hash = 'sha256-UX9FajFqZApVFED3MYcq167iPwztnIck25ehfcOeFD8='
+
+  [mod.'github.com/davecgh/go-spew']
+    version = 'v1.1.1'
+    hash = 'sha256-nhzSUrE1fCkN0+RL04N4h8jWmRFPPPWbCuDc7Ss0akI='
+
+  [mod.'github.com/gofrs/flock']
+    version = 'v0.12.1'
+    hash = 'sha256-clC0E7x21vaNcDpnmbgn07KqVQdjHXqvwTRKwed5cjc='
+
+  [mod.'github.com/opencontainers/runtime-spec']
+    version = 'v1.2.1'
+    hash = 'sha256-e8Fr8WnaX3HO4qWpN70UxF2hR21xF6JlMVCu2i5XAi4='
+
+  [mod.'github.com/pmezard/go-difflib']
+    version = 'v1.0.0'
+    hash = 'sha256-/FtmHnaGjdvEIKAJtrUfEhV7EVo5A/eYrtdnUkuxLDA='
+
+  [mod.'github.com/russross/blackfriday/v2']
+    version = 'v2.1.0'
+    hash = 'sha256-R+84l1si8az5yDqd5CYcFrTyNZ1eSYlpXKq6nFt4OTQ='
+
+  [mod.'github.com/stretchr/objx']
+    version = 'v0.5.2'
+    hash = 'sha256-VKYxrrFb1nkX6Wu3tE5DoP9+fCttwSl9pgLN6567nck='
+
+  [mod.'github.com/stretchr/testify']
+    version = 'v1.10.0'
+    hash = 'sha256-fJ4gnPr0vnrOhjQYQwJ3ARDKPsOtA7d4olQmQWR+wpI='
+
+  [mod.'github.com/urfave/cli/v2']
+    version = 'v2.27.6'
+    hash = 'sha256-u4yUgMwphs/7iwkhWrLgsHZru1InycgvY2ZmuxHQeLI='
+
+  [mod.'github.com/xrash/smetrics']
+    version = 'v0.0.0-20240521201337-686a1a2994c1'
+    hash = 'sha256-CsyN59w6sKERDI5kkdpq0YKmqdixyCHuN4FYE/56/BQ='
+
+  [mod.'golang.org/x/mod']
+    version = 'v0.19.0'
+    hash = 'sha256-9TUzg1aDvdZw3Z8IyGGSVSnLfUwgeGC/vrnkhkarXL4='
+
+  [mod.'golang.org/x/sys']
+    version = 'v0.22.0'
+    hash = 'sha256-RbG0XaXGGlErCsl2agvUxMnrkRwdbJLmriYT1H24FwA='
+
+  [mod.'gopkg.in/yaml.v3']
+    version = 'v3.0.1'
+    hash = 'sha256-FqL9TKYJ0XkNwJFnq9j0VvJ5ZUU1RvH/52h/f5bkYAU='
+
+  [mod.'tags.cncf.io/container-device-interface/specs-go']
+    version = 'v1.0.0'
+    hash = 'sha256-dyMi1wElMGYbi3iADMf0sr6jpKKUt+aZnRd5qz7BMOk='

@@ -1,0 +1,26 @@
+{
+    "amd-ctk": {
+        "cargoLock": null,
+        "date": null,
+        "extract": {
+            "go.mod": "sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.mod",
+            "go.sum": "sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.sum"
+        },
+        "name": "amd-ctk",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "ROCm",
+            "repo": "container-toolkit",
+            "rev": "v1.3.0",
+            "sha256": "sha256-+YqVm/u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "v1.3.0"
+    }
+}

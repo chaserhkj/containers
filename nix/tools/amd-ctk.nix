@@ -1,6 +1,6 @@
 {
-  perSystem = {pkgs, self', ...}: let 
-    cliPkg = pkgs.callPackage ../packages/amd-ctk.nix {};
+  perSystem = {self', config, ...}: let 
+    cliPkg = config.extendedPkgs.callPackage ../packages/amd-ctk.nix { };
   in {
     containers.amd-ctk = {
       name = "ghcr.io/chaserhkj/containers/amd-ctk";

@@ -11,7 +11,7 @@
 }:
 let
   pname = "graphrag";
-  version = "3.1.0";
+  version = "3.1.1";
   workspace = uv2nix.lib.workspace.loadWorkspace {
     workspaceRoot = fetchFromGitHub {
       owner = "microsoft";

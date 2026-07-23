@@ -1,16 +1,24 @@
 { inputs, ... }: {
-  perSystem = { pkgs, ... }: {
-    packages = {
-      graphrag = pkgs.callPackage ./packages/graphrag.nix {
-        inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
+  perSystem =
+    { pkgs, inputs', ... }:
+    let
+      extendedPkgs = (pkgs.extend (
+        final: prev: {
+          extraSources = prev.callPackage ./_sources/generated.nix { };
+        }
+      )).extend inputs.gomod2nix.overlays.default;
+      inherit (extendedPkgs) callPackage;
+    in
+    {
+      inherit extendedPkgs;
+      packages = {
+        graphrag = callPackage ./packages/graphrag.nix { };
+        openkb = callPackage ./packages/openkb.nix { };
+        open-code-review = callPackage ./packages/open-code-review.nix { };
+        opencommit = callPackage ./packages/opencommit.nix { };
+        llm-wiki-compiler = callPackage ./packages/llm-wiki-compiler.nix { };
+        mozilla-cq = callPackage ./packages/mozilla-cq.nix { };
       };
-      openkb = pkgs.callPackage ./packages/openkb.nix {
-        inherit (inputs) pyproject-nix uv2nix pyproject-build-systems;
-      };
-      open-code-review = pkgs.callPackage ./packages/open-code-review.nix { };
-      opencommit = pkgs.callPackage ./packages/opencommit.nix { };
-      llm-wiki-compiler = pkgs.callPackage ./packages/llm-wiki-compiler.nix { };
-      mozilla-cq = pkgs.callPackage ./packages/mozilla-cq.nix { };
     };
-  };
+  transposition.extendedPkgs.adHoc = true;
 }

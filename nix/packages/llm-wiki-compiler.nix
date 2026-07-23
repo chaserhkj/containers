@@ -6,7 +6,7 @@
 
 buildNpmPackage rec {
   pname = "llm-wiki-compiler";
-  version = "0.10.0";
+  version = "1.1.0";
 
   src = fetchFromGitHub {
     owner = "atomicstrata";

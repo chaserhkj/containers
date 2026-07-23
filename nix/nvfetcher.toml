@@ -1,0 +1,4 @@
+[amd-ctk]
+src.github = "ROCm/container-toolkit"
+fetch.github = "ROCm/container-toolkit"
+extract = ["go.mod", "go.sum"]

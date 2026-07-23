@@ -24,6 +24,8 @@
 
             uv
             bun
+
+            ctx7
             (writeShellScriptBin "npx" ''
               exec ${bun}/bin/bunx "$@"
             '')
@@ -42,8 +44,6 @@
             semble
 
             mcporter
-
-            ctx7
 
             openskills
             skills

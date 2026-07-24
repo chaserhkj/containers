@@ -58,7 +58,7 @@
             llm-wiki-compiler
             mozilla-cq
             open-code-review
-            opencommit
+            smart-commit-rs
           ])
           ++ [
             git-ai.minimal

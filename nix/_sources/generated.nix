@@ -63,17 +63,17 @@
   };
   open-code-review = {
     pname = "open-code-review";
-    version = "v1.7.15";
+    version = "v1.7.16";
     src = fetchFromGitHub {
       owner = "alibaba";
       repo = "open-code-review";
-      rev = "v1.7.15";
+      rev = "v1.7.16";
       fetchSubmodules = false;
-      sha256 = "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e/RIqlHxr9YE=";
+      sha256 = "sha256-ZzcPbXnK/axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=";
     };
     extract = {
-      "go.mod" = ./. + "/sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.mod";
-      "go.sum" = ./. + "/sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.sum";
+      "go.mod" = ./. + "/sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.mod";
+      "go.sum" = ./. + "/sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.sum";
     };
   };
   openkb = {
@@ -85,6 +85,23 @@
       rev = "v0.4.5";
       fetchSubmodules = false;
       sha256 = "sha256-vEYlcFe4vFVUpZIcVUbaZhmsSDDrNXFjKJpKb+/fqBQ=";
+    };
+  };
+  smart-commit-rs = {
+    pname = "smart-commit-rs";
+    version = "1.4.1";
+    src = fetchFromGitHub {
+      owner = "gtkacz";
+      repo = "smart-commit-rs";
+      rev = "1.4.1";
+      fetchSubmodules = false;
+      sha256 = "sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=";
+    };
+    cargoLock."Cargo.lock" = {
+      lockFile = ./. + "/sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=/Cargo.lock";
+      outputHashes = {
+        
+      };
     };
   };
 }

@@ -26,3 +26,9 @@ extract = ["go.mod", "go.sum"]
 [openkb]
 src.github = "vectifyai/openkb"
 fetch.github = "vectifyai/openkb"
+
+[smart-commit-rs]
+# Low visibility project: supply chain risk, version update requires manual review
+src.manual = "1.4.1"
+fetch.github = "gtkacz/smart-commit-rs"
+cargo_lock = ["Cargo.lock"]

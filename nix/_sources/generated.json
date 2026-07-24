@@ -95,8 +95,8 @@
         "cargoLock": null,
         "date": null,
         "extract": {
-            "go.mod": "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.mod",
-            "go.sum": "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e_RIqlHxr9YE=/go.sum"
+            "go.mod": "sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.mod",
+            "go.sum": "sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.sum"
         },
         "name": "open-code-review",
         "passthru": null,
@@ -108,12 +108,12 @@
             "name": null,
             "owner": "alibaba",
             "repo": "open-code-review",
-            "rev": "v1.7.15",
-            "sha256": "sha256-DLxRlgnAl3Y9M4X8TZMchz9Bn9xnXr8e/RIqlHxr9YE=",
+            "rev": "v1.7.16",
+            "sha256": "sha256-ZzcPbXnK/axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v1.7.15"
+        "version": "v1.7.16"
     },
     "openkb": {
         "cargoLock": null,
@@ -135,5 +135,31 @@
             "type": "github"
         },
         "version": "v0.4.5"
+    },
+    "smart-commit-rs": {
+        "cargoLock": {
+            "Cargo.lock": [
+                "sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=/Cargo.lock",
+                {}
+            ]
+        },
+        "date": null,
+        "extract": null,
+        "name": "smart-commit-rs",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "owner": "gtkacz",
+            "repo": "smart-commit-rs",
+            "rev": "1.4.1",
+            "sha256": "sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=",
+            "sparseCheckout": [],
+            "type": "github"
+        },
+        "version": "1.4.1"
     }
 }

@@ -135,31 +135,5 @@
             "type": "github"
         },
         "version": "v0.4.5"
-    },
-    "smart-commit-rs": {
-        "cargoLock": {
-            "Cargo.lock": [
-                "sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=/Cargo.lock",
-                {}
-            ]
-        },
-        "date": null,
-        "extract": null,
-        "name": "smart-commit-rs",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "gtkacz",
-            "repo": "smart-commit-rs",
-            "rev": "1.4.1",
-            "sha256": "sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "1.4.1"
     }
 }

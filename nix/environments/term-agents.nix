@@ -25,6 +25,7 @@
             uv
             bun
 
+            aichat
             ctx7
             (writeShellScriptBin "npx" ''
               exec ${bun}/bin/bunx "$@"
@@ -58,7 +59,6 @@
             llm-wiki-compiler
             mozilla-cq
             open-code-review
-            smart-commit-rs
           ])
           ++ [
             git-ai.minimal

@@ -18,10 +18,8 @@
         graphrag = callPackage ./packages/graphrag.nix { };
         openkb = callPackage ./packages/openkb.nix { };
         open-code-review = callPackage ./packages/open-code-review.nix { };
-        opencommit = callPackage ./packages/opencommit.nix { };
         llm-wiki-compiler = callPackage ./packages/llm-wiki-compiler.nix { };
         mozilla-cq = callPackage ./packages/mozilla-cq.nix { };
-        smart-commit-rs = callPackage ./packages/smart-commit-rs.nix { };
       };
     };
   transposition.extendedPkgs.adHoc = true;

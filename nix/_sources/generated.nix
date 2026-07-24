@@ -87,21 +87,4 @@
       sha256 = "sha256-vEYlcFe4vFVUpZIcVUbaZhmsSDDrNXFjKJpKb+/fqBQ=";
     };
   };
-  smart-commit-rs = {
-    pname = "smart-commit-rs";
-    version = "1.4.1";
-    src = fetchFromGitHub {
-      owner = "gtkacz";
-      repo = "smart-commit-rs";
-      rev = "1.4.1";
-      fetchSubmodules = false;
-      sha256 = "sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=";
-    };
-    cargoLock."Cargo.lock" = {
-      lockFile = ./. + "/sha256-MRNFak7tAZN8iAZ8yB2mcYnFeFAFEKmk5BNti7uC7yA=/Cargo.lock";
-      outputHashes = {
-        
-      };
-    };
-  };
 }

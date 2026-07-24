@@ -1,0 +1,20 @@
+nix/nvfetcher.toml
+  h_8d23b84102cdcd 29-34
+nix/environments/term-agents.nix
+  h_8d23b84102cdcd 61
+nix/packages/smart-commit-rs.nix
+  h_8d23b84102cdcd 1-13
+nix/packages.nix
+  h_8d23b84102cdcd 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "8a0869421d239cdacf556209e957697fdb56f5b6",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

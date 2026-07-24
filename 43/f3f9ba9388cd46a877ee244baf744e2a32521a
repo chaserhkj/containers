@@ -1,0 +1,14 @@
+nix/environments/term-agents.nix
+  h_8d23b84102cdcd 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "43f3f9ba9388cd46a877ee244baf744e2a32521a",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

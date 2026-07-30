@@ -54,7 +54,7 @@ ADD --chmod=755 https://raw.githubusercontent.com/rcaloras/bash-preexec/refs/hea
 # Install CLI power tools
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm tmux zoxide atuin fzf
+    pacman -Sy --needed --noconfirm tmux zoxide atuin fzf syd-tui
 
 RUN --mount=type=bind,from=aur-builder,source=/var/build/repo,target=/var/local-repo \
     --mount=type=tmpfs,target=/usr/lib/sysimage/lib/pacman/sync \

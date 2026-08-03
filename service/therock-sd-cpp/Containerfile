@@ -1,0 +1,61 @@
+FROM docker.io/library/ubuntu:24.04 as base
+FROM docker.io/archlinux/archlinux as extractor
+ARG GPU_ARCH=gfx1151
+
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy jq wget --needed --noconfirm
+
+ENV GPU_ARCH=${GPU_ARCH}
+
+RUN bash -ex <<'EOF'
+# Attempts to build sd.cpp using the same therock ROCm version from therock-llama-cpp prebuilt binaries
+# Such that two images could be merged easily
+rocm_ver=$(curl https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest -s | jq .body -r | grep '\*\*ROCm Version\*\*' | sed -E 's/.*: (.*)/\1/')
+wget -nv -O /rocm.tar.gz https://rocm.nightlies.amd.com/tarball-multi-arch/therock-dist-linux-${GPU_ARCH}-${rocm_ver}.tar.gz
+mkdir -p /rocm
+tar -C /rocm -xf /rocm.tar.gz
+EOF
+
+FROM base as builder
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update && apt-get install -y git cmake ninja-build build-essential clang
+
+RUN git clone --recursive https://github.com/leejet/stable-diffusion.cpp /sd.cpp
+
+WORKDIR /sd.cpp
+
+RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
+export ROCM_PATH=/rocm
+export HIP_PLATFORM=amd
+export HIP_PATH=$ROCM_PATH
+export HIP_CLANG_PATH=$ROCM_PATH/llvm/bin
+export HIP_INCLUDE_PATH=$ROCM_PATH/include
+export HIP_LIB_PATH=$ROCM_PATH/lib
+export HIP_DEVICE_LIB_PATH=$ROCM_PATH/lib/llvm/amdgcn/bitcode
+export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"
+export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib:${LD_LIBRARY_PATH:-}"
+export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:${LIBRARY_PATH:-}"
+export CPATH="$HIP_INCLUDE_PATH:${CPATH:-}"
+export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+mkdir build && cd build
+cmake .. -G "Ninja" \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DSD_HIPBLAS=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DGPU_TARGETS=$GPU_ARCH \
+    -DAMDGPU_TARGETS=$GPU_ARCH \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DGGML_OPENMP=OFF
+cmake --build . --config Release
+EOF
+
+FROM base
+
+COPY --from=extractor /rocm /rocm
+COPY --from=builder /sd.cpp/build/bin /sd.cpp
+
+ENV PATH=${PATH}:/rocm/bin:/sd.cpp
+ENV LD_LIBRARY_PATH=/rocm/lib:/rocm/lib64:/rocm/llvm/lib

@@ -9,6 +9,7 @@ on:
       - 'builder/**'
       - 'service/git-server/**'
       - 'service/git-caddy/**'
+      - 'service/cpu-ggml-engines/**'
       - 'service/democratic-csi.updated/**'
       - 'agent-sandbox/open-terminal/**'
   workflow_dispatch:
@@ -152,3 +153,28 @@ jobs:
           tags: |
             ghcr.io/chaserhkj/containers/open-terminal
             ghcr.io/chaserhkj/containers/open-terminal:${{ needs.timestamp.outputs.timestamp }}
+
+  build-cpu-ggml-engines:
+    name: Build the cpu-ggml-engines image
+    needs: [timestamp]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push the image
+        uses: docker/build-push-action@v6
+        with:
+          context: "{{defaultContext}}:service/cpu-ggml-engines"
+          file: Containerfile
+          push: true
+          tags: |
+            ghcr.io/chaserhkj/containers/cpu-ggml-engines
+            ghcr.io/chaserhkj/containers/cpu-ggml-engines:${{ needs.timestamp.outputs.timestamp }}

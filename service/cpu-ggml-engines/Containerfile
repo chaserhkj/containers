@@ -1,0 +1,16 @@
+FROM ghcr.io/leejet/stable-diffusion.cpp:master-vulkan as sd-cpp
+FROM ghcr.io/0xshug0/audio.cpp:full-cpu as audio-cpp
+
+FROM docker.io/library/ubuntu:24.04 as patcher
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update && apt-get install -y patchelf
+
+FROM ghcr.io/ggml-org/llama.cpp:server
+
+RUN ln -sfT /app /llama.cpp
+RUN --mount=type=bind,from=patcher,source=/usr,target=/usr \
+    patchelf --set-rpath '$ORIGIN' /llama.cpp/llama /llama.cpp/llama-server /llama.cpp/*.so
+
+COPY --from=sd-cpp /sd.cpp/bin /sd.cpp
+COPY --from=audio-cpp /app /audio.cpp

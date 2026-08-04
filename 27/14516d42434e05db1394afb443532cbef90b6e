@@ -1,0 +1,16 @@
+.github/workflows/build-weekly.yaml
+  h_8d23b84102cdcd 12,156-180
+service/cpu-ggml-engines/Containerfile
+  h_8d23b84102cdcd 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "2714516d42434e05db1394afb443532cbef90b6e",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

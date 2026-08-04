@@ -1,0 +1,14 @@
+.github/workflows/build-rocm-arch.yaml
+  h_8d23b84102cdcd 111-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.17",
+  "base_commit_sha": "7c746ae6e36537db558a2ce062eb5a7142ed12b0",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

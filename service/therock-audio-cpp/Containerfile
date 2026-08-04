@@ -1,6 +1,7 @@
+ARG GPU_ARCH=gfx1151
 FROM docker.io/library/ubuntu:24.04 as base
 FROM docker.io/archlinux/archlinux as extractor
-ARG GPU_ARCH=gfx1151
+ARG GPU_ARCH
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
@@ -23,13 +24,16 @@ tar -C /rocm -xf /rocm.tar.gz
 EOF
 
 FROM base as builder
+ARG GPU_ARCH
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y git cmake ninja-build build-essential clang
 
-RUN git clone --recursive https://github.com/leejet/stable-diffusion.cpp /sd.cpp
+RUN git clone --recursive https://github.com/0xShug0/audio.cpp audio.cpp
 
-WORKDIR /sd.cpp
+WORKDIR /audio.cpp
+
+ENV GPU_ARCH=${GPU_ARCH}
 
 RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
 export ROCM_PATH=/rocm
@@ -44,23 +48,31 @@ export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH
 export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:${LIBRARY_PATH:-}"
 export CPATH="$HIP_INCLUDE_PATH:${CPATH:-}"
 export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-mkdir build && cd build
-cmake .. -G "Ninja" \
-    -DCMAKE_C_COMPILER=clang \
-    -DCMAKE_CXX_COMPILER=clang++ \
-    -DSD_HIPBLAS=ON \
+mkdir -p build 
+cmake -S . -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
-    -DGPU_TARGETS=$GPU_ARCH \
-    -DAMDGPU_TARGETS=$GPU_ARCH \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DGGML_OPENMP=OFF # disable openmp to disable llvm library linkage
-cmake --build . --config Release
+    -DENGINE_ENABLE_CUDA=OFF \
+    -DENGINE_ENABLE_VULKAN=OFF \
+    -DENGINE_ENABLE_HIP=ON \
+    -DENGINE_ENABLE_NATIVE_CPU=ON \
+    -DENGINE_ENABLE_LLAMAFILE=ON \
+    -DENGINE_BUILD_EXAMPLES=OFF \
+    -DENGINE_BUILD_TESTS=OFF \
+    -DENGINE_BUILD_WARMBENCH=OFF \
+    -DAUDIOCPP_DEPLOYMENT_BUILD=OFF \
+    -DAUDIOCPP_MODEL_SET=full \
+    -DAUDIOCPP_MODELS= \
+    -DCMAKE_C_COMPILER=$(hipconfig -l)/clang \
+    -DCMAKE_CXX_COMPILER=$(hipconfig -l)/clang++ \
+    -UGPU_BUILD_TARGETS -UAMDGPU_TARGETS -DGPU_TARGETS="${GPU_ARCH}" \
+    -DGGML_OPENMP=OFF -DENGINE_ENABLE_OPENMP=OFF # disable openmp to disable llvm library linkage
+cmake --build build --target audiocpp_cli --target audiocpp_server
 EOF
 
 FROM base
 
 COPY --from=extractor /rocm /rocm
-COPY --from=builder /sd.cpp/build/bin /sd.cpp
+COPY --from=builder /audio.cpp/build/bin /audio.cpp
 
-ENV PATH=${PATH}:/rocm/bin:/sd.cpp
+ENV PATH=${PATH}:/rocm/bin:/audio.cpp
 ENV LD_LIBRARY_PATH=/rocm/lib:/rocm/lib64:/rocm/llvm/lib

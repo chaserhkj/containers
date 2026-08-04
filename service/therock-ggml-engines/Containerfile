@@ -1,15 +1,20 @@
 # Combined image for therock-llama-cpp and therock-sd-cpp
 FROM therock-sd-cpp as sd
+FROM therock-audio-cpp as audio
 FROM docker.io/library/ubuntu:24.04 as patcher
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y patchelf
 
 COPY --from=sd /sd.cpp /sd.cpp
+COPY --from=audio /audio.cpp /audio.cpp
 
 RUN patchelf --set-rpath /llama.cpp /sd.cpp/sd-cli && \
-    patchelf --set-rpath /llama.cpp /sd.cpp/sd-server
+    patchelf --set-rpath /llama.cpp /sd.cpp/sd-server && \
+    patchelf --set-rpath /llama.cpp /audio.cpp/audiocpp_cli && \
+    patchelf --set-rpath /llama.cpp /audio.cpp/audiocpp_server
 
 FROM therock-llama-cpp
 
 COPY --from=patcher /sd.cpp /sd.cpp
+COPY --from=patcher /audio.cpp /audio.cpp

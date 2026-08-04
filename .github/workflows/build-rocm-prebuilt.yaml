@@ -9,6 +9,7 @@ on:
       - '.github/workflows/build-rocm-arch.yaml'
       - 'service/therock-llama-cpp/**'
       - 'service/therock-sd-cpp/**'
+      - 'service/therock-audio-cpp/**'
       - 'service/therock-vllm/**'
       - 'service/therock-ggml-engines/**'
   workflow_dispatch:

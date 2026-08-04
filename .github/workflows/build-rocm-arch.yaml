@@ -108,8 +108,8 @@ jobs:
             ghcr.io/chaserhkj/containers/ggml-engines-${{ inputs.image_suffix }}:latest
             ghcr.io/chaserhkj/containers/ggml-engines-${{ inputs.image_suffix }}:${{ env.ADDITIONAL_TAG }}
           build-contexts: |
-            therock-sd-cpp=ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.image_suffix }}:latest
-            therock-llama-cpp=ghcr.io/chaserhkj/containers/llama-server-${{ inputs.image_suffix }}:latest
+            therock-sd-cpp=docker-image://ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.image_suffix }}:latest
+            therock-llama-cpp=docker-image://ghcr.io/chaserhkj/containers/llama-server-${{ inputs.image_suffix }}:latest
           file: Containerfile
 
   build-vllm:

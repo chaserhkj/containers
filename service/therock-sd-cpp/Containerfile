@@ -12,7 +12,12 @@ RUN bash -ex <<'EOF'
 # Attempts to build sd.cpp using the same therock ROCm version from therock-llama-cpp prebuilt binaries
 # Such that two images could be merged easily
 rocm_ver=$(curl https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest -s | jq .body -r | grep '\*\*ROCm Version\*\*' | sed -E 's/.*: (.*)/\1/')
-wget -nv -O /rocm.tar.gz https://rocm.nightlies.amd.com/tarball-multi-arch/therock-dist-linux-${GPU_ARCH}-${rocm_ver}.tar.gz
+if [[ "${GPU_ARCH}" == gfx*X ]]; then
+    gpu_arch_str="${GPU_ARCH}-all"
+else
+    gpu_arch_str="${GPU_ARCH}"
+fi
+wget -nv -O /rocm.tar.gz https://rocm.nightlies.amd.com/tarball-multi-arch/therock-dist-linux-${gpu_arch_str}-${rocm_ver}.tar.gz
 mkdir -p /rocm
 tar -C /rocm -xf /rocm.tar.gz
 EOF

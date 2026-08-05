@@ -86,9 +86,12 @@ ln -sT var/mnt /mnt
 EOF
 
 # Packages that need presence in initramfs thus must be installed before dracut run
+# Also import custom dracut configurations here
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm lvm2
+    pacman -Sy --needed --noconfirm lvm2 && \
+    mkdir -p /usr/lib/dracut/dracut.conf.d && \
+    printf '%s\n' 'add_drivers+=" dm_cache dm_thin_pool "' > /usr/lib/dracut/dracut.conf.d/99-lvm-drivers.conf
 
 RUN bash -ex <<'EOF'
 # Check and clean up stale kernel module directories

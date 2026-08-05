@@ -37,6 +37,9 @@ ARG PACMAN_FULL_SYNC_FLAGS
 # shell command used to query for packages that are to be reinstalled
 ARG PACMAN_REINSTALL_QUERY="pacman -Qq"
 
+# remove embedded network config from upstream that may conflict with our network config hierarchy
+RUN rm -f /usr/lib/systemd/network/20-wired.network
+
 # Remove all thinning options in pacman.conf, these are designed for service containers but we are not
 # Note that /etc/machine-id needs to be added if this is done
 # This WILL be handled if image is eventually consumed by distrobox/bootc

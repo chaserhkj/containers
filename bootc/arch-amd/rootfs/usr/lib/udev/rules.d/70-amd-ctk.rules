@@ -1,0 +1,7 @@
+# Regenerate the ROCm container device interface (CDI) spec whenever the AMD
+# GPU's device files are added or changed (hotplug, driver load/reload).
+# Tagging for systemd queues a single generate-amd-ctk.service oneshot job that
+# runs after udev finishes processing the device event, and systemd coalesces
+# simultaneous events into one run.
+SUBSYSTEM=="drm", KERNEL=="card[0-9]*", DRIVER=="amdgpu", ACTION=="add|change", TAG+="systemd", ENV{SYSTEMD_WANTS}+="generate-amd-ctk.service"
+SUBSYSTEM=="kfd", ACTION=="add|change", TAG+="systemd", ENV{SYSTEMD_WANTS}+="generate-amd-ctk.service"

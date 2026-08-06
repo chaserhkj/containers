@@ -1,8 +1,0 @@
-[Unit]
-Description=Provision AMD ctk cdi
-After=provision-pre.target
-
-[Service]
-Type=oneshot
-ExecCondition=/bin/bash -c '! /usr/bin/amd-ctk cdi validate'
-ExecStart=/usr/bin/amd-ctk cdi generate

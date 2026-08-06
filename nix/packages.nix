@@ -19,6 +19,7 @@
         openkb = callPackage ./packages/openkb.nix { };
         open-code-review = callPackage ./packages/open-code-review.nix { };
         llm-wiki-compiler = callPackage ./packages/llm-wiki-compiler.nix { };
+        llama-swap = callPackage ./packages/llama-swap.nix { };
         mozilla-cq = callPackage ./packages/mozilla-cq.nix { };
       };
     };

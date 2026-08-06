@@ -26,3 +26,8 @@ extract = ["go.mod", "go.sum"]
 [openkb]
 src.github = "vectifyai/openkb"
 fetch.github = "vectifyai/openkb"
+
+[llama-swap]
+src.git = "https://github.com/chaserhkj/llama-swap"
+fetch.git = "https://github.com/chaserhkj/llama-swap"
+extract = ["go.mod", "go.sum"]

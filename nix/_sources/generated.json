@@ -68,6 +68,29 @@
         },
         "version": "v3.1.1"
     },
+    "llama-swap": {
+        "cargoLock": null,
+        "date": "2026-08-04",
+        "extract": {
+            "go.mod": "sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.mod",
+            "go.sum": "sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.sum"
+        },
+        "name": "llama-swap",
+        "passthru": null,
+        "pinned": false,
+        "src": {
+            "deepClone": false,
+            "fetchSubmodules": false,
+            "leaveDotGit": false,
+            "name": null,
+            "rev": "4547be53319021c9fac6e5e256f64379215434cc",
+            "sha256": "sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=",
+            "sparseCheckout": [],
+            "type": "git",
+            "url": "https://github.com/chaserhkj/llama-swap"
+        },
+        "version": "4547be53319021c9fac6e5e256f64379215434cc"
+    },
     "llm-wiki-compiler": {
         "cargoLock": null,
         "date": null,
@@ -95,8 +118,8 @@
         "cargoLock": null,
         "date": null,
         "extract": {
-            "go.mod": "sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.mod",
-            "go.sum": "sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.sum"
+            "go.mod": "sha256-hLdYpIt6F6KHaL_Gkai7HWlG6EArgrlLHt6DPvdgsGQ=/go.mod",
+            "go.sum": "sha256-hLdYpIt6F6KHaL_Gkai7HWlG6EArgrlLHt6DPvdgsGQ=/go.sum"
         },
         "name": "open-code-review",
         "passthru": null,
@@ -108,12 +131,12 @@
             "name": null,
             "owner": "alibaba",
             "repo": "open-code-review",
-            "rev": "v1.7.16",
-            "sha256": "sha256-ZzcPbXnK/axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=",
+            "rev": "v1.8.9",
+            "sha256": "sha256-hLdYpIt6F6KHaL/Gkai7HWlG6EArgrlLHt6DPvdgsGQ=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v1.7.16"
+        "version": "v1.8.9"
     },
     "openkb": {
         "cargoLock": null,

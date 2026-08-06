@@ -47,6 +47,23 @@
       sha256 = "sha256-BW9czN4+ZDp/5CBfEYX/SKDgJH+BQZtFTALwnNXl5G0=";
     };
   };
+  llama-swap = {
+    pname = "llama-swap";
+    version = "4547be53319021c9fac6e5e256f64379215434cc";
+    src = fetchgit {
+      url = "https://github.com/chaserhkj/llama-swap";
+      rev = "4547be53319021c9fac6e5e256f64379215434cc";
+      fetchSubmodules = false;
+      deepClone = false;
+      leaveDotGit = false;
+      sparseCheckout = [ ];
+      sha256 = "sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=";
+    };
+    extract = {
+      "go.mod" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.mod";
+      "go.sum" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.sum";
+    };date = "2026-08-04";
+  };
   llm-wiki-compiler = {
     pname = "llm-wiki-compiler";
     version = "v1.1.0";
@@ -63,17 +80,17 @@
   };
   open-code-review = {
     pname = "open-code-review";
-    version = "v1.7.16";
+    version = "v1.8.9";
     src = fetchFromGitHub {
       owner = "alibaba";
       repo = "open-code-review";
-      rev = "v1.7.16";
+      rev = "v1.8.9";
       fetchSubmodules = false;
-      sha256 = "sha256-ZzcPbXnK/axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=";
+      sha256 = "sha256-hLdYpIt6F6KHaL/Gkai7HWlG6EArgrlLHt6DPvdgsGQ=";
     };
     extract = {
-      "go.mod" = ./. + "/sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.mod";
-      "go.sum" = ./. + "/sha256-ZzcPbXnK_axRVnh0USC0nQgXx+3GGU7Z17jWrhg3Wfs=/go.sum";
+      "go.mod" = ./. + "/sha256-hLdYpIt6F6KHaL_Gkai7HWlG6EArgrlLHt6DPvdgsGQ=/go.mod";
+      "go.sum" = ./. + "/sha256-hLdYpIt6F6KHaL_Gkai7HWlG6EArgrlLHt6DPvdgsGQ=/go.sum";
     };
   };
   openkb = {

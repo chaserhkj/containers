@@ -41,22 +41,22 @@ jobs:
     secrets: inherit
 
   build-gfx103X:
-    name: Build ROCm images for gfx103X devices
+    name: Build ROCm images for gfx103x devices
     needs: [timestamp]
     uses: ./.github/workflows/build-rocm-arch.yaml
     with:
-      gpu_arch: gfx103X
+      gpu_arch: gfx103x
       image_suffix: gfx103x
       additional_tag: ${{ needs.timestamp.outputs.additional_tag }}
       build_vllm: false
     secrets: inherit
 
   build-gfx110X:
-    name: Build ROCm images for gfx110X devices
+    name: Build ROCm images for gfx110x devices
     needs: [timestamp]
     uses: ./.github/workflows/build-rocm-arch.yaml
     with:
-      gpu_arch: gfx110X
+      gpu_arch: gfx110x
       image_suffix: gfx110x
       additional_tag: ${{ needs.timestamp.outputs.additional_tag }}
       build_vllm: true

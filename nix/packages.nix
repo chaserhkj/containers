@@ -1,6 +1,11 @@
 { inputs, ... }: {
   perSystem =
-    { pkgs, inputs', ... }:
+    {
+      pkgs,
+      inputs',
+      config,
+      ...
+    }:
     let
       extendedPkgs =
         (pkgs.extend (
@@ -19,7 +24,10 @@
         openkb = callPackage ./packages/openkb.nix { };
         open-code-review = callPackage ./packages/open-code-review.nix { };
         llm-wiki-compiler = callPackage ./packages/llm-wiki-compiler.nix { };
-        llama-swap = callPackage ./packages/llama-swap.nix { };
+        llama-swap = callPackage ./packages/llama-swap.nix {
+          inherit (config.packages) llama-swap-ui;
+        };
+        llama-swap-ui = callPackage ./packages/llama-swap-ui.nix { };
         mozilla-cq = callPackage ./packages/mozilla-cq.nix { };
       };
     };

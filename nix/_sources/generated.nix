@@ -61,6 +61,7 @@
     };
     extract = {
       "go.mod" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.mod";
+      "ui-svelte/package-lock.json" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/ui-svelte/package-lock.json";
       "go.sum" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.sum";
     };date = "2026-08-04";
   };

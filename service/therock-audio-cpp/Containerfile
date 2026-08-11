@@ -13,8 +13,10 @@ RUN bash -ex <<'EOF'
 # Attempts to build sd.cpp using the same therock ROCm version from therock-llama-cpp prebuilt binaries
 # Such that two images could be merged easily
 rocm_ver=$(curl https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest -s | jq .body -r | grep '\*\*ROCm Version\*\*' | sed -E 's/.*: (.*)/\1/')
-if [[ "${GPU_ARCH}" == gfx*x ]]; then
-    gpu_arch_str="${GPU_ARCH%x}X-all"
+if [[ "${GPU_ARCH}" == gfx103? ]]; then
+    gpu_arch_str="gfx103X-all"
+elif [[ "${GPU_ARCH}" == gfx110? ]]; then
+    gpu_arch_str="gfx110X-all"
 else
     gpu_arch_str="${GPU_ARCH}"
 fi
@@ -36,7 +38,6 @@ WORKDIR /audio.cpp
 ENV GPU_ARCH=${GPU_ARCH}
 
 RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
-[[ "${GPU_ARCH}" == gfx*x ]] && GPU_ARCH="${GPU_ARCH%x}X"
 export ROCM_PATH=/rocm
 export HIP_PLATFORM=amd
 export HIP_PATH=$ROCM_PATH

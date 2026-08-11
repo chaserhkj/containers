@@ -44,7 +44,7 @@ jobs:
     needs: [timestamp]
     uses: ./.github/workflows/build-rocm-arch.yaml
     with:
-      gpu_arch: gfx103x
+      gpu_arch: gfx1030
       additional_tag: ${{ needs.timestamp.outputs.additional_tag }}
       build_vllm: false
     secrets: inherit
@@ -54,7 +54,7 @@ jobs:
     needs: [timestamp]
     uses: ./.github/workflows/build-rocm-arch.yaml
     with:
-      gpu_arch: gfx110x
+      gpu_arch: gfx1100
       additional_tag: ${{ needs.timestamp.outputs.additional_tag }}
       build_vllm: true
     secrets: inherit

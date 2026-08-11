@@ -1,0 +1,16 @@
+service/therock-llama-cpp/Containerfile
+  h_8d23b84102cdcd 12-18,20
+service/therock-sd-cpp/Containerfile
+  h_8d23b84102cdcd 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "749bdbe98cf8c00dc3d2e2eae8a2ca9756decdb6",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

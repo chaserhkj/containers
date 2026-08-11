@@ -137,31 +137,31 @@ jobs:
             therock-llama-cpp=docker-image://ghcr.io/chaserhkj/containers/llama-server-${{ inputs.gpu_arch }}:latest
           file: Containerfile
 
-  build-vllm:
-    if: inputs.build_vllm
-    name: Build the vllm image for ${{ inputs.gpu_arch }} devices
-    runs-on: ubuntu-latest
-    env:
-      ADDITIONAL_TAG: ${{ inputs.additional_tag }}
-    steps:
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push vllm image
-        uses: docker/build-push-action@v6
-        with:
-          context: "{{defaultContext}}:service/therock-vllm"
-          push: true
-          tags: |
-            ghcr.io/chaserhkj/containers/vllm-${{ inputs.gpu_arch }}:latest
-            ghcr.io/chaserhkj/containers/vllm-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
-          file: Containerfile
-          build-args: |
-            GPU_ARCH=${{ inputs.gpu_arch }}
+  # build-vllm:
+  #   if: inputs.build_vllm
+  #   name: Build the vllm image for ${{ inputs.gpu_arch }} devices
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     ADDITIONAL_TAG: ${{ inputs.additional_tag }}
+  #   steps:
+  #     - name: Login to GHCR
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v3
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
+  #     - name: Build and push vllm image
+  #       uses: docker/build-push-action@v6
+  #       with:
+  #         context: "{{defaultContext}}:service/therock-vllm"
+  #         push: true
+  #         tags: |
+  #           ghcr.io/chaserhkj/containers/vllm-${{ inputs.gpu_arch }}:latest
+  #           ghcr.io/chaserhkj/containers/vllm-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
+  #         file: Containerfile
+  #         build-args: |
+  #           GPU_ARCH=${{ inputs.gpu_arch }}

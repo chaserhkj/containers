@@ -7,10 +7,6 @@ on:
         description: GPU architecture passed to the GPU_ARCH build arg (e.g. gfx103X)
         required: true
         type: string
-      image_suffix:
-        description: Lowercase suffix used in image names and tags (e.g. gfx103x)
-        required: true
-        type: string
       additional_tag:
         description: Tag suffix applied to every image in addition to :latest
         required: true
@@ -48,8 +44,8 @@ jobs:
           context: "{{defaultContext}}:service/therock-llama-cpp"
           push: true
           tags: |
-            ghcr.io/chaserhkj/containers/llama-server-${{ inputs.image_suffix }}:latest
-            ghcr.io/chaserhkj/containers/llama-server-${{ inputs.image_suffix }}:${{ env.ADDITIONAL_TAG }}
+            ghcr.io/chaserhkj/containers/llama-server-${{ inputs.gpu_arch }}:latest
+            ghcr.io/chaserhkj/containers/llama-server-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
           file: Containerfile
           build-args: |
             GPU_ARCH=${{ inputs.gpu_arch }}
@@ -76,8 +72,8 @@ jobs:
           context: "{{defaultContext}}:service/therock-sd-cpp"
           push: true
           tags: |
-            ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.image_suffix }}:latest
-            ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.image_suffix }}:${{ env.ADDITIONAL_TAG }}
+            ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.gpu_arch }}:latest
+            ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
           file: Containerfile
           build-args: |
             GPU_ARCH=${{ inputs.gpu_arch }}
@@ -104,8 +100,8 @@ jobs:
           context: "{{defaultContext}}:service/therock-audio-cpp"
           push: true
           tags: |
-            ghcr.io/chaserhkj/containers/audio-cpp-${{ inputs.image_suffix }}:latest
-            ghcr.io/chaserhkj/containers/audio-cpp-${{ inputs.image_suffix }}:${{ env.ADDITIONAL_TAG }}
+            ghcr.io/chaserhkj/containers/audio-cpp-${{ inputs.gpu_arch }}:latest
+            ghcr.io/chaserhkj/containers/audio-cpp-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
           file: Containerfile
           build-args: |
             GPU_ARCH=${{ inputs.gpu_arch }}
@@ -133,12 +129,12 @@ jobs:
           context: "{{defaultContext}}:service/therock-ggml-engines"
           push: true
           tags: |
-            ghcr.io/chaserhkj/containers/ggml-engines-${{ inputs.image_suffix }}:latest
-            ghcr.io/chaserhkj/containers/ggml-engines-${{ inputs.image_suffix }}:${{ env.ADDITIONAL_TAG }}
+            ghcr.io/chaserhkj/containers/ggml-engines-${{ inputs.gpu_arch }}:latest
+            ghcr.io/chaserhkj/containers/ggml-engines-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
           build-contexts: |
-            therock-sd-cpp=docker-image://ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.image_suffix }}:latest
-            therock-audio-cpp=docker-image://ghcr.io/chaserhkj/containers/audio-cpp-${{ inputs.image_suffix }}:latest
-            therock-llama-cpp=docker-image://ghcr.io/chaserhkj/containers/llama-server-${{ inputs.image_suffix }}:latest
+            therock-sd-cpp=docker-image://ghcr.io/chaserhkj/containers/sd-cpp-${{ inputs.gpu_arch }}:latest
+            therock-audio-cpp=docker-image://ghcr.io/chaserhkj/containers/audio-cpp-${{ inputs.gpu_arch }}:latest
+            therock-llama-cpp=docker-image://ghcr.io/chaserhkj/containers/llama-server-${{ inputs.gpu_arch }}:latest
           file: Containerfile
 
   build-vllm:
@@ -164,8 +160,8 @@ jobs:
           context: "{{defaultContext}}:service/therock-vllm"
           push: true
           tags: |
-            ghcr.io/chaserhkj/containers/vllm-${{ inputs.image_suffix }}:latest
-            ghcr.io/chaserhkj/containers/vllm-${{ inputs.image_suffix }}:${{ env.ADDITIONAL_TAG }}
+            ghcr.io/chaserhkj/containers/vllm-${{ inputs.gpu_arch }}:latest
+            ghcr.io/chaserhkj/containers/vllm-${{ inputs.gpu_arch }}:${{ env.ADDITIONAL_TAG }}
           file: Containerfile
           build-args: |
             GPU_ARCH=${{ inputs.gpu_arch }}

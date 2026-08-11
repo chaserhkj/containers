@@ -9,8 +9,15 @@ RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
 ENV GPU_ARCH=${GPU_ARCH}
 
 RUN bash -ex <<'EOF'
+if [[ "${GPU_ARCH}" == gfx103? ]]; then
+    variant="gfx103X"
+elif [[ "${GPU_ARCH}" == gfx110? ]]; then
+    variant="gfx110X"
+else
+    variant="${GPU_ARCH}"
+fi
 build=$(curl https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest -s | jq .name -r)
-wget -nv -O /release.zip https://github.com/lemonade-sdk/llamacpp-rocm/releases/download/${build}/llama-${build}-ubuntu-rocm-${GPU_ARCH}-x64.zip
+wget -nv -O /release.zip https://github.com/lemonade-sdk/llamacpp-rocm/releases/download/${build}/llama-${build}-ubuntu-rocm-${variant}-x64.zip
 mkdir -p /target
 cd /target
 unzip /release.zip

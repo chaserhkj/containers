@@ -18,6 +18,7 @@ if [[ "${GPU_ARCH}" == gfx103? ]]; then
 elif [[ "${GPU_ARCH}" == gfx110? ]]; then
     gpu_arch_str="gfx110X-all"
 else
+    gpu_arch_str="${GPU_ARCH}"
 fi
 wget -nv -O /rocm.tar.gz https://rocm.nightlies.amd.com/tarball-multi-arch/therock-dist-linux-${gpu_arch_str}-${rocm_ver}.tar.gz
 mkdir -p /rocm

@@ -36,6 +36,7 @@ WORKDIR /audio.cpp
 ENV GPU_ARCH=${GPU_ARCH}
 
 RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
+[[ "${GPU_ARCH}" == gfx*x ]] && GPU_ARCH="${GPU_ARCH%x}X"
 export ROCM_PATH=/rocm
 export HIP_PLATFORM=amd
 export HIP_PATH=$ROCM_PATH

@@ -23,17 +23,17 @@
   };
   cq = {
     pname = "cq";
-    version = "cli/v0.16.0";
+    version = "cli/v0.17.0";
     src = fetchFromGitHub {
       owner = "mozilla-ai";
       repo = "cq";
-      rev = "cli/v0.16.0";
+      rev = "cli/v0.17.0";
       fetchSubmodules = false;
-      sha256 = "sha256-kyr/vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=";
+      sha256 = "sha256-tYDq8BcI/6klLDZbhMtkGQeUs9HYpfGSor2ZCf5iAGo=";
     };
     extract = {
-      "cli/go.sum" = ./. + "/sha256-kyr_vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=/cli/go.sum";
-      "cli/go.mod" = ./. + "/sha256-kyr_vUSIstrQ8HQJ3nbol2LOg6qnBdDUPc5RhKj5SOQ=/cli/go.mod";
+      "cli/go.sum" = ./. + "/sha256-tYDq8BcI_6klLDZbhMtkGQeUs9HYpfGSor2ZCf5iAGo=/cli/go.sum";
+      "cli/go.mod" = ./. + "/sha256-tYDq8BcI_6klLDZbhMtkGQeUs9HYpfGSor2ZCf5iAGo=/cli/go.mod";
     };
   };
   graphrag = {
@@ -49,21 +49,21 @@
   };
   llama-swap = {
     pname = "llama-swap";
-    version = "4547be53319021c9fac6e5e256f64379215434cc";
+    version = "b40d20e91660a0c6c0d3369aab410b42f591f1d2";
     src = fetchgit {
       url = "https://github.com/chaserhkj/llama-swap";
-      rev = "4547be53319021c9fac6e5e256f64379215434cc";
+      rev = "b40d20e91660a0c6c0d3369aab410b42f591f1d2";
       fetchSubmodules = false;
       deepClone = false;
       leaveDotGit = false;
       sparseCheckout = [ ];
-      sha256 = "sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=";
+      sha256 = "sha256-5ra0QXIgmdYMZHRNVg0uivvgpM9Ca4frmH9B7dTo7C4=";
     };
     extract = {
-      "go.mod" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.mod";
-      "ui-svelte/package-lock.json" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/ui-svelte/package-lock.json";
-      "go.sum" = ./. + "/sha256-q0tDJxLKar4tldJzhLquKF31KeEDnwzCbv0rASnN4n8=/go.sum";
-    };date = "2026-08-04";
+      "ui/package-lock.json" = ./. + "/sha256-5ra0QXIgmdYMZHRNVg0uivvgpM9Ca4frmH9B7dTo7C4=/ui/package-lock.json";
+      "go.mod" = ./. + "/sha256-5ra0QXIgmdYMZHRNVg0uivvgpM9Ca4frmH9B7dTo7C4=/go.mod";
+      "go.sum" = ./. + "/sha256-5ra0QXIgmdYMZHRNVg0uivvgpM9Ca4frmH9B7dTo7C4=/go.sum";
+    };date = "2026-08-18";
   };
   llm-wiki-compiler = {
     pname = "llm-wiki-compiler";
@@ -81,17 +81,17 @@
   };
   open-code-review = {
     pname = "open-code-review";
-    version = "v1.8.9";
+    version = "v1.9.6";
     src = fetchFromGitHub {
       owner = "alibaba";
       repo = "open-code-review";
-      rev = "v1.8.9";
+      rev = "v1.9.6";
       fetchSubmodules = false;
-      sha256 = "sha256-hLdYpIt6F6KHaL/Gkai7HWlG6EArgrlLHt6DPvdgsGQ=";
+      sha256 = "sha256-wwR0aXOHqwUB6CNSVptczU5/xTFXtLd25HvNmFyZDUY=";
     };
     extract = {
-      "go.mod" = ./. + "/sha256-hLdYpIt6F6KHaL_Gkai7HWlG6EArgrlLHt6DPvdgsGQ=/go.mod";
-      "go.sum" = ./. + "/sha256-hLdYpIt6F6KHaL_Gkai7HWlG6EArgrlLHt6DPvdgsGQ=/go.sum";
+      "go.mod" = ./. + "/sha256-wwR0aXOHqwUB6CNSVptczU5_xTFXtLd25HvNmFyZDUY=/go.mod";
+      "go.sum" = ./. + "/sha256-wwR0aXOHqwUB6CNSVptczU5_xTFXtLd25HvNmFyZDUY=/go.sum";
     };
   };
   openkb = {

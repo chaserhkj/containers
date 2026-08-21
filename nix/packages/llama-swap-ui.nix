@@ -12,8 +12,8 @@ in
 buildNpmPackage {
   pname = "llama-swap-ui";
   inherit (source) version;
-  src = source.src + "/ui-svelte";
-  npmDepsHash = trim (readFile (dirOf source.extract."ui-svelte/package-lock.json" + "/npmDepsHash"));
+  src = source.src + "/ui";
+  npmDepsHash = trim (readFile (dirOf source.extract."ui/package-lock.json" + "/npmDepsHash"));
   installPhase = ''
     mkdir -p $out
     cp -rvf ../internal/server/ui_dist/. $out/.

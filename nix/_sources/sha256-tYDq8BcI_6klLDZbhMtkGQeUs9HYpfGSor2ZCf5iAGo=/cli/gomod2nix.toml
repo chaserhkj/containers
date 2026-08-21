@@ -42,12 +42,12 @@ schema = 3
     hash = 'sha256-6O/0jc33pKUzlzUGpH8Ekk54XgJvx6Qe7kJtbcNJAV4='
 
   [mod.'github.com/mozilla-ai/cq/schema']
-    version = 'v0.2.0'
-    hash = 'sha256-IVzIDGjS7zuK170OZUKgNFS2svJ4qNJp/QMhQtbICcU='
+    version = 'v0.3.1'
+    hash = 'sha256-h+3Eapi989z5g+JNf20ubnLpE1iHBCvqfyG/MHBXIro='
 
   [mod.'github.com/mozilla-ai/cq/sdk/go']
-    version = 'v0.14.0'
-    hash = 'sha256-/QlkYUUext5UJ7lDdA0lWoWJsL2o2FXIzjFul0YF0rQ='
+    version = 'v0.16.0'
+    hash = 'sha256-1Qg8/f4j7Zyw1ncRLKP4lzT0Kqr/lxg7CFGmnaQfB6I='
 
   [mod.'github.com/ncruces/go-strftime']
     version = 'v1.0.0'

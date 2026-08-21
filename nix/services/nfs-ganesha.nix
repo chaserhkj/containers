@@ -2,7 +2,8 @@
   perSystem = {pkgs, ...}: with pkgs; let
         ganeshaInputConfigured = nfs-ganesha.override {
           useCeph = false;
-          useDbus = false;
+          # FIXME: disabling dbus breaks build due to upstream bug https://github.com/nfs-ganesha/nfs-ganesha/issues/1011
+          # useDbus = false;
         };
         ganeshaConfigured = ganeshaInputConfigured.overrideAttrs (
           oldAttrs: {
@@ -16,7 +17,8 @@
             cmakeFlags = (oldAttrs.cmakeFlags or []) ++ [
               # Disable other protocols and only leave NFS4/RDMA
               "-DUSE_9P=OFF"
-              "-DUSE_NFS3=OFF"
+              # FIXME: disabling NFS3 breaks build due to upstream bug https://github.com/nfs-ganesha/nfs-ganesha/issues/1416
+              #"-DUSE_NFS3=OFF"
               "-DUSE_RQUOTA=OFF"
               "-DUSE_NFS4=ON"
               "-DUSE_NFS_RDMA=ON"
@@ -31,7 +33,6 @@
               "-D_NO_TCP_REGISTER=ON"
               "-DRPCBIND=OFF"
               # Unused features
-              "-DUSE_DBUS=OFF"
               "-DUSE_ADMIN_TOOLS=OFF"
               "-DUSE_GUI_ADMIN_TOOLS=OFF"
               "-DUSE_RADOS_RECOV=OFF"

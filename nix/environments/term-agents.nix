@@ -35,6 +35,7 @@
             opencode
             pi
             hermes-agent
+            dsh
 
             backlog-md
             tuicr

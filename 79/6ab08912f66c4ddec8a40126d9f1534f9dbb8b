@@ -1,0 +1,15 @@
+bootc/arch-common-config/rootfs/etc/nix/upload-to-ncps.sh
+  h_8d23b84102cdcd 2,4,6-27,29-32
+  h_8d23b84102cdcd 5,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "796ab08912f66c4ddec8a40126d9f1534f9dbb8b",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

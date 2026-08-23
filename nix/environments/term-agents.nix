@@ -24,6 +24,7 @@
 
             uv
             bun
+            pnpm
 
             aichat
             ctx7

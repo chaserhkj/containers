@@ -1,0 +1,4 @@
+[Rule]
+SwapUsageMax=90%
+Action=kill-by-swap
+LastingSec=10

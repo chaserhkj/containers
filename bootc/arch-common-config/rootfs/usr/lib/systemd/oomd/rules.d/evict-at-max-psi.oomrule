@@ -1,0 +1,3 @@
+[Rule]
+MemoryPressureAbove=80%
+Action=kill-by-pgscan

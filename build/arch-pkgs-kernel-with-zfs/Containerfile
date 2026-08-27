@@ -2,7 +2,7 @@ FROM arch-aur-builder as builder
 
 RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm jq
+    sudo pacman -Sy --needed --noconfirm jq
 
 RUN sudo bash <<'EOF'
 set -euo pipefail

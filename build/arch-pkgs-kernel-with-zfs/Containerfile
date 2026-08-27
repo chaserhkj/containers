@@ -1,9 +1,14 @@
 FROM arch-aur-builder as builder
 
-ARG KERNEL_VERSION=7.0.14.arch1-1
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy --needed --noconfirm jq
 
-RUN sudo bash <<EOF
+RUN sudo bash <<'EOF'
 set -euo pipefail
+
+KERNEL_VERSION=$(curl -L 'https://aur.archlinux.org/rpc/v5/info?arg[]=zfs-linux' | jq -r '.results.[]|select(.Name == "zfs-linux")|.Depends.[]|select(startswith("linux="))'| cut -f2 -d=)
+
 mkdir -p /pkgs
 cd /tmp
 

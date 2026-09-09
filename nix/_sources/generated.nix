@@ -38,13 +38,13 @@
   };
   graphrag = {
     pname = "graphrag";
-    version = "v3.1.1";
+    version = "v3.1.2";
     src = fetchFromGitHub {
       owner = "microsoft";
       repo = "graphrag";
-      rev = "v3.1.1";
+      rev = "v3.1.2";
       fetchSubmodules = false;
-      sha256 = "sha256-BW9czN4+ZDp/5CBfEYX/SKDgJH+BQZtFTALwnNXl5G0=";
+      sha256 = "sha256-kMalR6PzSC5GgFTBnGRi8mCxZ/WNY+aR3OSEziIPkZw=";
     };
   };
   llama-swap = {
@@ -81,17 +81,17 @@
   };
   open-code-review = {
     pname = "open-code-review";
-    version = "v1.9.6";
+    version = "v1.11.7";
     src = fetchFromGitHub {
       owner = "alibaba";
       repo = "open-code-review";
-      rev = "v1.9.6";
+      rev = "v1.11.7";
       fetchSubmodules = false;
-      sha256 = "sha256-wwR0aXOHqwUB6CNSVptczU5/xTFXtLd25HvNmFyZDUY=";
+      sha256 = "sha256-7bxANyRIjVN8yC7QfdAgZuzwKlTeyv1MRZXS45qEvAo=";
     };
     extract = {
-      "go.mod" = ./. + "/sha256-wwR0aXOHqwUB6CNSVptczU5_xTFXtLd25HvNmFyZDUY=/go.mod";
-      "go.sum" = ./. + "/sha256-wwR0aXOHqwUB6CNSVptczU5_xTFXtLd25HvNmFyZDUY=/go.sum";
+      "go.mod" = ./. + "/sha256-7bxANyRIjVN8yC7QfdAgZuzwKlTeyv1MRZXS45qEvAo=/go.mod";
+      "go.sum" = ./. + "/sha256-7bxANyRIjVN8yC7QfdAgZuzwKlTeyv1MRZXS45qEvAo=/go.sum";
     };
   };
   openkb = {

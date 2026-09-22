@@ -20,7 +20,7 @@ elif [[ "${GPU_ARCH}" == gfx110? ]]; then
 else
     gpu_arch_str="${GPU_ARCH}"
 fi
-wget -nv -O /rocm.tar.gz https://rocm.nightlies.amd.com/tarball-multi-arch/therock-dist-linux-${gpu_arch_str}-${rocm_ver}.tar.gz
+wget -nv -O /rocm.tar.gz https://nightly.repo.amd.com/rocm/core/tarball/therock-dist-linux-${gpu_arch_str}-${rocm_ver}.tar.gz
 mkdir -p /rocm
 tar -C /rocm -xf /rocm.tar.gz
 EOF

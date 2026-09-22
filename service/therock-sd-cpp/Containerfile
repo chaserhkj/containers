@@ -31,7 +31,9 @@ ARG GPU_ARCH
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y git cmake ninja-build build-essential clang
 
-RUN git clone --recursive https://github.com/leejet/stable-diffusion.cpp /sd.cpp
+# Use forked version of sd.cpp
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git clone --recursive https://github.com/chaserhkj/stable-diffusion.cpp /sd.cpp
 
 WORKDIR /sd.cpp
 

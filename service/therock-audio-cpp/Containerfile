@@ -31,7 +31,8 @@ ARG GPU_ARCH
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
     apt-get update && apt-get install -y git cmake ninja-build build-essential clang
 
-RUN git clone --recursive https://github.com/0xShug0/audio.cpp audio.cpp
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git clone --recursive https://github.com/0xShug0/audio.cpp audio.cpp
 
 WORKDIR /audio.cpp
 

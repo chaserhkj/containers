@@ -1,0 +1,25 @@
+bootc/arch-live/Containerfile
+  h_8d23b84102cdcd 7-9,42-44
+bootc/arch-amd/Containerfile
+  h_8d23b84102cdcd 6-8
+bootc/arch-base/Containerfile
+  h_8d23b84102cdcd 7-9
+build/arch-pkgs-kernel-with-zfs/Containerfile
+  h_8d23b84102cdcd 7-8
+  h_8d23b84102cdcd 9
+distrobox/arch/Containerfile
+  h_8d23b84102cdcd 30-32
+bootc/arch-common-config/Containerfile
+  h_8d23b84102cdcd 17-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "b66c8ec06da8f957efb62cc93727574ac7ac9248",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

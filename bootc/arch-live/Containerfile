@@ -4,7 +4,9 @@ FROM scratch as builder-pkg-overrides
 FROM arch-aur-builder as pkg-builder
 
 # pkg overrides, used for toolchains
-RUN --mount=type=bind,from=builder-pkg-overrides,target=/tmp/pkgs sudo bash <<'EOF'
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    --mount=type=bind,from=builder-pkg-overrides,target=/tmp/pkgs sudo bash <<'EOF'
 [[ -z "$(ls -A /tmp/pkgs)" ]] && exit 0
 pacman -U --noconfirm --needed /tmp/pkgs/*.pkg.tar.*
 EOF
@@ -37,7 +39,9 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
     pacman -Syyu ${PACMAN_FULL_SYNC_FLAGS} --noconfirm
 
-RUN --mount=type=bind,from=pkg-overrides,target=/tmp/pkgs bash -ex <<'EOF'
+RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
+    --mount=type=bind,from=pkg-overrides,target=/tmp/pkgs bash -ex <<'EOF'
 # pkg overrides, used for kernel and kernel modules (zfs, etc.)
 [[ -z "$(ls -A /tmp/pkgs)" ]] && exit 0
 pacman -U --noconfirm --needed /tmp/pkgs/*.pkg.tar.*

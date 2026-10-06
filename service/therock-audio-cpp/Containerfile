@@ -54,6 +54,8 @@ export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 mkdir -p build 
 cmake -S . -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_STANDARD=20 \
+    -DCMAKE_CXX_STANDARD_REQUIRED=ON \
     -DENGINE_ENABLE_CUDA=OFF \
     -DENGINE_ENABLE_VULKAN=OFF \
     -DENGINE_ENABLE_HIP=ON \

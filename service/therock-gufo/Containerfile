@@ -1,0 +1,46 @@
+FROM docker.io/library/ubuntu:24.04 as base
+FROM docker.io/archlinux/archlinux as extractor
+RUN --mount=type=cache,target=/var/lib/pacman/sync,id=pacman-sync \
+    --mount=type=cache,target=/var/cache/pacman/pkg,id=pacman-cache \
+    pacman -Sy jq wget --needed --noconfirm
+
+RUN bash -ex <<'EOF'
+# Attempts to build gufo using the same therock ROCm version from therock-llama-cpp prebuilt binaries
+# Such that two images could be merged easily
+rocm_ver=$(curl https://api.github.com/repos/lemonade-sdk/llamacpp-rocm/releases/latest -s | jq .body -r | grep '\*\*ROCm Version\*\*' | sed -E 's/.*: (.*)/\1/')
+wget -nv -O /rocm.tar.gz https://nightly.repo.amd.com/rocm/core/tarball/therock-dist-linux-gfx1151-${rocm_ver}.tar.gz
+mkdir -p /rocm
+tar -C /rocm -xf /rocm.tar.gz
+EOF
+
+FROM base as builder
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+  apt-get update && apt-get install -y git build-essential cmake ninja-build pkg-config \
+  libicu-dev libcurl4-openssl-dev libssl-dev libpng-dev libjpeg-dev libwebp-dev ffmpeg
+
+# Use forked version of sd.cpp
+RUN git config --global url."https://github.com/".insteadOf "git@github.com:" && \
+    git clone --recursive https://github.com/gufo-org/gufo /gufo
+
+WORKDIR /gufo
+
+RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
+mkdir build && cd build
+cmake --preset release .. \
+    -DCMAKE_PREFIX_PATH=/rocm \
+    -DCMAKE_HIP_COMPILER=/rocm/llvm/bin/clang++ \
+    -DGPU_TARGETS=gfx1151
+cd release
+cmake --build .
+EOF
+
+FROM base
+COPY --from=extractor /rocm /rocm
+COPY --from=builder /gufo/build/release/gufo /gufo
+
+RUN --mount=type=cache,target=/var/cache/apt,id=apt \
+    apt-get update && apt-get install -y libicu-dev libcurl4-openssl-dev libssl-dev libpng-dev libjpeg-dev libwebp-dev ffmpeg
+
+ENV PATH=${PATH}:/rocm/bin
+ENV LD_LIBRARY_PATH=/rocm/lib:/rocm/lib64:/rocm/llvm/lib

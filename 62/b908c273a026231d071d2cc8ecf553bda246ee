@@ -1,0 +1,14 @@
+service/therock-audio-cpp/Containerfile
+  h_8d23b84102cdcd 57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "62b908c273a026231d071d2cc8ecf553bda246ee",
+  "prompts": {},
+  "humans": {
+    "h_8d23b84102cdcd": {
+      "author": "Chaser Huang <huangkangjing@gmail.com>"
+    }
+  }
+}

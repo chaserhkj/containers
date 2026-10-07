@@ -35,12 +35,21 @@ cd release
 cmake --build .
 EOF
 
+RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
+mkdir /gufo.runtime
+cd build/release
+for l in $(ldd gufo | grep -v 'not found'| awk '/=>/ {print $3}'); do
+cp $l /gufo.runtime
+done
+cp gufo /gufo.runtime
+EOF
+
 FROM base
 COPY --from=extractor /rocm /rocm
-COPY --from=builder /gufo/build/release/gufo /gufo
+COPY --from=builder /gufo.runtime /gufo
 
 RUN --mount=type=cache,target=/var/cache/apt,id=apt \
-    apt-get update && apt-get install -y libicu-dev libcurl4-openssl-dev libssl-dev libpng-dev libjpeg-dev libwebp-dev ffmpeg
+    apt-get update && apt-get install -y ffmpeg
 
 ENV PATH=${PATH}:/rocm/bin
-ENV LD_LIBRARY_PATH=/rocm/lib:/rocm/lib64:/rocm/llvm/lib
+ENV LD_LIBRARY_PATH=/gufo:/rocm/lib:/rocm/lib64:/rocm/llvm/lib

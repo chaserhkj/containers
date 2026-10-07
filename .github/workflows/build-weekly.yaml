@@ -10,6 +10,7 @@ on:
       - 'service/git-server/**'
       - 'service/git-caddy/**'
       - 'service/cpu-ggml-engines/**'
+      - 'service/therock-gufo/**'
       - 'service/democratic-csi.updated/**'
       - 'agent-sandbox/open-terminal/**'
   workflow_dispatch:

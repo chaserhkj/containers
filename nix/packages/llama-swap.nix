@@ -9,6 +9,8 @@
 in buildGoApplication {
   inherit pname;
   inherit (source) version src;
+  # go.mod pins a Go toolchain newer than nixpkgs' default go.
+  pwd = source.src;
   modules = builtins.dirOf source.extract."go.sum" + "/gomod2nix.toml";
   # enables fully static build
   CGO_ENABLED = 0;

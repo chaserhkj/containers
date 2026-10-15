@@ -1,6 +1,7 @@
 [Unit]
 Description=Generate AMD container device interface (CDI) spec
 RequiresMountsFor=/etc/cdi
+After=sys-module-amdgpu.device
 
 [Service]
 Type=oneshot

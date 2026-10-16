@@ -136,7 +136,7 @@ RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
 # VM tools for minimal headless VM usage
 RUN --mount=type=cache,target=/usr/lib/sysimage/lib/pacman/sync,id=pacman-sync \
     --mount=type=cache,target=/usr/lib/sysimage/cache/pacman/pkg,id=pacman-cache \
-    pacman -Sy --needed --noconfirm qemu-base edk2-ovmf mkosi
+    pacman -Sy --needed --noconfirm qemu-base edk2-ovmf mkosi python-pefile
 
 # AUR packages
 RUN --mount=type=bind,from=aur-pkgs,source=/var/build/repo,target=/var/local-repo \

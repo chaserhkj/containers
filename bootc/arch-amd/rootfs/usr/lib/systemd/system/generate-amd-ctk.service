@@ -6,5 +6,5 @@ After=sys-module-amdgpu.device
 
 [Service]
 Type=oneshot
-ExecCondition=/bin/bash -c '! /usr/bin/amd-ctk cdi validate'
+ExecCondition=/bin/bash -c '/usr/bin/amd-ctk cdi validate | /bin/grep "CDI spec is invalid"'
 ExecStart=/usr/bin/amd-ctk cdi generate

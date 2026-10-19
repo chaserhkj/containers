@@ -52,8 +52,12 @@ export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:${LIBRARY_PAT
 export CPATH="$HIP_INCLUDE_PATH:${CPATH:-}"
 export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
 mkdir -p build 
+# FIXME: Workaround for https://github.com/0xShug0/audio.cpp/issues/984
+# Clang diagnoses the structured-binding capture in app/server/model_memory.cpp, added by
+# upstream PR #964, as a C++20 extension, and the project's -pedantic-errors makes it fatal.
 cmake -S . -B build -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_FLAGS="-Wno-c++20-extensions" \
     -DENGINE_ENABLE_CUDA=OFF \
     -DENGINE_ENABLE_VULKAN=OFF \
     -DENGINE_ENABLE_HIP=ON \

@@ -3,7 +3,8 @@ ARG NIXPKGS_VERSION=nixos-25.11
 
 FROM ghcr.io/nix-community/docker-nixpkgs/nix-flakes:${NIXPKGS_VERSION}-x86_64-linux as nix-static
 
-ARG NIX_STATIC_REV=nixpkgs
+# nixpkgs-unstable revision 2026-09-28, last whose nixStatic Hydra build passes; as of 2026-10-29 nixStatic is still broken upstream
+ARG NIX_STATIC_REV=github:NixOS/nixpkgs/f45c6f04c2f013f004bf94e284e95d72898d9393
 
 RUN nix build ${NIX_STATIC_REV}#nixStatic
 

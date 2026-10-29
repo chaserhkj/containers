@@ -2,6 +2,7 @@
 vendor/
 .vscode/
 /build_args.conf
+.bwsand.profile.bash
 # nix builds
 result
 # For building with argo workflows

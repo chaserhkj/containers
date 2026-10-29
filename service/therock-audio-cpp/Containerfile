@@ -39,6 +39,14 @@ WORKDIR /audio.cpp
 ENV GPU_ARCH=${GPU_ARCH}
 
 RUN --mount=type=bind,from=extractor,source=/rocm,target=/rocm bash -ex <<'EOF'
+# audio.cpp uses a patched GGML lib that may call hipblaslt kernels
+# but gfx103x cards do not have hipblaslt support
+# disable hipblaslt linkage on these targets
+if [[ "${GPU_ARCH}" == gfx103? ]]; then
+    flag_disable_hipblaslt="-DGGML_HIP_HIPBLASLT=OFF"
+else
+    flag_disable_hipblaslt=""
+fi
 export ROCM_PATH=/rocm
 export HIP_PLATFORM=amd
 export HIP_PATH=$ROCM_PATH
@@ -65,6 +73,7 @@ cmake -S . -B build -G Ninja \
     -DAUDIOCPP_DEPLOYMENT_BUILD=ON \
     -DAUDIOCPP_MODEL_SET=full \
     -DAUDIOCPP_MODELS= \
+    ${flag_disable_hipblaslt} \
     -DCMAKE_C_COMPILER=$(hipconfig -l)/clang \
     -DCMAKE_CXX_COMPILER=$(hipconfig -l)/clang++ \
     -UGPU_BUILD_TARGETS -UAMDGPU_TARGETS -DGPU_TARGETS="${GPU_ARCH}" \

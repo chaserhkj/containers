@@ -67,31 +67,31 @@
   };
   llm-wiki-compiler = {
     pname = "llm-wiki-compiler";
-    version = "v1.4.2";
+    version = "v1.5.0";
     src = fetchFromGitHub {
       owner = "atomicstrata";
       repo = "llm-wiki-compiler";
-      rev = "v1.4.2";
+      rev = "v1.5.0";
       fetchSubmodules = false;
-      sha256 = "sha256-kNagC5HzoEPP+Ayv2SctfkUVEn+LvKMI0xiJx/OgqTs=";
+      sha256 = "sha256-GBeUXItsHrloL+Ke57T1mfvkmC/OqoE7knSU45vu6Qk=";
     };
     extract = {
-      "package-lock.json" = ./. + "/sha256-kNagC5HzoEPP+Ayv2SctfkUVEn+LvKMI0xiJx_OgqTs=/package-lock.json";
+      "package-lock.json" = ./. + "/sha256-GBeUXItsHrloL+Ke57T1mfvkmC_OqoE7knSU45vu6Qk=/package-lock.json";
     };
   };
   open-code-review = {
     pname = "open-code-review";
-    version = "v1.12.13";
+    version = "v1.13.3";
     src = fetchFromGitHub {
       owner = "alibaba";
       repo = "open-code-review";
-      rev = "v1.12.13";
+      rev = "v1.13.3";
       fetchSubmodules = false;
-      sha256 = "sha256-UJ1NuU0nEzNP7WUBPFfbNtw6oy6E7oL2ujNOPeTDWWs=";
+      sha256 = "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD/FLPKpfnw=";
     };
     extract = {
-      "go.mod" = ./. + "/sha256-UJ1NuU0nEzNP7WUBPFfbNtw6oy6E7oL2ujNOPeTDWWs=/go.mod";
-      "go.sum" = ./. + "/sha256-UJ1NuU0nEzNP7WUBPFfbNtw6oy6E7oL2ujNOPeTDWWs=/go.sum";
+      "go.mod" = ./. + "/sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.mod";
+      "go.sum" = ./. + "/sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.sum";
     };
   };
   openkb = {

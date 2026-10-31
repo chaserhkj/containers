@@ -96,7 +96,7 @@
         "cargoLock": null,
         "date": null,
         "extract": {
-            "package-lock.json": "sha256-kNagC5HzoEPP+Ayv2SctfkUVEn+LvKMI0xiJx_OgqTs=/package-lock.json"
+            "package-lock.json": "sha256-GBeUXItsHrloL+Ke57T1mfvkmC_OqoE7knSU45vu6Qk=/package-lock.json"
         },
         "name": "llm-wiki-compiler",
         "passthru": null,
@@ -108,19 +108,19 @@
             "name": null,
             "owner": "atomicstrata",
             "repo": "llm-wiki-compiler",
-            "rev": "v1.4.2",
-            "sha256": "sha256-kNagC5HzoEPP+Ayv2SctfkUVEn+LvKMI0xiJx/OgqTs=",
+            "rev": "v1.5.0",
+            "sha256": "sha256-GBeUXItsHrloL+Ke57T1mfvkmC/OqoE7knSU45vu6Qk=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v1.4.2"
+        "version": "v1.5.0"
     },
     "open-code-review": {
         "cargoLock": null,
         "date": null,
         "extract": {
-            "go.mod": "sha256-UJ1NuU0nEzNP7WUBPFfbNtw6oy6E7oL2ujNOPeTDWWs=/go.mod",
-            "go.sum": "sha256-UJ1NuU0nEzNP7WUBPFfbNtw6oy6E7oL2ujNOPeTDWWs=/go.sum"
+            "go.mod": "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.mod",
+            "go.sum": "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.sum"
         },
         "name": "open-code-review",
         "passthru": null,
@@ -132,12 +132,12 @@
             "name": null,
             "owner": "alibaba",
             "repo": "open-code-review",
-            "rev": "v1.12.13",
-            "sha256": "sha256-UJ1NuU0nEzNP7WUBPFfbNtw6oy6E7oL2ujNOPeTDWWs=",
+            "rev": "v1.13.3",
+            "sha256": "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD/FLPKpfnw=",
             "sparseCheckout": [],
             "type": "github"
         },
-        "version": "v1.12.13"
+        "version": "v1.13.3"
     },
     "openkb": {
         "cargoLock": null,

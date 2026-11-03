@@ -4,6 +4,20 @@ Personal collection of Containerfiles and image definitions: bootc host images, 
 images, service images, and nix2container images. Images are published to
 `ghcr.io/chaserhkj/containers/`.
 
+## Layout
+
+| Path | Content |
+|---|---|
+| `bootc/` | bootable bootc host images; see `bootc/AGENTS.md` |
+| `distrobox/` | distrobox images, `arch` → `arch-common-gui` → `arch-generic` / `arch-steam` |
+| `base/` | reusable bases referenced by local tag (`arch-aur-builder`, `therock-rocm`, `uv-podman`, `pytorch`), plus `stdio-unix-socket/` as a scratch base |
+| `build/` | package-only images consumed as build contexts (`arch-pkgs-kernel`, `therock-pytorch-wheel`) |
+| `service/` | one service per directory, mostly with an entrypoint |
+| `nix/` | flake-parts images, packages, and nvfetcher sources |
+| `builder/`, `agent-sandbox/` | general-purpose sandbox images |
+
+`service/crio-krun` is a git submodule; run `git submodule update --init` before building it.
+
 ## Rule: container builds and build tests use podman
 
 Every container build, build test, and image inspection runs through **podman**. The sandboxes agents
@@ -24,6 +38,10 @@ just build <dir>            # tag = basename <dir>; e.g. just build build/arch-p
 CTR_BUILD_DRY_RUN=1 just build <dir>   # print the podman command instead of running it
 ```
 
+The tag is the bare directory name, which only suits trees that reference each other by that name.
+Nested trees need their own module, which supplies the tag prefix and the build contexts:
+`just bootc build-image <dir>`, `just distro build <variant>`.
+
 Wrapper env vars (all optional, `build-image.sh` documents them):
 
 | Variable | Effect |
@@ -40,11 +58,15 @@ Wrapper env vars (all optional, `build-image.sh` documents them):
 kernel-ignore build args, and `CTR_PKG_OVERRIDES_IMG`.
 
 Group-specific wrappers:
-- `just bootc ...` — bootc images, tags `bootc-<dir>`; variants are rebased onto a different base
-  via `CTR_BUILD_CONTEXT_*_VARIANT_BASE`.
+- `just bootc ...` — bootc images, tags `bootc-<dir>`. `build-variant-image` rebases a directory onto
+  another image through the build context `base` (`CTR_BUILD_CONTEXT_FROM_VARIANT_BASE` /
+  `_IMG_VARIANT_BASE`); `bootc/AGENTS.md` lists the chain.
 - `just bootc arch-config ...` — per-host images; reads gitignored `hosts/`, decrypts
-  `creds.gpg` / `ncps_cred.gpg`, pushes to `CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF`.
-- `just distro ...` — distrobox images, tags `distrobox-<variant>`.
+  `creds.gpg` / `ncps_cred.gpg`, pushes to `CTR_ARCH_BOOTC_HOST_TARGET_IMG_REF` (default
+  `docker.io/chaserhkj/arch-bootc-host`, the one image here published to Docker Hub rather than
+  GHCR). `CTR_PUSH_FLAGS`, `CTR_PUSH_RETRIES`, `CTR_PUSH_RETRY_BACKOFF` tune that push.
+- `just distro build <variant>` — distrobox images, tags `distrobox-<variant>`. The recipe reads
+  `CTR_BUILD_FLAGS`, which nothing exports, so it must be set (even empty) or `just` aborts.
 - `service/vibevoice/build.sh` — clones a vendor repo before `podman build`.
 
 ## Build order
@@ -71,7 +93,11 @@ A change is verified when the affected image builds with podman and, for service
 CTR_BUILD_DRY_RUN=1 just build <dir>   # confirm flags/contexts/args
 just build <dir>                       # real podman build
 podman run --rm -it <tag>              # entrypoint smoke test
+podman run --rm -it <tag> bash         # images without an entrypoint
 ```
+
+Images here carry no `ENTRYPOINT` or `CMD` except where a service needs one; `bootc/`, `distrobox/`,
+and `build/` are all of that kind, as are several `service/` images.
 
 Rebuild dependents when a shared stage changes (arch-base change → every bootc image and distrobox
 image consuming it).
@@ -94,14 +120,19 @@ Commands: `nix build .#<name>` for the image, `nix run .#<name>.copyToRegistry` 
 
 Packages in `nix/packages/` are built from `extraSources` in `nix/_sources/generated.nix`, generated
 by nvfetcher from `nix/nvfetcher.toml`. After editing `nvfetcher.toml`, run
-`nix run .#update-extra-deps` — it runs nvfetcher and regenerates `gomod2nix.toml` / `npmDepsHash`
-lock files.
+`nix run .#update-extra-deps` (`nix/meta/default.nix`) — it runs nvfetcher and regenerates the
+`gomod2nix.toml` / `npmDepsHash` lock files under each `nix/_sources/sha256-*/`. Those lock files and
+`generated.nix` are script output: edit `nvfetcher.toml`, never the generated files.
 
 ## CI
 
 `.github/workflows/` builds and pushes to GHCR. Each workflow is path-filtered, so a new image
-directory needs both a job and a `paths:` entry, otherwise CI never sees it. `build-weekly.yaml` and
-`build-rocm-prebuilt.yaml` also run on a cron. Push/publish logic lives in the workflow, not in the
+directory needs both a job and a `paths:` entry, otherwise CI never sees it. `build-weekly.yaml`,
+`build-the-rock.yaml`, and `build-rocm-prebuilt.yaml` also run on a Tue/Fri cron;
+`build-rocm-arch.yaml` is `workflow_call`-only, invoked by `build-the-rock.yaml` and
+`build-rocm-prebuilt.yaml`. For a nix image, `paths:` lists its defining file individually
+(`nix/services/<name>.nix`, `nix/tools/<name>.nix`, `nix/environments/<name>.nix`) — a new one needs
+its own entry, `nix/lib/**` does not cover it. Push/publish logic lives in the workflow, not in the
 Containerfile.
 
 ## Conventions

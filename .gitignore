@@ -10,3 +10,7 @@ result
 
 # opencode workspace config
 opencode.json
+# paseo
+paseo.json
+paseo.agent-env.json
+

@@ -23,17 +23,17 @@
   };
   cq = {
     pname = "cq";
-    version = "cli/v0.18.0";
+    version = "cli/v0.19.2";
     src = fetchFromGitHub {
       owner = "mozilla-ai";
       repo = "cq";
-      rev = "cli/v0.18.0";
+      rev = "cli/v0.19.2";
       fetchSubmodules = false;
-      sha256 = "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=";
+      sha256 = "sha256-g3ONnmI5KWZSBP8gsGjqDJ5hXqDD3siJXmqrUzNKRJw=";
     };
     extract = {
-      "cli/go.sum" = ./. + "/sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=/cli/go.sum";
-      "cli/go.mod" = ./. + "/sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=/cli/go.mod";
+      "cli/go.sum" = ./. + "/sha256-g3ONnmI5KWZSBP8gsGjqDJ5hXqDD3siJXmqrUzNKRJw=/cli/go.sum";
+      "cli/go.mod" = ./. + "/sha256-g3ONnmI5KWZSBP8gsGjqDJ5hXqDD3siJXmqrUzNKRJw=/cli/go.mod";
     };
   };
   graphrag = {

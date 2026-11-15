@@ -79,21 +79,6 @@
       "package-lock.json" = ./. + "/sha256-GBeUXItsHrloL+Ke57T1mfvkmC_OqoE7knSU45vu6Qk=/package-lock.json";
     };
   };
-  open-code-review = {
-    pname = "open-code-review";
-    version = "v1.13.3";
-    src = fetchFromGitHub {
-      owner = "alibaba";
-      repo = "open-code-review";
-      rev = "v1.13.3";
-      fetchSubmodules = false;
-      sha256 = "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD/FLPKpfnw=";
-    };
-    extract = {
-      "go.mod" = ./. + "/sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.mod";
-      "go.sum" = ./. + "/sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.sum";
-    };
-  };
   openkb = {
     pname = "openkb";
     version = "v0.4.5";

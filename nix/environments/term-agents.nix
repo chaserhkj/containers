@@ -48,8 +48,9 @@
 
             mcporter
 
-            openskills
             skills
+
+            open-code-review
 
             agent-browser
             rtk
@@ -60,7 +61,6 @@
             graphrag
             llm-wiki-compiler
             mozilla-cq
-            open-code-review
           ])
           ++ [
             git-ai.minimal

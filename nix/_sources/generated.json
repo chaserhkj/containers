@@ -1,163 +1,139 @@
 {
-    "amd-ctk": {
-        "cargoLock": null,
-        "date": null,
-        "extract": {
-            "go.mod": "sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.mod",
-            "go.sum": "sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.sum"
-        },
-        "name": "amd-ctk",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "ROCm",
-            "repo": "container-toolkit",
-            "rev": "v1.3.0",
-            "sha256": "sha256-+YqVm/u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "v1.3.0"
+  "amd-ctk": {
+    "cargoLock": null,
+    "date": null,
+    "extract": {
+      "go.mod": "sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.mod",
+      "go.sum": "sha256-+YqVm_u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=/go.sum"
     },
-    "cq": {
-        "cargoLock": null,
-        "date": null,
-        "extract": {
-            "cli/go.mod": "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=/cli/go.mod",
-            "cli/go.sum": "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=/cli/go.sum"
-        },
-        "name": "cq",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "mozilla-ai",
-            "repo": "cq",
-            "rev": "cli/v0.18.0",
-            "sha256": "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "cli/v0.18.0"
+    "name": "amd-ctk",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "owner": "ROCm",
+      "repo": "container-toolkit",
+      "rev": "v1.3.0",
+      "sha256": "sha256-+YqVm/u0PYvyoHUSwRapByvmIunZUfcPV5rYDFW7Ifs=",
+      "sparseCheckout": [],
+      "type": "github"
     },
-    "graphrag": {
-        "cargoLock": null,
-        "date": null,
-        "extract": null,
-        "name": "graphrag",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "microsoft",
-            "repo": "graphrag",
-            "rev": "v3.3.0",
-            "sha256": "sha256-xNGv8ACLepBeEpf8MXAkl6gck1FCshxdBWGurHgLuTg=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "v3.3.0"
+    "version": "v1.3.0"
+  },
+  "cq": {
+    "cargoLock": null,
+    "date": null,
+    "extract": {
+      "cli/go.mod": "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=/cli/go.mod",
+      "cli/go.sum": "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=/cli/go.sum"
     },
-    "llama-swap": {
-        "cargoLock": null,
-        "date": "2026-10-03",
-        "extract": {
-            "go.mod": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=/go.mod",
-            "go.sum": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=/go.sum",
-            "ui/package-lock.json": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=/ui/package-lock.json"
-        },
-        "name": "llama-swap",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "rev": "783c3232fbe5e7588d3e667e2933579f11538d3d",
-            "sha256": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=",
-            "sparseCheckout": [],
-            "type": "git",
-            "url": "https://github.com/chaserhkj/llama-swap"
-        },
-        "version": "783c3232fbe5e7588d3e667e2933579f11538d3d"
+    "name": "cq",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "owner": "mozilla-ai",
+      "repo": "cq",
+      "rev": "cli/v0.18.0",
+      "sha256": "sha256-kst8D6pgUSYllCpI++Dbz0W57pVlcvthqurK2+2EHkI=",
+      "sparseCheckout": [],
+      "type": "github"
     },
-    "llm-wiki-compiler": {
-        "cargoLock": null,
-        "date": null,
-        "extract": {
-            "package-lock.json": "sha256-GBeUXItsHrloL+Ke57T1mfvkmC_OqoE7knSU45vu6Qk=/package-lock.json"
-        },
-        "name": "llm-wiki-compiler",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "atomicstrata",
-            "repo": "llm-wiki-compiler",
-            "rev": "v1.5.0",
-            "sha256": "sha256-GBeUXItsHrloL+Ke57T1mfvkmC/OqoE7knSU45vu6Qk=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "v1.5.0"
+    "version": "cli/v0.18.0"
+  },
+  "graphrag": {
+    "cargoLock": null,
+    "date": null,
+    "extract": null,
+    "name": "graphrag",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "owner": "microsoft",
+      "repo": "graphrag",
+      "rev": "v3.3.0",
+      "sha256": "sha256-xNGv8ACLepBeEpf8MXAkl6gck1FCshxdBWGurHgLuTg=",
+      "sparseCheckout": [],
+      "type": "github"
     },
-    "open-code-review": {
-        "cargoLock": null,
-        "date": null,
-        "extract": {
-            "go.mod": "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.mod",
-            "go.sum": "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD_FLPKpfnw=/go.sum"
-        },
-        "name": "open-code-review",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "alibaba",
-            "repo": "open-code-review",
-            "rev": "v1.13.3",
-            "sha256": "sha256-dDKNxjI0pWoJGabUvsGTERYKvKtvEm3UGD/FLPKpfnw=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "v1.13.3"
+    "version": "v3.3.0"
+  },
+  "llama-swap": {
+    "cargoLock": null,
+    "date": "2026-10-03",
+    "extract": {
+      "go.mod": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=/go.mod",
+      "go.sum": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=/go.sum",
+      "ui/package-lock.json": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=/ui/package-lock.json"
     },
-    "openkb": {
-        "cargoLock": null,
-        "date": null,
-        "extract": null,
-        "name": "openkb",
-        "passthru": null,
-        "pinned": false,
-        "src": {
-            "deepClone": false,
-            "fetchSubmodules": false,
-            "leaveDotGit": false,
-            "name": null,
-            "owner": "vectifyai",
-            "repo": "openkb",
-            "rev": "v0.4.5",
-            "sha256": "sha256-vEYlcFe4vFVUpZIcVUbaZhmsSDDrNXFjKJpKb+/fqBQ=",
-            "sparseCheckout": [],
-            "type": "github"
-        },
-        "version": "v0.4.5"
-    }
+    "name": "llama-swap",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "rev": "783c3232fbe5e7588d3e667e2933579f11538d3d",
+      "sha256": "sha256-PLKJ8xcChgoqMmNRbw++fh3G3niFhhNlSrS+9mg+FpI=",
+      "sparseCheckout": [],
+      "type": "git",
+      "url": "https://github.com/chaserhkj/llama-swap"
+    },
+    "version": "783c3232fbe5e7588d3e667e2933579f11538d3d"
+  },
+  "llm-wiki-compiler": {
+    "cargoLock": null,
+    "date": null,
+    "extract": {
+      "package-lock.json": "sha256-GBeUXItsHrloL+Ke57T1mfvkmC_OqoE7knSU45vu6Qk=/package-lock.json"
+    },
+    "name": "llm-wiki-compiler",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "owner": "atomicstrata",
+      "repo": "llm-wiki-compiler",
+      "rev": "v1.5.0",
+      "sha256": "sha256-GBeUXItsHrloL+Ke57T1mfvkmC/OqoE7knSU45vu6Qk=",
+      "sparseCheckout": [],
+      "type": "github"
+    },
+    "version": "v1.5.0"
+  },
+  "openkb": {
+    "cargoLock": null,
+    "date": null,
+    "extract": null,
+    "name": "openkb",
+    "passthru": null,
+    "pinned": false,
+    "src": {
+      "deepClone": false,
+      "fetchSubmodules": false,
+      "leaveDotGit": false,
+      "name": null,
+      "owner": "vectifyai",
+      "repo": "openkb",
+      "rev": "v0.4.5",
+      "sha256": "sha256-vEYlcFe4vFVUpZIcVUbaZhmsSDDrNXFjKJpKb+/fqBQ=",
+      "sparseCheckout": [],
+      "type": "github"
+    },
+    "version": "v0.4.5"
+  }
 }

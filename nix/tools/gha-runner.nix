@@ -1,6 +1,6 @@
 # Basic nix-flake based image to be used in github action runners
 # nix-ld is setup for running node as provided by the runners
-# User is set to runner(1001) and home set to /home/runner, but runtime
+# User is set to runner(1001) and home set to /__w/home, but runtime
 # dependencies for other workflows still need to be installed by
 # `sudo nix profile add`
 {
@@ -26,7 +26,7 @@
     # Patched based on base image config file
     passwd = pkgs.writeTextDir "etc/passwd" ''
       root:x:0:0:System administrator:/root:/bin/bash
-      runner:x:1001:1001:Github action runner:/home/runner:/bin/bash
+      runner:x:1001:1001:Github action runner:/__w/home:/bin/bash
       nixbld1:x:30001:30000:Nix build user 1:/var/empty:/run/current-system/sw/bin/nologin
       nixbld2:x:30002:30000:Nix build user 2:/var/empty:/run/current-system/sw/bin/nologin
       nixbld3:x:30003:30000:Nix build user 3:/var/empty:/run/current-system/sw/bin/nologin
@@ -95,8 +95,8 @@
 
     initScript = pkgs.writeText "init.sh" ''
       if [[ ! -e /.init ]]; then
-        [[ ! -e /home/runner ]] && sudo mkdir -p /home/runner
-        sudo chown runner:runner /home/runner
+        [[ ! -e /__w/home ]] && sudo mkdir -p /__w/home
+        sudo chown runner:runner /__w/home
         sudo touch /.init
       fi
       source /etc/profile.d/nix.sh
@@ -163,9 +163,10 @@
           "NIX_LD=${NIX_LD}"
           "NIX_LD_LIBRARY_PATH=${NIX_LD_LIBRARY_PATH}"
           "USER=runner"
-          "HOME=/home/runner"
+          "HOME=/__w/home"
           "ENV=${initScript}"
           "BASH_ENV=${initScript}"
+          "XDG_RUNTIME_DIR=/__w/run"
         ];
         user = "runner";
       };

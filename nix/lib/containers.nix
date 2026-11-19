@@ -248,6 +248,8 @@ localFlake@{ buildImageWithSystem, flakePartsModule, ... }:
                         '';
                       in
                       buildScript;
+                    imageBaseTag = finalConfig.tag;
+                    imageTag = sanitizedConfig.tag;
                   };
 
             in

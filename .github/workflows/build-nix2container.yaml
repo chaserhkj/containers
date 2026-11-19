@@ -92,5 +92,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build using nix2container
+        shell: nix shell nixpkgs#podman --command bash {0}
         run: |
-          nix run .#gha-runner.copyToRegistry --accept-flake-config
+          nix run .#gha-runner.buildInPodman --accept-flake-config
+          podman push $(nix eval --raw .#gha-runner.imageName):$(nix eval --raw .#gha-runner.imageTag)

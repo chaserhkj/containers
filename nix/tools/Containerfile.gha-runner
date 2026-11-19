@@ -1,0 +1,9 @@
+FROM base
+
+RUN sudo -E bash -ex <<'EOF'
+mkdir -p $HOME
+mkdir -p $XDG_RUNTIME_DIR
+chown runner:runner $HOME $XDG_RUNTIME_DIR
+EOF
+
+WORKDIR $HOME

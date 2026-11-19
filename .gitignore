@@ -4,7 +4,7 @@ vendor/
 /build_args.conf
 .bwsand.profile.bash
 # nix builds
-result
+result*
 # For building with argo workflows
 .kubeconfig
 

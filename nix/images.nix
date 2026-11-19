@@ -5,5 +5,6 @@
     ./environments/term-agents.nix
 
     ./tools/amd-ctk.nix
+    ./tools/gha-runner.nix
   ];
 }

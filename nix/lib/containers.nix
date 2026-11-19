@@ -44,6 +44,7 @@ localFlake@{buildImageWithSystem, flakePartsModule, ...}:
       # result of nix2container.pullImage or nix2container.pullImageFromManifest
       # not type-checked for now
       fromImage = mkOption { type = anything; default = null; };
+      fromImageEnv = mkOption { type = bool; default = false; };
       maxLayers = mkOption { type = int; default = 1; };
       # not type-checked for now
       perms = mkOption { type = listOf attrs; };
@@ -126,7 +127,7 @@ localFlake@{buildImageWithSystem, flakePartsModule, ...}:
       };
     };
     config = let 
-      inherit(builtins) mapAttrs removeAttrs attrNames map listToAttrs hasAttr intersectAttrs;
+      inherit(builtins) mapAttrs intersectAttrs;
 
       sanitizeConfig = pname: container: intersectAttrs buildImageConfigSchema container 
         // { 

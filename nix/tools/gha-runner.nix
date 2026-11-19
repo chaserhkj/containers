@@ -138,6 +138,18 @@
       pkgs.stdenv.cc.cc.lib
     ];
 
+    baseTools = nix2container.buildLayer {
+      copyToRoot = pkgs.buildEnv {
+        name = "base-tools";
+        paths = with pkgs; [
+          git gh
+        ];
+        pathsToLink = [
+          "/bin"
+        ];
+      };
+    };
+
   in {
     containers.gha-runner = {
       name = "ghcr.io/chaserhkj/containers/gha-nix-flake-runner";
@@ -158,6 +170,7 @@
         user = "runner";
       };
       copyToRoot = rootFS;
+      layers = [baseTools];
       perms = [
         {
           path = pkgs.sudo;

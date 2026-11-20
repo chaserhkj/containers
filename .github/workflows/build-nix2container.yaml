@@ -91,8 +91,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build using nix2container
-        shell: nix shell nixpkgs#podman --command bash {0}
+      - name: Install Podman
+        uses: redhat-actions/podman-install@v1
+      # For nix store skopeo to copy to podman storage, they must use userns
+      - name: Disable AppArmor userns restrictions
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Build image and push to registry
         run: |
           nix run .#gha-runner.buildInPodman --accept-flake-config
           podman push $(nix eval --raw .#gha-runner.imageName):$(nix eval --raw .#gha-runner.imageTag)

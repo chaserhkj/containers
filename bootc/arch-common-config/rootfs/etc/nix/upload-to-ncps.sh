@@ -17,6 +17,10 @@ can_use_systemd_run() {
 
 copy_for_path() {
     OUT_PATH="$1"
+    if (( ${UPLOAD_TO_NCPS_BLOCKING:-0} )); then
+        "${copy_cmd[@]}" "$OUT_PATH" || :
+        return
+    fi
     if can_use_systemd_run; then
         unit_name="nix-copy-for-$(systemd-escape -p "$OUT_PATH").service"
         systemd-run --user --unit="$unit_name" -- "${copy_cmd[@]}" "$OUT_PATH" || :
